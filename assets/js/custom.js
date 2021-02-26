@@ -6,7 +6,10 @@ function baseurl(){
 	}else if(base.host=='diyesh.com'){
 		return "https://" + base.host + "/plumbertools/";
 	}else{
+		return "http://" + base.host + "/";
+		/* //test to be revert on migration 
 		return "https://" + base.host + "/";
+		*/
 	}
 }
 
