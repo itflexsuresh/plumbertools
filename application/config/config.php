@@ -23,7 +23,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 | a PHP script and you can easily do that on your own.
 |
 */
-$config['base_url'] = 'http://new.plumbertools.co.za/';
+//test to be revert on migration $config['base_url'] = 'http://new.plumbertools.co.za/';
+$config['base_url'] = 'http://www.plumbertools.co.za/';
 
 /*
 |--------------------------------------------------------------------------
