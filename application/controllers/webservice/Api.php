@@ -3453,7 +3453,6 @@ echo '<div class="col-md-6">Select Category
 			$data["title"] 						= 	'Vehicle Checklist'; 
 			$requestdata 						= 	$this->input->post();								
 			$getfulldata						= 	$this->adminmodel->getfulldata("vehiclechecklist",$requestdata);
-			print_r($getfulldata);die;
 			
 			if(count($getfulldata)){
 				
@@ -3474,8 +3473,8 @@ echo '<div class="col-md-6">Select Category
 	<p><h2>Tyres<h2></p>
 	<p>'.$this->config->item('passfail')[$getfulldata[0]['tyres']].'</p>';
 
-	if(isset($getfulldata[0]['tyres_image']) && $getfulldata[0]['tyres_image'] != ''){
-		$html 	=	$html. '<p> <img height="150px" widht="150px" src="'.$pdfurl.$getfulldata[0]['tyres_image'].'"> </p>';
+	if(isset($getfulldata[0]['tyres_image1']) && $getfulldata[0]['tyres_image1'] != ''){
+		$html 	=	$html. '<p> <img height="150px" widht="150px" src="'.$pdfurl.$getfulldata[0]['tyres_image1'].'"> </p>';
 	}
 	if(isset($getfulldata[0]['tyres_image2']) && $getfulldata[0]['tyres_image2'] != ''){
 		$html 	=	$html. '<p> <img height="150px" widht="150px" src="'.$pdfurl.$getfulldata[0]['tyres_image2'].'"> </p>';
@@ -3510,8 +3509,8 @@ echo '<div class="col-md-6">Select Category
 	<p><h2>Lights (brakes, headlights, indicator)</h2></p>
 	<p>'.$this->config->item('passfail')[$getfulldata[0]['lights']].'</p>';
 
-	if(isset($getfulldata[0]['lights_image']) && $getfulldata[0]['lights_image'] != ''){
-		$html 	=	$html. '<p> <img height="150px" widht="150px" src="'.$pdfurl.$getfulldata[0]['lights_image'].'"> </p>';
+	if(isset($getfulldata[0]['lights_image1']) && $getfulldata[0]['lights_image1'] != ''){
+		$html 	=	$html. '<p> <img height="150px" widht="150px" src="'.$pdfurl.$getfulldata[0]['lights_image1'].'"> </p>';
 	}
 	if(isset($getfulldata[0]['lights_image2']) && $getfulldata[0]['lights_image2'] != ''){
 		$html 	=	$html. '<p> <img height="150px" widht="150px" src="'.$pdfurl.$getfulldata[0]['lights_image2'].'"> </p>';
@@ -3546,8 +3545,8 @@ echo '<div class="col-md-6">Select Category
 	<p><h2>Windscreen and wipers</h2></p>
 	<p>'.$this->config->item('passfail')[$getfulldata[0]['windscreen']].'</p>';
 
-	if(isset($getfulldata[0]['windscreen_image']) && $getfulldata[0]['windscreen_image'] != ''){
-		$html 	=	$html. '<p> <img height="150px" widht="150px" src="'.$pdfurl.$getfulldata[0]['windscreen_image'].'"> </p>';
+	if(isset($getfulldata[0]['windscreen_image1']) && $getfulldata[0]['windscreen_image1'] != ''){
+		$html 	=	$html. '<p> <img height="150px" widht="150px" src="'.$pdfurl.$getfulldata[0]['windscreen_image1'].'"> </p>';
 	}
 	if(isset($getfulldata[0]['windscreen_image2']) && $getfulldata[0]['windscreen_image2'] != ''){
 		$html 	=	$html. '<p> <img height="150px" widht="150px" src="'.$pdfurl.$getfulldata[0]['windscreen_image2'].'"> </p>';
@@ -3585,8 +3584,8 @@ echo '<div class="col-md-6">Select Category
 	<p><h2>Body (including branding)</h2></p>
 	<p>'.$this->config->item('passfail')[$getfulldata[0]['body']].'</p>';
 
-	if(isset($getfulldata[0]['body_image']) && $getfulldata[0]['body_image'] != ''){
-		$html 	=	$html. '<p> <img height="150px" widht="150px" src="'.$pdfurl.$getfulldata[0]['body_image'].'"> </p>';
+	if(isset($getfulldata[0]['body_image1']) && $getfulldata[0]['body_image1'] != ''){
+		$html 	=	$html. '<p> <img height="150px" widht="150px" src="'.$pdfurl.$getfulldata[0]['body_image1'].'"> </p>';
 	}
 	if(isset($getfulldata[0]['body_image2']) && $getfulldata[0]['body_image2'] != ''){
 		$html 	=	$html. '<p> <img height="150px" widht="150px" src="'.$pdfurl.$getfulldata[0]['body_image2'].'"> </p>';
@@ -3624,11 +3623,35 @@ echo '<div class="col-md-6">Select Category
 	<p><h2>Door Locks</h2></p>
 	<p>'.$this->config->item('passfail')[$getfulldata[0]['doorlocks']].'</p>';
 
-	if(isset($getfulldata[0]['doorlocks_image']) && $getfulldata[0]['doorlocks_image'] != ''){
-		$html 	=	$html. '<p> <img height="150px" widht="150px" src="'.$pdfurl.$getfulldata[0]['doorlocks_image'].'"> </p>';
+	if(isset($getfulldata[0]['doorlocks_image1']) && $getfulldata[0]['doorlocks_image1'] != ''){
+		$html 	=	$html. '<p> <img height="150px" widht="150px" src="'.$pdfurl.$getfulldata[0]['doorlocks_image1'].'"> </p>';
 	}
 	if(isset($getfulldata[0]['doorlocks_image2']) && $getfulldata[0]['doorlocks_image2'] != ''){
 		$html 	=	$html. '<p> <img height="150px" widht="150px" src="'.$pdfurl.$getfulldata[0]['doorlocks_image2'].'"> </p>';
+	}
+	if(isset($getfulldata[0]['doorlocks_image3']) && $getfulldata[0]['doorlocks_image3'] != ''){
+		$html 	=	$html. '<p> <img height="150px" widht="150px" src="'.$pdfurl.$getfulldata[0]['doorlocks_image3'].'"> </p>';
+	}
+	if(isset($getfulldata[0]['doorlocks_image4']) && $getfulldata[0]['doorlocks_image4'] != ''){
+		$html 	=	$html. '<p> <img height="150px" widht="150px" src="'.$pdfurl.$getfulldata[0]['doorlocks_image4'].'"> </p>';
+	}
+	if(isset($getfulldata[0]['doorlocks_image5']) && $getfulldata[0]['doorlocks_image5'] != ''){
+		$html 	=	$html. '<p> <img height="150px" widht="150px" src="'.$pdfurl.$getfulldata[0]['doorlocks_image5'].'"> </p>';
+	}
+	if(isset($getfulldata[0]['doorlocks_image6']) && $getfulldata[0]['doorlocks_image6'] != ''){
+		$html 	=	$html. '<p> <img height="150px" widht="150px" src="'.$pdfurl.$getfulldata[0]['doorlocks_image6'].'"> </p>';
+	}
+	if(isset($getfulldata[0]['doorlocks_image7']) && $getfulldata[0]['doorlocks_image7'] != ''){
+		$html 	=	$html. '<p> <img height="150px" widht="150px" src="'.$pdfurl.$getfulldata[0]['doorlocks_image7'].'"> </p>';
+	}
+	if(isset($getfulldata[0]['doorlocks_image8']) && $getfulldata[0]['doorlocks_image8'] != ''){
+		$html 	=	$html. '<p> <img height="150px" widht="150px" src="'.$pdfurl.$getfulldata[0]['doorlocks_image8'].'"> </p>';
+	}
+	if(isset($getfulldata[0]['doorlocks_image9']) && $getfulldata[0]['doorlocks_image9'] != ''){
+		$html 	=	$html. '<p> <img height="150px" widht="150px" src="'.$pdfurl.$getfulldata[0]['doorlocks_image9'].'"> </p>';
+	}
+	if(isset($getfulldata[0]['doorlocks_image10']) && $getfulldata[0]['doorlocks_image10'] != ''){
+		$html 	=	$html. '<p> <img height="150px" widht="150px" src="'.$pdfurl.$getfulldata[0]['doorlocks_image10'].'"> </p>';
 	}
 		
 	$html 		=	$html.'<p>'.$getfulldata[0]['doorlocks_faults'].'</p>
@@ -3636,8 +3659,8 @@ echo '<div class="col-md-6">Select Category
 	<p><h2>Equipment and material: secured to roof</h2></p>
 	<p>'.$this->config->item('passfail')[$getfulldata[0]['equipment']].'</p>';
 
-	if(isset($getfulldata[0]['equipment_image']) && $getfulldata[0]['equipment_image'] != ''){
-		$html 	=	$html. '<p> <img height="150px" widht="150px" src="'.$pdfurl.$getfulldata[0]['equipment_image'].'"> </p>';
+	if(isset($getfulldata[0]['equipment_image1']) && $getfulldata[0]['equipment_image1'] != ''){
+		$html 	=	$html. '<p> <img height="150px" widht="150px" src="'.$pdfurl.$getfulldata[0]['equipment_image1'].'"> </p>';
 	}
 	if(isset($getfulldata[0]['equipment_image2']) && $getfulldata[0]['equipment_image2'] != ''){
 		$html 	=	$html. '<p> <img height="150px" widht="150px" src="'.$pdfurl.$getfulldata[0]['equipment_image2'].'"> </p>';
@@ -3672,8 +3695,8 @@ echo '<div class="col-md-6">Select Category
 	<p><h2>Warning flag available</h2></p>
 	<p>'.$this->config->item('passfail')[$getfulldata[0]['warningflag']].'</p>';
 
-	if(isset($getfulldata[0]['warningflag_image']) && $getfulldata[0]['warningflag_image'] != ''){
-		$html 	=	$html. '<p> <img height="150px" widht="150px" src="'.$pdfurl.$getfulldata[0]['warningflag_image'].'"> </p>';
+	if(isset($getfulldata[0]['warningflag_image1']) && $getfulldata[0]['warningflag_image'] != ''){
+		$html 	=	$html. '<p> <img height="150px" widht="150px" src="'.$pdfurl.$getfulldata[0]['warningflag_image1'].'"> </p>';
 	}
 	if(isset($getfulldata[0]['warningflag_image2']) && $getfulldata[0]['warningflag_image2'] != ''){
 		$html 	=	$html. '<p> <img height="150px" widht="150px" src="'.$pdfurl.$getfulldata[0]['warningflag_image2'].'"> </p>';
