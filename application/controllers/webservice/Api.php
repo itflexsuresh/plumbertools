@@ -3453,6 +3453,7 @@ echo '<div class="col-md-6">Select Category
 			$data["title"] 						= 	'Vehicle Checklist'; 
 			$requestdata 						= 	$this->input->post();								
 			$getfulldata						= 	$this->adminmodel->getfulldata("vehiclechecklist",$requestdata);
+			print_r($getfulldata);die;
 			
 			if(count($getfulldata)){
 				
