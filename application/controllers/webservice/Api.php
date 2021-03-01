@@ -3695,7 +3695,7 @@ echo '<div class="col-md-6">Select Category
 	<p><h2>Warning flag available</h2></p>
 	<p>'.$this->config->item('passfail')[$getfulldata[0]['warningflag']].'</p>';
 
-	if(isset($getfulldata[0]['warningflag_image1']) && $getfulldata[0]['warningflag_image'] != ''){
+	if(isset($getfulldata[0]['warningflag_image1']) && $getfulldata[0]['warningflag_image1'] != ''){
 		$html 	=	$html. '<p> <img height="150px" widht="150px" src="'.$pdfurl.$getfulldata[0]['warningflag_image1'].'"> </p>';
 	}
 	if(isset($getfulldata[0]['warningflag_image2']) && $getfulldata[0]['warningflag_image2'] != ''){
