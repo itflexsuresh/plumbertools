@@ -4002,8 +4002,8 @@ class Admincontrol extends CI_Controller {
 				"email" => $this->input->post("email"),
 				"cellphone" => $this->input->post("cellphone"),
 				"price" => $this->input->post("price"),
-				"manufacturerbrand" => $this->input->post("manufacturerbrand"),
-				"address" => $this->input->post("address"),
+				// "manufacturerbrand" => $this->input->post("manufacturerbrand"),
+				// "address" => $this->input->post("address"),
 				"active" => $this->input->post("active"),
 				'image' => $imagename
 				);
