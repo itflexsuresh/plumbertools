@@ -6616,7 +6616,7 @@ class Admincontrol extends CI_Controller {
 		$topweek 					= $this->adminmodel->getStatisticsTopPostList('all', ['type' => 'topweek', 'statisticstype' => '2']);
 		$topyear 					= $this->adminmodel->getStatisticsTopPostList('all', ['type' => 'topyear', 'statisticstype' => '2']);
 
-		if (count(array_filter(explode(',', $progress['post_id']))) > 0) {
+		if (isset($progress['post_id']) && (count(array_filter(explode(',', $progress['post_id']))) > 0)) {
 			$result 					= $this->Apimodel->postgetList('all', ['post_id' => isset($progress['post_id']) ? explode(',', $progress['post_id']) : '', 'pagetype' => 'progressposts']);
 		}
 		/*if (count(array_filter(explode(',', $top1['post_id']))) > 0) {
