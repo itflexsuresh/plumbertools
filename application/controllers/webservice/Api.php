@@ -2292,10 +2292,10 @@ echo '<div class="col-md-6">Select Category
 
 	public function logo()
 	{
-		$data=array();	
+		$data 								= 	array();	
 		$data["title"] 						= 	'Logo';
-		$data["iopsa_logo"] 				= 	base_url().'./images/iopsalogo.png';
-		$data["pirb_logo"] 					= 	base_url().'./images/pribLogo.png';
+		$data["iopsa_logo"] 				= 	base_url().'./appicons/iopsalogo.png';
+		$data["pirb_logo"] 					= 	base_url().'./appicons/pribLogo.png';
 		echo json_encode($data);
 	}
 
@@ -3444,8 +3444,9 @@ echo '<div class="col-md-6">Select Category
 
 	public function vehiclechecklist_pdf()
 	{
-		$pdfurl = $_SERVER['DOCUMENT_ROOT'].'/images/';
-		$data=array();
+		$pdfurl 	= $_SERVER['DOCUMENT_ROOT'].'/images/';
+		$logoURL 	= $_SERVER['DOCUMENT_ROOT'].'/appicons/';
+		$data 		= array();
 		if($this->input->post("user_id") != '' && $this->input->post("viewid") != '')
 		{
 
@@ -3463,7 +3464,7 @@ echo '<div class="col-md-6">Select Category
 </head>
 
 <body>	
-	<img src="'.$pdfurl.'iopsalogo.png">
+	<img src="'.$logoURL.'iopsalogo.png">
 	<h1>Vehicle Checklist</h1>
 	<p>'.$getfulldata[0]['createddate'].'</p>
 	<p>'.$getfulldata[0]['team'].'</p>
@@ -4005,8 +4006,9 @@ echo '<div class="col-md-6">Select Category
 
 	public function siterisk_pdf()
 	{
-		$pdfurl = $_SERVER['DOCUMENT_ROOT'].'/images/';
-		$data=array();
+		$pdfurl 	= $_SERVER['DOCUMENT_ROOT'].'/images/';
+		$logoURL 	= $_SERVER['DOCUMENT_ROOT'].'/appicons/';
+		$data 		= array();
 		if($this->input->post("user_id") != '' && $this->input->post("viewid") != '')
 		{
 
@@ -4024,7 +4026,7 @@ echo '<div class="col-md-6">Select Category
 </head>
 
 <body>
-	<img src="'.$pdfurl.'pribLogo.png">
+	<img src="'.$logoURL.'pribLogo.png">
 	<h1>Site Risk Assessment</h1>
 	<p>'.$getfulldata[0]['companyname'].'</p>
 	<p>'.$getfulldata[0]['task'].'</p>
