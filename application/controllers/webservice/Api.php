@@ -4342,7 +4342,14 @@ echo '<div class="col-md-6">Select Category
 	{
 		$data=array();
 
-		if($this->input->post("appversion") =='1.18')
+		if($this->input->post("appversion") =='1.19')
+		{
+			$data["status"]="1";
+			$data["message"]="Please Update your app";
+			$data["link"]	= "https://play.google.com/store/apps/details?id=com.app.plumber";
+			
+		}
+		else if($this->input->post("appversion") =='1.18')
 		{
 			$data["status"]="1";
 			$data["message"]="Please Update your app";
