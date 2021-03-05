@@ -1,7 +1,7 @@
 <?php
 // the message
 $msg = "Test Email";
-
+$email ="suresh@itflexsolutions.com";
 // send email
-mail("info@iopsa.org","Test subject",$msg);
+mail($email,"Test subject form server 213",$msg);
 ?>
