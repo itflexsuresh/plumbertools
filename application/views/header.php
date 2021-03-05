@@ -53,7 +53,7 @@
                     <ul class="nav navbar-nav navbar-right">                        
                         <li>
                             <a href="<?php echo base_url();?>admincontrol/logout">
-                                <p>Log out----server 213----</p>
+                                <p>Log out<!----server 213----></p>
                             </a>
                         </li>
 						<li class="separator hidden-lg"></li>
