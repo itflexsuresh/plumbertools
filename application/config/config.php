@@ -24,7 +24,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 |
 */
 //test to be revert on migration $config['base_url'] = 'http://new.plumbertools.co.za/';
-$config['base_url'] = 'http://www.plumbertools.co.za/';
+$config['base_url'] = 'https://www.plumbertools.co.za/';
 
 /*
 |--------------------------------------------------------------------------
