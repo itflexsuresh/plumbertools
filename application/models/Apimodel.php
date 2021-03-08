@@ -56,7 +56,7 @@ class Apimodel extends CI_Model {
 
 
 	public function action ($data){
-		$id 			= isset($data['id']) ? $data['id'] : '';
+		$id 			= isset($data['user_id']) ? $data['user_id'] : '';
 		$datetime		= date('Y-m-d H:i:s');
 		// echo "<pre>";print_r($data);die;
 		
@@ -64,7 +64,7 @@ class Apimodel extends CI_Model {
 		if(isset($data['password'])) 	$request1['password'] 		= md5($data['password']);
 		if(isset($data['password'])) 	$request1['password_raw'] 	= $data['password'];
 		if(isset($data['name'])) 		$request1['name'] 			= $data['name'];
-		if(isset($data['status'])) 		$request1['status'] 			= $data['status'];
+		if(isset($data['status'])) 		$request1['status'] 		= $data['status'];
 		if(isset($data['banunban'])) 	$request1['is_ban'] 		= $data['banunban'];
 
 		if(isset($data['temp_email']) && ($data['email'] != $data['temp_email'])){
@@ -92,7 +92,7 @@ class Apimodel extends CI_Model {
 			$request2['user_id'] 	= $id;
 			$userdetailid			= isset($data['userdetailid']) ? $data['userdetailid'] : '';
 
-			if($userdetailid==''){
+			if($userdetailid=='' && ($userdetailid=='null' || $userdetailid== null)){
 				$request2['created_at']	= 	$datetime;
 				$request2['created_by']	= 	$id;
 				$userdetaildata = $this->db->insert('users_details', $request2);
