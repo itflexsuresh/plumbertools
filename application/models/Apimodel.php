@@ -186,7 +186,7 @@ class Apimodel extends CI_Model {
 		$this->db->where('status', '0');
 		$query = $this->db->get('users');
 		$result = $query->row_array();
-		
+		print_r($result);die;
 		if($result !=''){
 			return $result;
 		}else{
