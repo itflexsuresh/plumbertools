@@ -4876,7 +4876,7 @@ echo '<div class="col-md-6">Select Category
 
 		if ($this->input->post() && $this->input->post('email')) {
 			$requestData 		= $this->input->post();
-			$result 			= $this->Apimodel->emailvalidation1($requestData);
+			$result 			= $this->Apimodel->emailvalidation1($requestData, '0');
 			
 			if ($result !='false') {
 				
@@ -4922,7 +4922,7 @@ echo '<div class="col-md-6">Select Category
 	public function emailValidation(){
 		if ($this->input->post() && $this->input->post('email')) {
 			$requestData 		= $this->input->post();
-			$result 			= $this->Apimodel->emailvalidation($requestData);
+			$result 			= $this->Apimodel->emailvalidation($requestData, '1');
 			
 			if ($result =='false') {
 				$message 	= "has already been used! Try logging in.";

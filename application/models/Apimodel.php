@@ -172,7 +172,7 @@ class Apimodel extends CI_Model {
 		}
 	}
 
-	public function emailvalidation1($data){
+	public function emailvalidation1($data, $status){
 
 		$id 		= isset($data['id']) ? $data['id'] : '';
 		$email 		= $data['email'];
@@ -183,7 +183,7 @@ class Apimodel extends CI_Model {
 			if($id!='') $this->db->where('id !=', $id);
 		$this->db->group_end();
 		
-		$this->db->where('status', '0');
+		$this->db->where('status', $status);
 		$query = $this->db->get('users');
 		$result = $query->row_array();
 		print_r($result);die;
