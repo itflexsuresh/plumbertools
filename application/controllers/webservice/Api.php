@@ -460,7 +460,7 @@ class Api extends CI_Controller {
 	
 	public function toolboxtalks()
 	{
-		$pageid="2";
+		$pageid = $this->config->item('pagesid')[2];
 		$pagename=$this->adminmodel->getpageid_api("pages",$pageid);
 
 		$data=array();
@@ -4340,126 +4340,18 @@ echo '<div class="col-md-6">Select Category
 
 	public function Update_API()
 	{
-		$data=array();
+		$data = array();
+		$post = $this->input->post();
 
-		if($this->input->post("appversion") =='1.19')
-		{
-			$data["status"]="1";
-			$data["message"]="Please Update your app";
-			$data["link"]	= "https://play.google.com/store/apps/details?id=com.app.plumber";
-			
+		if ($post['appversion'] < '1.20') {
+			$data["status"]  	= "1";
+			$data["message"] 	= "Please Update your app";
+			$data["link"]	 	= "https://play.google.com/store/apps/details?id=com.app.plumber";
 		}
-		else if($this->input->post("appversion") =='1.18')
-		{
-			$data["status"]="1";
-			$data["message"]="Please Update your app";
-			$data["link"]	= "https://play.google.com/store/apps/details?id=com.app.plumber";
-			
-		}
-		else if($this->input->post("appversion") =='1.17')
-		{
-			$data["status"]="1";
-			$data["message"]="Please Update your app";
-			$data["link"]	= "https://play.google.com/store/apps/details?id=com.app.plumber";
-			
-		}
-		else if($this->input->post("appversion") =='1.16')
-		{
-			$data["status"]="1";
-			$data["message"]="Please Update your app";
-			$data["link"]	= "https://play.google.com/store/apps/details?id=com.app.plumber";
-			
-		}else if($this->input->post("appversion") =='1.15')
-		{
-			$data["status"]="1";
-			$data["message"]="Please Update your app";
-			$data["link"]	= "https://play.google.com/store/apps/details?id=com.app.plumber";
-			
-		}
-		else if($this->input->post("appversion") =='1.14')
-		{
-			$data["status"]="1";
-			$data["message"]="Please Update your app";
-			$data["link"]	= "https://play.google.com/store/apps/details?id=com.app.plumber";
-			
-		}else if($this->input->post("appversion") =='1.13')
-		{
-			$data["status"]="1";
-			$data["message"]="Please Update your app";
-			$data["link"]	= "https://play.google.com/store/apps/details?id=com.app.plumber";
-			
-		}
-		else if($this->input->post("appversion") =='1.12')
-		{
-			$data["status"]="1";
-			$data["message"]="Please Update your app";
-			$data["link"]	= "https://play.google.com/store/apps/details?id=com.app.plumber";
-			
-		}else if($this->input->post("appversion") =='1.11')
-		{
-			$data["status"]="1";
-			$data["message"]="Please Update your app";
-			$data["link"]	= "https://play.google.com/store/apps/details?id=com.app.plumber";
-			
-		}
-		else if($this->input->post("appversion") =='1.10')
-		{
-			$data["status"]="1";
-			$data["message"]="Please Update your app";
-			$data["link"]	= "https://play.google.com/store/apps/details?id=com.app.plumber";
-			
-		}else if($this->input->post("appversion") =='1.9')
-		{
-			$data["status"]="1";
-			$data["message"]="Please Update your app";
-			$data["link"]	= "https://play.google.com/store/apps/details?id=com.app.plumber";
-			
-		}
-		elseif($this->input->post("appversion") =='1.8')
-		{
-			$data["status"]="1";
-			$data["message"]="Please Update your app";
-			$data["link"]	= "https://play.google.com/store/apps/details?id=com.app.plumber";
-			
-		} else if($this->input->post("appversion") =='1.7')
-		{
-			$data["status"]="1";
-			$data["message"]="Please Update your app";
-			$data["link"]	= "https://play.google.com/store/apps/details?id=com.app.plumber";
-			
-		} 
-		else if($this->input->post("appversion") =='1.6')
-		{
-			$data["status"]="1";
-			$data["message"]="Please Update your app";
-			$data["link"]	= "https://play.google.com/store/apps/details?id=com.app.plumber";
-			
-		} 
-		else if($this->input->post("appversion") =='1.5')
-		{
-			$data["status"]="1";
-			$data["message"]="Please Update your app";
-			$data["link"]	= "https://play.google.com/store/apps/details?id=com.app.plumber";
-			
-		} 
-		else if($this->input->post("appversion") =='1.4')
-		{
-			$data["status"]="1";
-			$data["message"]="Please Update your app";
-			$data["link"]	= "https://play.google.com/store/apps/details?id=com.app.plumber";
-			
-		} else{
-			$data["status"]="0";
 		
-			$data["message"]="Please Update your app";
-			$data["link"]	= "https://play.google.com/store/apps/details?id=com.app.plumber";
-			
-		}
 		echo json_encode($data);
-				
-		
-		
 	}
+	
 	public function banner_global()
 	{
 		if ($this->input->post() && $this->input->post('user_id')) {
@@ -4472,6 +4364,7 @@ echo '<div class="col-md-6">Select Category
 			$userdetails 		= $this->Usersmodel->getList('row', ['userid' => $post['user_id']]);
 			$data['userlog']	= $userlogdata['log'];
 			$data['ban_unban']	= $userdetails['is_ban'];
+			$data['email']		= $userdetails['email'];
 			for($i=0; $i < count($globaltopbanner); $i++){			
 				$data['globaltopbanner'][$i]['image']		= base_url().'./images/'.$globaltopbanner[$i]['image'];
 				$data['globaltopbanner'][$i]['link']		= $globaltopbanner[$i]['link'];
