@@ -8,6 +8,7 @@ if (isset($getdata['image'])) {
 		$file = base_url().'./images/'.$getdata['image'].'';
 	}
 }
+$display 				= isset($getdata['display']) ? $getdata['display'] : '';
 
 ?>
 <div class="content">
@@ -34,6 +35,15 @@ if (isset($getdata['image'])) {
 										<input name="content" type="text" class="form-control" placeholder="Content" value="<?php echo set_value('content',$getdata['content']); ?>">
 									<?php } ?>
 										<span style='color: red'><?php echo form_error('content'); ?></span>
+									</div>
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-md-12">
+										<div class="form-group">
+											<label>Display</label>
+											<input id="rcheckboxs1" class="display-box" type="checkbox" name="display" value="1" <?php if($display == '1'){ echo "checked='checked'"; } ?>
+										</div>
 									</div>
 								</div>
 							</div>
