@@ -28,8 +28,8 @@ $searchtype = isset($searchtype) ? $searchtype : '';
 						<button type="button" id="download1" class="btn btn-info btn-fill pull-right"><i class="fa fa-download"></i> Download</button>
 						</br></br>
 						<input type="hidden" id="activestatus" name="activestatus" value="<?php echo $activestatus; ?>">
-						<button type="button" activevalue="1" class="btn btn-success btn-fill pull-left active">Active</button>
-						<button type="button" activevalue="2" class="btn btn-warning btn-fill pull-left active">Inactive</button>
+						<!-- <button type="button" activevalue="1" class="btn btn-success btn-fill pull-left active">Active</button>
+						<button type="button" activevalue="2" class="btn btn-warning btn-fill pull-left active">Inactive</button> -->
 						</br></br>
 					</div>
 					<div class="content table-responsive table-full-width">
@@ -152,14 +152,14 @@ $searchtype = isset($searchtype) ? $searchtype : '';
     			}
     		}
 
-			$('.active').click(function(){
+			/*$('.active').click(function(){
 				var activeval = $(this).attr('activevalue'); 
 				var fromdateA = $('#fromdate1').val();
 				var todateA = $('#todate1').val();	
 				var daterangevalueA=$('#daterange1').val();			
-				var url = '<?php echo base_url().'admincontrol/dashboard'; ?>';
+				var url = '<?php// echo base_url().'admincontrol/dashboard'; ?>';
 				$('<form method="post" action="'+url+'"><input type="hidden" name="activeval" value="'+activeval+'"><input type="hidden" name="fromdateA" value="'+fromdateA+'"><input type="hidden" name="todateA" value="'+todateA+'"><input type="hidden" name="daterangevalueA" value="'+daterangevalueA+'"></form>').appendTo('body').submit();
-			});
+			});*/
 			
 			var today = new Date();
 			$('#fromdate').datepicker();
@@ -222,7 +222,7 @@ $searchtype = isset($searchtype) ? $searchtype : '';
 
 				// var filename = 'Usage_Summary';
 
-				// var url = '<?php  echo base_url().'assets/uploads/dashboardreport/'; ?>'+filename+''+'.csv'+'';
+				// var url = '<?php//  echo base_url().'assets/uploads/dashboardreport/'; ?>'+filename+''+'.csv'+'';
 				$.ajax({					
 					data: {fromdate: fromdate, todate: todate, warehouse_staff: warehouse_staff},
 			        type: 'POST',
@@ -298,7 +298,8 @@ $searchtype = isset($searchtype) ? $searchtype : '';
 				var daterangevalue=$('#daterange1').val();
 				var fromdate = $('#fromdate1').val();
 				var todate = $('#todate1').val();
-				var activestatus = $('#activestatus').val();
+				// var activestatus = $('#activestatus').val();
+				var activestatus = '0';
 
 				// var filename = 'Advert_Summary';
 

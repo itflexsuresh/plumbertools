@@ -641,17 +641,14 @@ class Adminmodel extends CI_Model {
 
 		$groupCodition = array("bic.bannerid", "bic.newpageid");
 
-		$this->db->select('bic.id as bicid, bic.bannerid, bic.newpageid, SUM(bic.impressions) as impressionscount, SUM(bic.clickscount) as clickscount, bic.created_at, ban.name as bannername, ban.client, ban.description, ban.topbottom, ban.image, ban.link, ban.active, pg.title as pagename');
+		$this->db->select('bic.id as bicid, bic.bannerid, bic.newpageid, SUM(bic.impressions) as impressionscount, SUM(bic.clickscount) as clickscount, ban.name as bannername, ban.client, ban.description, ban.topbottom, ban.image, ban.link, ban.active, pg.title as pagename');
 		$this->db->from('banner_impressions_count as bic');
 		$this->db->join('banner as ban', 'ban.id = bic.bannerid', 'left');
         $this->db->join('pages as pg', 'pg.id = bic.newpageid', 'left');
 
-        $this->db->where_in('ban.active', $condition);
-        $this->db->group_start();
-	        $this->db->where('bic.created_at >=', $fromdate);
-	        $this->db->where('bic.created_at <=', $todate);
-	    $this->db->group_end();
-
+        // $this->db->where_in('ban.active', $condition);
+        $this->db->where('bic.created_at >=', $fromdate);
+        $this->db->where('bic.created_at <=', $todate);
         $this->db->group_by($groupCodition);
 
         if (isset($extras['warehouse_staff']) && $extras['warehouse_staff'] == '1') {

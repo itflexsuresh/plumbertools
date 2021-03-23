@@ -148,7 +148,7 @@ class Commonmodel extends CI_Model {
 		$this->db->join('banner as ban', 'ban.id = bic.bannerid', 'left');
         $this->db->join('pages as pg', 'pg.id = bic.newpageid', 'left');
 
-        $this->db->where_in('ban.active', $condition);
+        // $this->db->where_in('ban.active', $condition);
         $this->db->where('bic.created_at >=', $fromdate);
         $this->db->where('bic.created_at <=', $todate);
         $this->db->group_by($groupCodition);
