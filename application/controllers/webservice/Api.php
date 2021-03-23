@@ -4220,10 +4220,7 @@ echo '<div class="col-md-6">Select Category
 		
 		for($i=0; $i < count($getfulldata); $i++){
 			$data["productguide"][$i]["id"]			=	$getfulldata[$i]['id'];	
-			
-			if ($getfulldata[$i]['display'] =='1') $data["productguide"][$i]["content"]	=	$getfulldata[$i]['content'];
-				else $data["productguide"][$i]["content"]	=	'';
-
+			$data["productguide"][$i]["content"]	=	$getfulldata[$i]['content'];
 			$data["productguide"][$i]["image"]	=	base_url().'./images/'.$getfulldata[$i]['image'];	
 		}
 		echo json_encode($data);
@@ -4243,10 +4240,7 @@ echo '<div class="col-md-6">Select Category
 		// print_r($this->db->last_query());die;
 		for($i=0; $i < count($getfulldata); $i++){			
 			$data["productguide"][$i]["id"]			=	$getfulldata[$i]['id'];	
-			
-			if ($getfulldata[$i]['display'] =='1') $data["productguide"][$i]["content"]	=	$getfulldata[$i]['content'];
-				else $data["productguide"][$i]["content"]	=	'';
-
+			$data["productguide"][$i]["content"]	=	$getfulldata[$i]['content'];
 			$data["productguide"][$i]["image"]	=	base_url().'./images/'.$getfulldata[$i]['image'];	
 			$productguidesid						=	$getfulldata[$i]['productguidesid'];
 			$getfulldata_pg 						=	$this->adminmodel->getdata_productguidessection1('',$productguidesid);
@@ -4269,10 +4263,7 @@ echo '<div class="col-md-6">Select Category
 		for($i=0; $i < count($getfulldata); $i++){
 
 			$data["productguide"][$i]["id"]				=	$getfulldata[$i]['id'];	
-			
-			if ($getfulldata[$i]['display'] =='1') $data["productguide"][$i]["content"]	=	$getfulldata[$i]['content'];
-				else $data["productguide"][$i]["content"]	=	'';
-
+			$data["productguide"][$i]["content"]		=	$getfulldata[$i]['content'];
 			if ($getfulldata[$i]['description'] !='') {
 				$data["productguide"][$i]["description"]	=	$getfulldata[$i]['description'];
 			}else{
