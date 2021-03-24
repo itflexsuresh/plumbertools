@@ -1555,7 +1555,7 @@ class Adminmodel extends CI_Model {
 		if(isset($data['password'])) 	$request1['password_raw'] 	= $data['password'];
 		if(isset($data['password'])) 	$request1['password'] 		= md5($data['password']);
 
-		// $request1['warehouse_staff'] 					= isset($data['warehouse']) ? $data['warehouse'] : '0';
+		$request1['warehouse_staff'] 					= isset($data['warehouse']) ? $data['warehouse'] : '0';
 		$request2['read_permission'] 					= isset($data['read']) ? implode(',',$data['read']) : '';
         $request2['write_permission'] 					= isset($data['write']) ? implode(',',$data['write']) : '';
 
