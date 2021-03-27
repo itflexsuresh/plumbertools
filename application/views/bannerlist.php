@@ -66,8 +66,8 @@
 									<td><?php echo $row['name']; ?></td>
 									<td><?php echo $row['client']; ?></td>
 									<td><?php echo $row['description']; ?></td>
-									<td><?php echo $row['impressions']; ?></td>
-									<td><?php if($row['totalcount'] >0 ) { echo $row['totalcount']; } else { echo 0; } ?></td>
+									<td><?php if($row['impressions1'] >0 ) { echo $row['impressions1']; } else { echo 0; } ?></td>
+									<td><?php if($row['totalcount1'] >0 ) { echo $row['totalcount1']; } else { echo 0; } ?></td>
 									<td><?php echo $row['pname']; ?></td>
 									<!--<td><img src="<php echo base_url();?>./images/<php echo $row['image'];?>" height="50" width="100"></td>
 									<td><php echo $row['link']; ?></td> -->

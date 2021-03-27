@@ -2820,7 +2820,7 @@ class Admincontrol extends CI_Controller {
 		$checkpermission		=	$this->checkUserPermission('3', '2');
 		$data["permission"] 	= 	$checkpermission;
 		$data["userdetails"] 	= 	$userdetails;
-		$data["getdata"] 		=	$this->adminmodel->getdata_bannertop($condition,$condition2);
+		$data["getdata"] 		=	$this->adminmodel->getdata_bannertop_1($condition,$condition2);
 		$data["getdata1"] 		=	$this->adminmodel->getdata_bannerbottom($condition,$condition3);
 		
 		//print_r($data["scrollingtickerdata"]); die;

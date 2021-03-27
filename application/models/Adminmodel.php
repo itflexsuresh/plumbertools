@@ -508,6 +508,24 @@ class Adminmodel extends CI_Model {
 		return $query->result_array();
 		
 	}
+	function getdata_bannertop_1($condition,$condition2)
+	{			
+		//$query = $this->db->query("Select banner.*,pages.title as ptitle From banner INNER JOIN pages on pages.id =banner.pagesid WHERE banner.topbottom='top' and banner.pagesid=".$condition." and active=".$condition2." order by banner.id desc");
+		$groupCodition = array("banner_impressions_count.bannerid", "pages.id");
+		$top="top";
+		$this->db->select('banner.*, pages.title as pname, sum(banner_impressions_count.impressions) as impressions1, sum(banner_impressions_count.clickscount) as totalcount1');
+		$this->db->from('banner');
+		$this->db->join('pages', 'pages.id = banner.pagesid','left');
+		// $this->db->join('advertisingclickcount', 'advertisingclickcount.imageid = banner.id','left');
+		$this->db->join('banner_impressions_count', 'banner_impressions_count.bannerid = banner.id','left');
+		$this->db->where('banner.topbottom',$top);
+		$this->db->where_in('banner.pagesid', $condition);
+		$this->db->where_in('banner.active', $condition2);
+		$this->db->group_by($groupCodition);
+		$query = $this->db->get(); 
+		return $query->result_array();
+		
+	}
 	function getdata_bannerbottom($condition,$condition3)
 	{			
 		//$query = $this->db->query("Select banner.*,pages.title as ptitle From banner INNER JOIN pages on pages.id =banner.pagesid WHERE banner.topbottom='bottom' and banner.pagesid=".$condition." and active=".$condition3." order by banner.id desc");		
