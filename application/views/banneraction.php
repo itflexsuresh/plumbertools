@@ -62,6 +62,7 @@
 										<img src="<?php echo base_url();?>./images/<?php echo $getdata['image'];?>" height="50" width="50">
 										<input name="imagefile" type="file" class="form-control" placeholder="Image" value="<?php echo set_value('imagefile',$getdata['image']); ?>">
 									<?php } ?>
+									<span style='color: red'><?php echo form_error('imagefile'); ?></span>
 									</div>
 								</div>
 							</div>

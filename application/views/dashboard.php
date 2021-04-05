@@ -43,6 +43,8 @@ $searchtype = isset($searchtype) ? $searchtype : '';
 								<th>Impressions</th>
 								<th>Clicks</th>
 								<th>Section</th>
+								<th>Created Date</th>
+								<th>Inactive Date</th>
 								<th>Active</th>
 							</thead>
 							<tbody>
@@ -71,6 +73,8 @@ $searchtype = isset($searchtype) ? $searchtype : '';
 									<td><?php echo $row['impressionscount']; ?></td>
 									<td><?php echo $row['clickscount']; ?></td>
 									<td><?php echo $row['pagename']; ?></td>
+									<td><?php if($row['created_at'] !='') echo date('d-m-Y', strtotime($row['created_at'])); else echo "-"; ?></td>
+									<td><?php if($row['inactivedate'] !='') echo date('d-m-Y', strtotime($row['inactivedate'])); else echo "-"; ?></td>
 									<td><?php if($row['active']==1){ ?>True<?php } else { ?>False<?php } ?></td>
 								</tr>
 						<?php 
@@ -303,7 +307,7 @@ $searchtype = isset($searchtype) ? $searchtype : '';
 
 				// var filename = 'Advert_Summary';
 
-				// var url = '<?php  echo base_url().'assets/uploads/dashboardreport/'; ?>'+filename+''+'.csv'+'';
+				// var url = '<?php//  echo base_url().'assets/uploads/dashboardreport/'; ?>'+filename+''+'.csv'+'';
 				$.ajax({					
 					data: {fromdate: fromdate, todate: todate, activestatus: activestatus, warehouse_staff: warehouse_staff},
 			        type: 'POST',

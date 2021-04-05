@@ -2843,7 +2843,11 @@ class Admincontrol extends CI_Controller {
 	}
 	function banneraction(){		
 		if($this->input->post("insert") || $this->input->post("update")){
+
 			$this->form_validation->set_rules("topbottom","TopBottom",'trim|required');
+			if ($this->input->post("insert") && empty($_FILES['imagefile']['name'])) {
+				$this->form_validation->set_rules("imagefile","Banner Image",'trim|required');
+			}
 			if($this->form_validation->run()==FALSE){
 				
 				if($this->input->post("insert")){
@@ -2889,11 +2893,39 @@ class Admincontrol extends CI_Controller {
 				}			
 							
 				if($this->input->post("insert")){				
-					$this->adminmodel->insertdata("banner",$data);
+					$result = $this->adminmodel->bannerInsert("banner",$data);
+					$date 							= date('Y-m-d');
+					/*if ($result) {
+						$request1['bannerid'] 		= $result;
+						$request1['newpageid'] 		= $this->input->post("pagesid");
+						$request1['impressions'] 	= 0;
+						$request1['impressions'] 	= 0;
+						$request1['clickscount'] 	= 0;
+						$request1['created_at'] 	= $date;
+
+						// $bandata 		= $this->db->insert('banner_impressions_count', $request1);
+						$newbannerid 	= $this->db->insert_id();
+					}*/
 					$this->bannerlist();
 				}			
 				if($this->input->post("update")){
-					$this->adminmodel->updatedata("banner",$data,$this->input->post("updateid"));
+					$this->adminmodel->bannerUpdate("banner",$data,$this->input->post("updateid"));
+
+					$date 				= date('Y-m-d');
+					/*$bannerdata 		= $this->Apimodel->impressionsClicksgetList('row', ['date' => $date, 'newpageid' => $post['newpageid'], 'bannerid' => $post['bannerid']]);
+					
+					if ($bannerdata == '') {
+						$request1['bannerid'] 		= $this->input->post("updateid");
+						$request1['newpageid'] 		= $this->input->post("pagesid");
+						$request1['impressions'] 	= 0;
+						$request1['impressions'] 	= 0;
+						$request1['clickscount'] 	= 0;
+						$request1['created_at'] 	= $date;
+
+						// $bandata 		= $this->db->insert('banner_impressions_count', $request1);
+						$newbannerid 	= $this->db->insert_id();
+					}*/
+
 					$this->bannerlist();
 				}		
 			}

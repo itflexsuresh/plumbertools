@@ -282,6 +282,55 @@ class Adminmodel extends CI_Model {
 		// $data = $this->db->update($table, $request1, ['id' => $deleteid]);
 	}
 
+	public function bannerInsert($table, $data){
+
+		$data['created_at'] = date('Y-m-d H:i:s');
+		$this->db->insert($table,$data);
+		return '1';
+	}
+
+	public function bannerUpdate($table, $data, $id){
+
+		$datetime		= date('Y-m-d H:i:s');
+		$data['updated_at'] = date('Y-m-d H:i:s');
+		$adminid = $this->getUserID();
+
+		if ($data['active'] =='0') {
+			$data['inactivedate'] = date('Y-m-d H:i:s');
+
+			$log = [
+				'bannerid' 			=> $id,
+				'admin_id' 			=> $adminid,
+				'inactivedate' 		=> $datetime,
+				'created_at' 		=> $datetime,
+			];
+
+		}
+
+		$this->db->where("id",$id);
+		$query=$this->db->update($table,$data);
+
+		if (isset($log)) {
+			$this->db->insert('banner_log',$log);
+		}
+		
+		return '1';
+		
+	}
+
+	public function deleteBanner($id){
+
+		$datetime			= date('Y-m-d H:i:s');
+		$data['updated_at'] = date('Y-m-d H:i:s');
+
+		$requestdata = [
+				'active' 			=> '2',
+			];
+
+		$this->db->update('banner',$requestdata, ['id' => $id]);
+		return $id;
+	}
+
 	function changestatus($table,$deleteid)
 	{
 		// $this->db->where("id",$deleteid);

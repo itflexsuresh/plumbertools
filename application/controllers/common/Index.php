@@ -239,7 +239,9 @@ class Index extends CI_Controller {
             ->setCellValue('F1', 'Impressions')
             ->setCellValue('G1', 'Clicks')
             ->setCellValue('H1', 'Section')
-            ->setCellValue('I1', 'Active');
+            ->setCellValue('I1', 'Created Date')
+            ->setCellValue('J1', 'Inactive Date')
+            ->setCellValue('K1', 'Active');
 
         $row = 2;
         $i   = 1;
@@ -250,6 +252,12 @@ class Index extends CI_Controller {
                 } else {
                     $active = false;
                 }
+
+                if($rows['created_at'] !='') $created_at = date('d-m-Y', strtotime($rows['created_at']));
+                	else $created_at = "-";
+
+                if($rows['inactivedate'] !='') $inactivedate = date('d-m-Y', strtotime($rows['inactivedate']));
+                	else $inactivedate = "-";
 
                 // if ($rows['click_count'] > 0) {
                 //     $adtotalcount = $rows['click_count'];
@@ -266,7 +274,9 @@ class Index extends CI_Controller {
                     ->setCellValue('F' . $row . '', $rows['impressionscount'])
                     ->setCellValue('G' . $row . '', $rows['clickscount'])
                     ->setCellValue('H' . $row . '', $rows['pagename'])
-                    ->setCellValue('I' . $row . '', $active);
+                    ->setCellValue('I' . $row . '', $created_at)
+                    ->setCellValue('J' . $row . '', $inactivedate)
+                    ->setCellValue('K' . $row . '', $active);
 
                 $i++;
                 $row = $row + 1;

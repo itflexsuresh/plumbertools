@@ -38,7 +38,7 @@
 						<h4 class="title">Top Banner</h4>
 						<button type="button" topactivevalue="1" class="btn btn-success btn-fill pull-left topactive">Active</button>
 						<button type="button" topactivevalue="2" class="btn btn-warning btn-fill pull-left topactive">Inactive</button>
-						<?php if (isset($permission) && ($permission =='1')) { ?>
+						<?php if ((isset($permission) && ($permission =='1')) || ($userdetails['warehouse_staff'] =='1')) { ?>
 							<button id="newtopbutton" type="button" class="btn btn-info btn-fill pull-right">Add New</button><br><br>
 						<?php } ?>
 					</div>
@@ -47,6 +47,7 @@
 						<table class="table table-hover table-striped">
 							<thead>
 								<th>S.No</th>
+								<th>Banner ID</th>
 								<th>Name</th>
 								<th>Client</th>
 								<th>Description</th>
@@ -54,6 +55,8 @@
 								<th>Clicks</th>
 								<th>Section</th>
 								<th>Active</th>
+								<th>Created Date</th>
+								<th>Inactive Date</th>
 								<th>Action</th>
 							</thead>
 							<tbody>
@@ -63,6 +66,7 @@
 						?>
 								<tr>
 									<td><?php echo $i; ?></td>
+									<td><?php echo $row['id']; ?></td>
 									<td><?php echo $row['name']; ?></td>
 									<td><?php echo $row['client']; ?></td>
 									<td><?php echo $row['description']; ?></td>
@@ -72,9 +76,11 @@
 									<!--<td><img src="<php echo base_url();?>./images/<php echo $row['image'];?>" height="50" width="100"></td>
 									<td><php echo $row['link']; ?></td> -->
 									<td><?php if($row['active']==1){ ?>True<?php } else { ?>False<?php } ?></td>
+									<td><?php if($row['created_at'] !='') echo date('d-m-Y', strtotime($row['created_at'])); else echo "-"; ?></td>
+									<td><?php if($row['inactivedate'] !='') echo date('d-m-Y', strtotime($row['inactivedate'])); else echo "-"; ?></td>
 									<td>
 										<a href="<?php echo base_url();?>admincontrol/editbanner/<?php echo $row['id'] ; ?>">Edit</a> 
-										<?php if (isset($permission) && ($permission =='1')) { ?>/ <a href="#" deleteid="<?php echo $row['id']; ?>" class="delete">Delete</a>
+										<?php if (isset($permission) && ($permission =='1')) { ?>/ <a href="javascript:void(0)" deleteid="<?php echo $row['id']; ?>" class="delete">Delete</a>
 										<?php } ?>
 									</td>									
 								</tr>
@@ -174,7 +180,7 @@
 				}				
 			});
 			
-			$('.delete').click(function(){				
+			$(document).on('click', '.delete', function(){
 				if(confirm("Are you sure to delete this record ?")){
 					var deleteid = $(this).attr('deleteid');
 					var pagesidvalue=$('#pagesid').val();
