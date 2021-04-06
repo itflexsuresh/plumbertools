@@ -4220,7 +4220,11 @@ echo '<div class="col-md-6">Select Category
 		
 		for($i=0; $i < count($getfulldata); $i++){
 			$data["productguide"][$i]["id"]			=	$getfulldata[$i]['id'];	
-			$data["productguide"][$i]["content"]	=	$getfulldata[$i]['content'];
+
+			$data["productguide"][$i]["content"]			=	$getfulldata[$i]['content'];
+			$data["productguide"][$i]["display"]			=	$getfulldata[$i]['display'];
+			$data["productguide"][$i]["display_content"]	=	$getfulldata[$i]['display_content'];
+
 			$data["productguide"][$i]["image"]	=	base_url().'./images/'.$getfulldata[$i]['image'];	
 		}
 		echo json_encode($data);
@@ -4240,7 +4244,11 @@ echo '<div class="col-md-6">Select Category
 		// print_r($this->db->last_query());die;
 		for($i=0; $i < count($getfulldata); $i++){			
 			$data["productguide"][$i]["id"]			=	$getfulldata[$i]['id'];	
-			$data["productguide"][$i]["content"]	=	$getfulldata[$i]['content'];
+
+			$data["productguide"][$i]["content"]			=	$getfulldata[$i]['content'];
+			$data["productguide"][$i]["display"]			=	$getfulldata[$i]['display'];
+			$data["productguide"][$i]["display_content"]	=	$getfulldata[$i]['display_content'];
+
 			$data["productguide"][$i]["image"]	=	base_url().'./images/'.$getfulldata[$i]['image'];	
 			$productguidesid						=	$getfulldata[$i]['productguidesid'];
 			$getfulldata_pg 						=	$this->adminmodel->getdata_productguidessection1('',$productguidesid);
@@ -4262,8 +4270,12 @@ echo '<div class="col-md-6">Select Category
 
 		for($i=0; $i < count($getfulldata); $i++){
 
-			$data["productguide"][$i]["id"]				=	$getfulldata[$i]['id'];	
-			$data["productguide"][$i]["content"]		=	$getfulldata[$i]['content'];
+			$data["productguide"][$i]["id"]				=	$getfulldata[$i]['id'];
+
+			$data["productguide"][$i]["content"]			=	$getfulldata[$i]['content'];
+			$data["productguide"][$i]["display"]			=	$getfulldata[$i]['display'];
+			$data["productguide"][$i]["display_content"]	=	$getfulldata[$i]['display_content'];
+
 			if ($getfulldata[$i]['description'] !='') {
 				$data["productguide"][$i]["description"]	=	$getfulldata[$i]['description'];
 			}else{
