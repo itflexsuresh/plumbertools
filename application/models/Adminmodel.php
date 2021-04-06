@@ -708,7 +708,7 @@ class Adminmodel extends CI_Model {
 
 		$groupCodition = array("bic.bannerid", "bic.newpageid");
 
-		$this->db->select('bic.id as bicid, bic.bannerid, bic.newpageid, SUM(bic.impressions) as impressionscount, SUM(bic.clickscount) as clickscount, ban.name as bannername, ban.client, ban.description, ban.topbottom, ban.image, ban.link, ban.active, pg.title as pagename');
+		$this->db->select('bic.id as bicid, bic.bannerid, bic.newpageid, SUM(bic.impressions) as impressionscount, SUM(bic.clickscount) as clickscount, ban.name as bannername, ban.client, ban.description, ban.topbottom, ban.image, ban.link, ban.active, pg.title as pagename, ban.created_at, ban.inactivedate');
 		$this->db->from('banner_impressions_count as bic');
 		$this->db->join('banner as ban', 'ban.id = bic.bannerid', 'left');
         $this->db->join('pages as pg', 'pg.id = bic.newpageid', 'left');
