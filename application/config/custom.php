@@ -177,11 +177,11 @@ $config['votestatus'] 			= 	[
 
 $config['builderurl'] 			= 	[
 
-											'0' 	=> 'https://www.builders.co.za/our-story',
+											'0' 	=> 'https://www.builders.co.za/collect-in-store',
 
 											'1' 	=> 'https://www.builders.co.za/Plumbing/Plumbing-essentials/c/Plumbing%20essentials',
 
-											'2' 	=> 'https://www.builders.co.za/builders-card',
+											'2' 	=> 'https://www.builders.co.za/trade-card',
 
 											'3' 	=> 'https://blog.builders.co.za/trade-guide/',
 
@@ -191,7 +191,7 @@ $config['builderurl'] 			= 	[
 
 $config['buildertitle'] 			= 	[
 
-											'0' 	=> 'Why Builders?',
+											'0' 	=> 'Click and Collect',
 
 											'1' 	=> 'Plumbing Essentials and Promotions',
 

@@ -4343,7 +4343,7 @@ echo '<div class="col-md-6">Select Category
 		$data = array();
 		$post = $this->input->post();
 
-		if ($post['appversion'] < '1.22') {
+		if ($post['appversion'] < '1.23') {
 			$data["status"]  	= "1";
 			$data["message"] 	= "Please Update your app";
 			$data["link"]	 	= "https://play.google.com/store/apps/details?id=com.app.plumber";
@@ -6008,27 +6008,27 @@ echo '<div class="col-md-6">Select Category
 			$pageid = $this->config->item('pagesid')[21];
 
 			$jsonData['warehouse'][0] = [
-				'image' => base_url().'appicons/W_WHY_BUILDERS_WAREHOUSE.png',
+				'image' => base_url().'appicons/Click_and_Collect_Icon.jpg',
 				'url' 	=> $this->config->item('builderurl')[0],
 				'title' => $this->config->item('buildertitle')[0],
 			];
 			$jsonData['warehouse'][1] = [
-				'image' => base_url().'appicons/W_PROMOTIONS.png',
+				'image' => base_url().'appicons/Plumbing_Essentials_and_Promotions_Icon.jpg',
 				'url' 	=> $this->config->item('builderurl')[1],
 				'title' => $this->config->item('buildertitle')[1],
 			];
 			$jsonData['warehouse'][2] = [
-				'image' => base_url().'appicons/W_BUILDERS_TRADE_CARD.png',
+				'image' => base_url().'appicons/Trade_Card_Icon.jpg',
 				'url' 	=> $this->config->item('builderurl')[2],
 				'title' => $this->config->item('buildertitle')[2],
 			];
 			$jsonData['warehouse'][3] = [
-				'image' => base_url().'appicons/W_PLUMBERS_TIPS.png',
+				'image' => base_url().'appicons/Plumbing_Tips_Icon.jpg',
 				'url' 	=> $this->config->item('builderurl')[3],
 				'title' => $this->config->item('buildertitle')[3],
 			];
 			$jsonData['warehouse'][4] = [
-				'image' => base_url().'appicons/W_STORE_LOCATOR.png',
+				'image' => base_url().'appicons/Store_Locator_Icon.jpg',
 				'url' 	=> $this->config->item('builderurl')[4],
 				'title' => $this->config->item('buildertitle')[4],
 			];
