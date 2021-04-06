@@ -844,14 +844,14 @@ class Admincontrol extends CI_Controller {
 	}
 	function productguidesaction(){
 		if($this->input->post("insert") || $this->input->post("update")){
-			// $this->form_validation->set_rules("content","Content",'trim|required');
+			$this->form_validation->set_rules("content","Content",'trim|required');
 			$this->form_validation->set_rules("position","Position",'trim|required|numeric');
 			if($this->form_validation->run()==FALSE){
 				if($this->input->post("insert")){					
 					$this->newproductguides();
 				}
 				if($this->input->post("update")){
-					$this->editproductguides();
+					$this->editproductguides($this->input->post("updateid"));
 				}
 			}		
 			else{			
@@ -875,11 +875,25 @@ class Admincontrol extends CI_Controller {
 					}
 					$imagefile=$imagedata['file_name'];
 				} 
+
+				if ($this->input->post('display') =='1') {
+					$display = '1';
+				}else{
+					$display = '0';
+				}
+
+				if ($this->input->post('display_content') =='1') {
+					$display_content = '1';
+				}else{
+					$display_content = '0';
+				}
 							
 				$data=array(
 				"content" => $this->input->post("content"),
 				"position" => $this->input->post("position"),
 				"published" => $this->input->post("publishid"),
+				"display" => $display,
+				"display_content" => $display_content,
 				"pdf" => isset($pdfflag) ? $pdfflag : '0',
 				);					
 				
@@ -968,7 +982,7 @@ class Admincontrol extends CI_Controller {
 					$this->newproductguidessection1();
 				}
 				if($this->input->post("update")){
-					$this->editproductguidessection1();
+					$this->editproductguidessection1($this->input->post("productguidesid"), $this->input->post("updateid"));
 				}
 			}		
 			else{			
@@ -993,6 +1007,18 @@ class Admincontrol extends CI_Controller {
 						$imagefile=$imagedata['file_name'];
 					} 
 				}
+
+				if ($this->input->post('display') =='1') {
+					$display = '1';
+				}else{
+					$display = '0';
+				}
+
+				if ($this->input->post('display_content') =='1') {
+					$display_content = '1';
+				}else{
+					$display_content = '0';
+				}
 				
 				
 				$productguidesid=$this->uri->segment(3);				
@@ -1001,6 +1027,8 @@ class Admincontrol extends CI_Controller {
 				"content" => $this->input->post("content"),
 				"position" => $this->input->post("position"),
 				"published" => $this->input->post("publishid"),
+				"display" => $display,
+				"display_content" => $display_content,
 				"pdf" => isset($pdfflag) ? $pdfflag : $this->input->post("pdf"),
 				);					
 				
@@ -1212,12 +1240,27 @@ class Admincontrol extends CI_Controller {
 							$featfile=$imagedata['file_name'];
 						}
 					}
+
+					if ($this->input->post('display') =='1') {
+						$display = '1';
+					}else{
+						$display = '0';
+					}
+
+					if ($this->input->post('display_content') =='1') {
+						$display_content = '1';
+					}else{
+						$display_content = '0';
+					}
+
 					$data=array(
 						"productguidesid" => $productguidesid,
 						"productguidessection1id" => $productguidessection1id,
 						"content" => $this->input->post("pdfcontent"),
 						"position" => $this->input->post("pdfposition"),
 						"published" => $this->input->post("pdfpublishid"),
+						"display" => $display,
+						"display_content" => $display_content,
 						"description" => $this->input->post("pdfdescription"),
 						"type" => isset($type) ? $type : '2',
 						"image" => NULL
@@ -1276,12 +1319,26 @@ class Admincontrol extends CI_Controller {
 						}
 					}
 
+					if ($this->input->post('display') =='1') {
+						$display = '1';
+					}else{
+						$display = '0';
+					}
+
+					if ($this->input->post('display_content') =='1') {
+						$display_content = '1';
+					}else{
+						$display_content = '0';
+					}
+
 					$data=array(
 						"productguidesid" => $productguidesid,
 						"productguidessection1id" => $productguidessection1id,
 						"content" => $this->input->post("content"),
 						"position" => $this->input->post("position"),
 						"published" => $this->input->post("publishid"),
+						"display" => $display,
+						"display_content" => $display_content,
 						"description" => $this->input->post("description"),
 						"type" => isset($type) ? $type : '1',
 						"feat_file" => NULL,

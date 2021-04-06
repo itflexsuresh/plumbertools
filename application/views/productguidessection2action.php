@@ -1,4 +1,9 @@
+<?php 
 
+$display 						= isset($getdata['display']) ? $getdata['display'] : '';
+$display_content 				= isset($getdata['display_content']) ? $getdata['display_content'] : '';
+
+?>
 <div class="content">
 	<div class="container-fluid">
 		<div class="row">
@@ -32,6 +37,24 @@
 									</div>
 								</div>
 							</div>
+							<div class="row">
+								<div class="col-md-12">
+										<div class="form-group">
+											<label>Display</label>
+											<input id="rcheckboxs1" class="display-box" type="checkbox" name="display" value="1" <?php if($display == '1'){ echo "checked='checked'"; } ?>
+										</div>
+									</div>
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-md-12">
+										<div class="form-group">
+											<label>Display content Title</label>
+											<input id="rcheckboxs2" class="display-box" type="checkbox" name="display_content" value="1" <?php if($display_content == '1'){ echo "checked='checked'"; } ?>
+										</div>
+									</div>
+								</div>
+							</div>
 							<div class="pdfdiv hiddentrue">
 								<div class="row">
 									<div class="col-md-12">
@@ -46,6 +69,7 @@
 										</div>
 									</div>
 								</div>
+								
 								<div class="row">
 									<div class="col-md-12">
 										<div class="form-group">
@@ -136,6 +160,15 @@
 										</div>
 									</div>
 								</div>
+								<!-- <div class="row">
+									<div class="col-md-12">
+											<div class="form-group">
+												<label>Display</label>
+												<input id="rcheckboxs1" class="display-box" type="checkbox" name="display" value="1" <?php// if($display == '1'){ echo "checked='checked'"; } ?>
+											</div>
+										</div>
+									</div>
+								</div> -->
 								<div class="row">
 									<div class="col-md-12">
 										<div class="form-group">

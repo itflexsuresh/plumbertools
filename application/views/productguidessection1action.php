@@ -15,6 +15,9 @@ if (isset($getdata['pdf']) && $getdata['pdf'] =='1') {
 	$pdf = '0';
 }
 
+$display 						= isset($getdata['display']) ? $getdata['display'] : '';
+$display_content 				= isset($getdata['display_content']) ? $getdata['display_content'] : '';
+
 ?>
 <div class="content">
 	<div class="container-fluid">
@@ -47,6 +50,24 @@ if (isset($getdata['pdf']) && $getdata['pdf'] =='1') {
 										<input name="content" type="text" class="form-control" placeholder="Content" value="<?php echo set_value('content',$getdata['content']); ?>">
 									<?php } ?>
 										<span style='color: red'><?php echo form_error('content'); ?></span>
+									</div>
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-md-12">
+										<div class="form-group">
+											<label>Display</label>
+											<input id="rcheckboxs1" class="display-box" type="checkbox" name="display" value="1" <?php if($display == '1'){ echo "checked='checked'"; } ?>
+										</div>
+									</div>
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-md-12">
+										<div class="form-group">
+											<label>Display content Title</label>
+											<input id="rcheckboxs2" class="display-box" type="checkbox" name="display_content" value="1" <?php if($display_content == '1'){ echo "checked='checked'"; } ?>
+										</div>
 									</div>
 								</div>
 							</div>
