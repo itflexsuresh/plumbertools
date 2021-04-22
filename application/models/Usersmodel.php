@@ -238,8 +238,9 @@ class Usersmodel extends CI_Model {
 			if($id==''){
 				$request1['createddate']	= 	$datetime;
 				$request1['type']			= 	'3';
-				$request1['device_type']	= 	isset($data['device_type']) ? $data['device_type'] : '2'; // device 
-				
+				// $request1['device_type']	= 	isset($data['device_type']) ? $data['device_type'] : '2'; // device 
+				$request1['device_type']	= 	'1'; // device 
+								
 				$userdata = $this->db->insert('users', $request1);
 				$id = $this->db->insert_id();
 

@@ -37,7 +37,7 @@ $pdfimg 				= base_url().'images/pdf.png';
 						<h4 class="title"><?php echo $heading; ?> User</h4>
 					</div>
 					<div class="content">
-						<form method="post" class="form" action="<?php echo base_url();?>admincontrol/useraction"  enctype="multipart/form-data">
+						<form method="post" class="form" id="myform" action="<?php echo base_url();?>admincontrol/useraction"  enctype="form-data">
 							<div class="row">
 								<div class="col-md-12">
 									<div class="form-group">
@@ -133,8 +133,9 @@ $pdfimg 				= base_url().'images/pdf.png';
 								</div>
 							</div>
 							<?php if (isset($permission) && ($permission =='1')) { ?>
-							<button type="submit" class="btn btn-info btn-fill pull-left"><?php echo $btn; ?></button>	
+							<button type="button" id="submit-action" class="btn btn-info btn-fill pull-left"><?php echo $btn; ?></button>	
 							<?php } ?>
+							<button type="submit" id="submit-form" class="displaynone" style="display: none;"><?php echo "submit form"; ?></
 							<input id="id" name="id" type="hidden" value="<?php echo $id; ?>">
 							<input id="userdetailid" name="userdetailid" type="hidden" value="<?php echo $userdetailid; ?>">
 							<input id="device_type" name="device_type" type="hidden" value="1">
@@ -218,6 +219,15 @@ $pdfimg 				= base_url().'images/pdf.png';
 			},
 			[],'1'
 		);
+
+		$('#submit-action').click(function(){
+			if ($(".form").valid()) {
+				$('#submit-action').prop('disabled', true);
+				$("#submit-form").click();
+	        } else {
+	            $('#submit-action').prop('disabled', false); 
+	        }
+		});
 
 		$('#emailverification').click(function(){
 			$(this).attr('disabled', true);
