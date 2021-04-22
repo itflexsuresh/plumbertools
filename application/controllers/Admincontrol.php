@@ -3593,7 +3593,7 @@ class Admincontrol extends CI_Controller {
 			$data = $this->Usersmodel->action($requestData);
 
 			if(isset($requestData['reason']) && $requestData['reason'] !=''){
-				$diarydata = $this->Diarymodel->action(['adminid' => $userid, 'user_id' => $requestData['id']]+$requestData);
+				$diarydata = $this->Diarymodel->action(['adminid' => $userid, 'user_id' => $data]+$requestData);
 			}
 			
 			$this->userlist();
