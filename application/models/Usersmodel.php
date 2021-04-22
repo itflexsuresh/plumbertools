@@ -223,7 +223,7 @@ class Usersmodel extends CI_Model {
 
 	public function action ($data){
 		$userid 		= $this->getUserID();
-		$id 			= $data['id'];
+		$id 			= isset($data['id']) ? $data['id'] : '';
 		$datetime		= date('Y-m-d H:i:s');
 		// echo "<pre>";print_r($data);die;
 		
