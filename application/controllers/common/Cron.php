@@ -55,6 +55,15 @@ class Cron extends CI_Controller {
 			}
 		}
 		
+		$end_time   = date('Y-m-d H:i:s');
+
+		$data1 = array(
+		    'filename'   => base_url().'common/Cron/halloffame',
+		    'start_time' => $datetime,
+		    'end_time'   => $end_time,
+		);
+
+		$this->db->insert('cron_log', $data1);
 
 	}
 
@@ -114,6 +123,16 @@ class Cron extends CI_Controller {
 
 		// echo "<pre>";print_r($request1);die;
 		*/
+
+		$end_time   = date('Y-m-d H:i:s');
+
+		$data1 = array(
+		    'filename'   => base_url().'common/Cron/topPost',
+		    'start_time' => $datetime,
+		    'end_time'   => $end_time,
+		);
+
+		$this->db->insert('cron_log', $data1);
 	}
 
 	public function progressPost(){
@@ -152,6 +171,15 @@ class Cron extends CI_Controller {
 		}
 
 		// echo"<pre>"; print_r($request1);
+		$end_time   = date('Y-m-d H:i:s');
+
+		$data1 = array(
+		    'filename'   => base_url().'common/Cron/progressPost',
+		    'start_time' => $datetime,
+		    'end_time'   => $end_time,
+		);
+
+		$this->db->insert('cron_log', $data1);
 	}
 
 	public function postTypeCalculation($data){
@@ -294,7 +322,7 @@ class Cron extends CI_Controller {
         $end_time = date('Y-m-d H:i:s');
 
         $data1 = array(
-            'filename'   => 'http://diyesh.com/plumbertools/common/Cron/banner_cron',
+            'filename'   => base_url().'common/Cron/banner_cron',
             'start_time' => $start_time,
             'end_time'   => $end_time,
         );
