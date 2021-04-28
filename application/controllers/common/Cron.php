@@ -70,7 +70,7 @@ class Cron extends CI_Controller {
 	public function topPost(){
 		$datetime	= date('Y-m-d H:i:s');
 		$postdata 	= $this->Apimodel->postgetList('all', ['status' => '1', 'isdelete' => '0', 'halloffame' => '0', 'user_type' => '3', 'pagetype' => 'toppostcron']);
-
+		echo "<pre>";print_r($postdata);die;
 		$statistics = $this->postTypeCalculationTopPost($postdata);
 		
 		if (count($statistics) > 0) {
