@@ -70,7 +70,7 @@ class Cron extends CI_Controller {
 	public function topPost(){
 		$datetime	= date('Y-m-d H:i:s');
 		$postdata 	= $this->Apimodel->postgetList('all', ['status' => '1', 'isdelete' => '0', 'halloffame' => '0', 'user_type' => '3', 'pagetype' => 'toppostcron']);
-		echo "<pre>";print_r($postdata);die;
+
 		$statistics = $this->postTypeCalculationTopPost($postdata);
 		
 		if (count($statistics) > 0) {
@@ -205,18 +205,20 @@ class Cron extends CI_Controller {
 	public function postTypeCalculationTopPost($data){
 
 		foreach ($data as $datakey => $datavalue) {
-			$calculation = count(array_filter(explode(",", $datavalue['upvote']))) - count(array_filter(explode(",", $datavalue['downvote'])));
-			if ($calculation > 0) {
-				$result['postdata'][] = [
-					'postid' 			=> $datavalue['id'],
-					'userid' 			=> $datavalue['user_id'],
-					'post_title' 		=> $datavalue['post_title'],
-					'created_at' 		=> $datavalue['created_at'],
-					'postuser' 			=> $datavalue['username'],
-					'upvotecount' 		=> count(array_filter(explode(",", $datavalue['upvote']))),
-					'downvotecount' 	=> count(array_filter(explode(",", $datavalue['downvote']))),
-					'calculation' 		=> $calculation
-				];
+			if (isset($datavalue['us_id']) && $datavalue['us_id'] !='') {
+				$calculation = count(array_filter(explode(",", $datavalue['upvote']))) - count(array_filter(explode(",", $datavalue['downvote'])));
+				if ($calculation > 0) {
+					$result['postdata'][] = [
+						'postid' 			=> $datavalue['id'],
+						'userid' 			=> $datavalue['user_id'],
+						'post_title' 		=> $datavalue['post_title'],
+						'created_at' 		=> $datavalue['created_at'],
+						'postuser' 			=> $datavalue['username'],
+						'upvotecount' 		=> count(array_filter(explode(",", $datavalue['upvote']))),
+						'downvotecount' 	=> count(array_filter(explode(",", $datavalue['downvote']))),
+						'calculation' 		=> $calculation
+					];
+				}
 			}
 			
 		}

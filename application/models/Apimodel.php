@@ -454,7 +454,7 @@ class Apimodel extends CI_Model {
 
 	public function postgetList($type, $requestdata=[], $extras=[]){
 		
-		$this->db->select('pst.*, us.name as username, ud.companyname as companyname, ud.pirbverification');
+		$this->db->select('pst.*, us.id as us_id, us.name as username, ud.companyname as companyname, ud.pirbverification');
 		$this->db->from('posts pst');
 		$this->db->join('users us', 'us.id=pst.user_id', 'left');
 		$this->db->join('users_details ud', 'ud.user_id=pst.user_id', 'left');
