@@ -89,21 +89,81 @@ $writepermission  = explode(',', $userdetails['write_permission']);
                      </li>
                   <?php// } ?> -->
                   <?php if ($usertype =='1' || (in_array('3', $readpermission)) || in_array('3', $writepermission)) { ?>
-                     <li <?php if($leftsidebar_value == 20 ) { ?> class="active" <?php } ?> >
-                        <a href="<?php echo base_url();?>admincontrol/bannerlist">
+                     <li id="treeview7">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                            <i class="pe-7s-display2"></i>                        
-                           <p>Advertising</p>
+                           <p>Advertising <b class="caret"></b></p>
                         </a>
+                        <ul id="treeview-menu7">
+                           <?php if ($usertype == '1' || (in_array('3', $readpermission)) || in_array('3', $writepermission)) {?>
+                           <li <?php if($leftsidebar_value == 20 ) { ?> class="active" <?php } ?>>
+                              <a href="<?php echo base_url(); ?>admincontrol/bannerlist">
+                                 <p>Banner List</p>
+                              </a>
+                           </li>
+                           <?php } ?>
+                           <?php if ($usertype == '1' || (in_array('3', $readpermission)) || in_array('3', $writepermission)) {?>
+                           <li <?php if($leftsidebar_value == 65 ) { ?> class="active" <?php } ?>>
+                              <a href="<?php echo base_url(); ?>admincontrol/clients">
+                                 <p>Clients</p>
+                              </a>
+                           </li>
+                           <?php } ?>
+                           <?php if ($usertype == '1' || (in_array('3', $readpermission)) || in_array('3', $writepermission)) {?>
+                           <li <?php if($leftsidebar_value == 66 ) { ?> class="active" <?php } ?>>
+                              <a href="<?php echo base_url(); ?>admincontrol/adbanners">
+                                 <p>Advertisement / Banners</p>
+                              </a>
+                           </li>                        
+                           <?php } ?>
+                        </ul>
                      </li>
                   <?php } ?>
-                  <?php if ($usertype =='1' || (in_array('4', $readpermission)) || in_array('4', $writepermission)) { ?>
-                     <li <?php if($leftsidebar_value == 22 ) { ?> class="active" <?php } ?> >
-                        <a href="<?php echo base_url();?>admincontrol/newslist">
-                           <i class="pe-7s-news-paper"></i>                        
-                           <p>MAGAZINE</p>
-                        </a>
-                     </li>
-                  <?php } ?>
+                  <?php if ($usertype == '1' || (in_array('4', $readpermission)) || in_array('4', $writepermission)) {?>
+                  <li id="treeview">
+                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                        <i class="pe-7s-helm"></i>
+                        <p>MAGAZINE <b class="caret"></b></p>
+                     </a>
+                     <ul id="treeview-menu">
+                        <?php if ($usertype == '1' || (in_array('4', $readpermission)) || in_array('4', $writepermission)) {?>
+                        <li <?php if($leftsidebar_value == 61 ) { ?> class="active" <?php } ?>>
+                           <a href="<?php echo base_url(); ?>admincontrol/articles">
+                              <p>Articles</p>
+                           </a>
+                        </li>
+                        <?php } ?>
+                        <?php if ($usertype == '1' || (in_array('4', $readpermission)) || in_array('4', $writepermission)) {?>
+                        <li <?php if($leftsidebar_value == 64 ) { ?> class="active" <?php } ?>>
+                           <a href="<?php echo base_url(); ?>admincontrol/writers">
+                              <p>Writers</p>
+                           </a>
+                        </li>
+                        <?php } ?>
+                        <?php if ($usertype == '1' || (in_array('4', $readpermission)) || in_array('4', $writepermission)) {?>
+                        <li <?php if($leftsidebar_value == 62 ) { ?> class="active" <?php } ?>>
+                           <a href="<?php echo base_url(); ?>admincontrol/tags">
+                              <p>Tags</p>
+                           </a>
+                        </li>
+                        <?php } ?>
+                        <?php if ($usertype == '1' || (in_array('4', $readpermission)) || in_array('4', $writepermission)) {?>
+                        <li <?php if($leftsidebar_value == 63 ) { ?> class="active" <?php } ?>>
+                           <a href="<?php echo base_url(); ?>admincontrol/comments">
+                              <p>Comments</p>
+                           </a>
+                        </li>
+                        <?php } ?>
+                        <?php if ($usertype == '1' || (in_array('4', $readpermission)) || in_array('4', $writepermission)) {?>
+                        <li <?php if($leftsidebar_value == 67 ) { ?> class="active" <?php } ?>>
+                           <a href="<?php echo base_url(); ?>admincontrol/commentsreports">
+                              <p>Reports</p>
+                           </a>
+                        </li>
+                        <?php } ?>
+                     </ul>
+                  </li>
+                  <?php }?>
                   <?php if ($usertype =='1' || (in_array('5', $readpermission)) || in_array('5', $writepermission)) { ?>
                      <li id="treeview-productguides" <?php if($leftsidebar_value == 6) { ?> class="active" <?php } ?>>
                         <a href="<?php echo base_url();?>admincontrol/productguideslist">
