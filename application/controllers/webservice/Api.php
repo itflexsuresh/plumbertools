@@ -138,9 +138,9 @@ class Api extends CI_Controller {
 		$data["centericon"][2]['image']=base_url().'./appicons/pirb1.png';	
 		$data["centericon"][2]['title']="PIRB";
 		$data["centericon"][2]['pagelink']="PIRBHome.html";
-		$data["centericon"][3]['image']=base_url().'./appicons/magzinenew1.png';	
+	    $data["centericon"][3]['image']=base_url().'./appicons/magzinenew1.png';	
 		$data["centericon"][3]['title']="Magazine";
-		$data["centericon"][3]['pagelink']="Magazine.html";
+		$data["centericon"][3]['pagelink']="Magazine_Main.html";
 		$data["centericon"][4]['image']=base_url().'./appicons/podcast1.png';	
 		$data["centericon"][4]['title']="Podcast";
 		$data["centericon"][4]['pagelink']="podcast.html";
@@ -180,6 +180,10 @@ class Api extends CI_Controller {
 		$data["centericon"][14]['image']=base_url().'./appicons/builder_werehouse.png';	
 		$data["centericon"][14]['title']="Builders Warehouse";
 		$data["centericon"][14]['pagelink']="bwarehouse.html";
+		
+		$data["centericon"][15]['image']=base_url().'./appicons/advancedvalve_logo_new.png';	
+		$data["centericon"][15]['title']="Advanced Valves";
+		$data["centericon"][15]['pagelink']="AdvancedValves.html";
 		
 		// $data["bottomicon"][0]['image']=base_url().'./appicons/ico13.png';	
 		// $data["bottomicon"][0]['title']="MANAGE IT";
