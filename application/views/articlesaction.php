@@ -42,6 +42,10 @@ if (isset($getdata) && $getdata) {
 }
 
 $last_position = $last_pos;
+if ($last_position == 0) {
+	$last_position = 1;
+}
+
 $sections_headersD = explode(",", $sections_headersD);
 
 $file = isset($getdata['file']) ? $getdata['file'] : '';
