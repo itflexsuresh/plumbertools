@@ -11,6 +11,16 @@ class Index extends CI_Controller
 		$this->load->model('Apimodel');
 		$this->load->model('Usersmodel');
 	}
+
+	public function ajaxfileupload2()
+    {    	
+        $post = $this->input->post();        
+        $path = strval($post['path']);
+        $type = strval($post['type']);
+
+        $result = $this->Adminmodel->fileUpload2('file', $path, $type);
+        echo json_encode($result);
+    }
 	
 	public function ajaxfileupload()
 	{

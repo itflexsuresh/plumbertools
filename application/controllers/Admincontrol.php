@@ -6916,4 +6916,784 @@ class Admincontrol extends CI_Controller {
 		$this->allpage('systemuser_action',isset($data) ? $data : '');
 	}
 
+	function tags_exists($key, $id = '')
+	{
+		$this->db->where('tag_name', $key);
+		if ($id != '') $this->db->where('id !=', $id);
+		$this->db->where('status', '1');
+		$query = $this->db->get('articles_tags');		
+		
+		if ($query->num_rows() == 0) {
+			return true;
+		} else {
+			$this->form_validation->set_message('tags_exists', 'Sorry, This Tag is already added.');
+			return false;
+		}
+	}
+
+	function tags($id = '')
+	{
+	    if ($this->input->post()) {	    	    	
+	    	$tagid = $this->input->post('id');        
+	        $this->form_validation->set_rules('tag_name', 	'Tag Name',		'trim|required|max_length[150]|callback_tags_exists[' . $tagid . ']');
+	        if ($this->form_validation->run() != FALSE) {
+	        	$requestData = $this->input->post();
+	        	
+		        $result      = $this->adminmodel->tagsAction($requestData);
+		        if ($result == 'insert') {
+		            $this->session->set_flashdata('success', 'Successfully Created New Tag.');
+		        } elseif ($result == 'update') {
+		            $this->session->set_flashdata('success', 'Successfully Updated Tag.');
+		        } else {
+		            $this->session->set_flashdata('error', 'Try Later.');
+		        }
+		        redirect('admincontrol/tags');
+		    }
+	    }
+
+	    $this->checksessionout();
+	    $this->checkUserPermission('4', '1', '1');
+	    $data["header_title"]      = $this->magazine_tags_title;
+	    $data["header_title2"]     = $this->magazine_tags_title2;
+	    $data["leftsidebar_value"] = $this->magazine_tags_value;
+
+	    $checkpermission    = $this->checkUserPermission('4', '2');
+	    $data["permission"] = $checkpermission;
+
+	    if ($id == '') {
+	        $data["action"]  = "new";
+	        $data["getdata"] = $this->adminmodel->getdata_tags();
+	    } else {
+	        $data["action"] = "edit";
+	        $datas          = $this->adminmodel->getdata_tags($id);
+	        if ($datas) {
+	            $data["data"]    = $datas;
+	            $data["getdata"] = $this->adminmodel->getdata_tags();
+	        } else {
+	            redirect('admincontrol/tags');
+	        }
+	    }
+
+	    $this->allpage('tags', $data);
+	}
+
+	function deletetags()
+	{
+		$data = [
+            'status' => '0',
+        ];
+	    $deleteid = $this->input->post("deleteid");
+	    $this->checksessionout();
+	    $this->adminmodel->updatedata("articles_tags", $data, $deleteid);	    
+	    $this->session->set_flashdata('success', 'Successfully Deleted Tag.');
+	    redirect('admincontrol/tags');
+	}
+
+	function comments()
+	{
+	    if ($this->input->post()) {
+	        $requestData = $this->input->post();
+	        $result      = $this->adminmodel->commentsAction($requestData);	        
+	        if ($result) {
+	            $this->session->set_flashdata('success', 'Successfully Updated published status.');
+	        } else {
+	            $this->session->set_flashdata('error', 'Try Later.');
+	        }
+
+	        redirect('admincontrol/comments');
+	    }
+
+	    $this->checksessionout();
+	    $this->checkUserPermission('4', '1', '1');
+	    $data["header_title"]      = $this->magazine_comments_title;
+	    $data["header_title2"]     = $this->magazine_comments_title2;
+	    $data["leftsidebar_value"] = $this->magazine_comments_value;
+
+	    $checkpermission    = $this->checkUserPermission('4', '2');
+	    $data["permission"] = $checkpermission;
+	    $data["getdata"]    = $this->adminmodel->getdata_comments();
+	    // echo $this->db->last_query(); die();
+	    $this->allpage('comments', $data);
+	}
+
+	function deletecomments()
+	{
+		$data = [
+            'status' => '0',
+        ];
+	    $deleteid = $this->input->post("deleteid");
+	    $this->checksessionout();
+	    $this->adminmodel->updatedata("articles_comments", $data, $deleteid);
+	    // $this->adminmodel->deletedata("articles_comments", $deleteid);
+	    $this->session->set_flashdata('success', 'Successfully Deleted Comment.');
+	    redirect('admincontrol/comments');
+	}
+
+	function ajaxtag()
+	{
+	    $json = [];
+	    $data = $this->adminmodel->getTagData();
+	    foreach ($data as $key => $value) {
+	        $json[] = $value['tag_name'];
+	    }
+	    echo json_encode($json);
+	}
+
+	function articles()
+	{
+	    if ($this->input->post()) {
+	        $requestData = $this->input->post();
+	        $result      = $this->adminmodel->articlesaction($requestData);
+	        if ($result) {
+	            $this->session->set_flashdata('success', 'Successfully Updated published status.');
+	        } else {
+	            $this->session->set_flashdata('error', 'Try Later.');
+	        }
+	        redirect('admincontrol/articles');
+	    }
+
+	    $data['last_pos'] = $this->adminmodel->getLastPosition();
+	    
+	    $this->checksessionout();
+	    $this->checkUserPermission('4', '1', '1');
+	    $data["header_title"]      = $this->magazine_article_title;
+	    $data["header_title2"]     = $this->magazine_article_title2;
+	    $data["leftsidebar_value"] = $this->magazine_article_value;
+
+	    $checkpermission    = $this->checkUserPermission('4', '2');
+	    $data["permission"] = $checkpermission;
+	    $data["getdata"]    = $this->adminmodel->getdata_articles('all');	    
+	    $this->allpage('articles', $data);
+	}
+
+	function newarticles()
+	{
+	    if ($this->input->post()) {
+            $reportData = $this->input->post();
+            // echo "<pre>";
+            // print_r($reportData);
+            // echo "</pre>"; die();
+
+            $newposition      = (int) $reportData['position'];
+            $oldposition 	  = $this->adminmodel->getLastPosition() + 1;
+            $plusoldposition  = $oldposition + 1;
+            $minusoldposition = $oldposition - 1;
+
+            $plusnewposition  = $newposition + 1;
+            $minusnewposition = $newposition - 1;
+
+            if ($oldposition > $newposition) {
+                $query1 = $this->db->query("update articles set position = position+1 where position >= '" . $newposition . "' AND position <= '" . $minusoldposition . "' ");
+            } elseif ($oldposition < $newposition) {
+                $query1 = $this->db->query("update articles set position = position-1 where position >= '" . $plusoldposition . "' AND position <= '" . $newposition . "'");
+            }
+
+            $result = $this->adminmodel->articlesaction($reportData);
+            if ($result) {
+                $this->session->set_flashdata('success', 'Successfully Created new Article.');
+            } else {
+                $this->session->set_flashdata('error', 'Try Later.');
+            }
+            redirect('admincontrol/articles');
+        }
+
+        $data['last_pos'] = $this->adminmodel->getLastPosition();
+
+	    $json    = [];
+	    $TagData = $this->adminmodel->getTagData();
+	    foreach ($TagData as $key => $value) {
+	        $json[] = $value['tag_name'];
+	    }
+	    $data["taggs"] = json_encode($json);
+
+	    $this->checksessionout();
+	    $this->checkUserPermission('4', '1', '1');
+	    $currentdate               = date("Y-m-d");
+	    $data["fromdate"]          = $currentdate;
+	    $data["todate"]            = '';
+	    $data["header_title"]      = $this->magazine_article_title;
+	    $data["header_title2"]     = $this->magazine_article_title2;
+	    $data["leftsidebar_value"] = $this->magazine_article_value;
+	    $data["getdata"]           = '';
+	    $data["sections_headers"]  = $this->adminmodel->get_sections_headers();
+
+	    $checkpermission    = $this->checkUserPermission('4', '2');
+	    $data["permission"] = $checkpermission;
+	    $this->allpage('articlesaction', $data);
+	}
+
+	function editarticles()
+	{
+	    if ($this->input->post()) {
+	        $reportData = $this->input->post();
+
+	        $article_id       = $reportData['id'];
+            $newposition      = (int) $reportData['position'];
+            $oldpositiondata  = $this->adminmodel->getdata_articles('row', ['id' => $article_id]);
+            $oldposition      = (int) $oldpositiondata['position'];
+            $plusoldposition  = $oldposition + 1;
+            $minusoldposition = $oldposition - 1;
+
+            $plusnewposition  = $newposition + 1;
+            $minusnewposition = $newposition - 1;
+
+            if ($oldposition > $newposition) {
+                $query1 = $this->db->query("update articles set position = position+1 where position >= '" . $newposition . "' AND position <= '" . $minusoldposition . "' ");
+
+                $query2 = $this->db->query("update articles set position = '$newposition' where id = '" . $article_id . "'");
+            } elseif ($oldposition < $newposition) {
+                $query1 = $this->db->query("update articles set position = position-1 where position >= '" . $plusoldposition . "' AND position <= '" . $newposition . "'");
+
+                $query2 = $this->db->query("update articles set position = '$newposition' where id = '" . $article_id . "'");
+            }
+
+	        $result     = $this->adminmodel->articlesaction($reportData);	        
+	        if ($result) {
+	            $this->session->set_flashdata('success', 'Successfully Updated Article.');
+	        } else {
+	            $this->session->set_flashdata('error', 'Try Later.');
+	        }
+	        redirect('admincontrol/articles');
+	    }
+
+	    $json    = [];
+	    $TagData = $this->adminmodel->getTagData();
+	    foreach ($TagData as $key => $value) {
+	        $json[] = $value['tag_name'];
+	    }
+	    $data["taggs"] = json_encode($json);
+	    $data['last_pos'] = $this->adminmodel->getLastPosition();
+
+	    $uid         = $this->uri->segment(3);
+	    $userid      = $this->getUserID();
+	    $userDetails = $this->getUserDetails();
+	    $this->checksessionout();
+	    $this->checkUserPermission('4', '1', '1');
+	    $data["header_title"]      = $this->magazine_article_title;
+	    $data["header_title2"]     = $this->magazine_article_title2;
+	    $data["leftsidebar_value"] = $this->magazine_article_value;
+	    $getdata                   = $this->adminmodel->getdata_articles('row', ['id' => $uid]);
+	    if (!empty($getdata)) {
+	        $data["getdata"] = $getdata;
+	    } else {
+	        redirect('admincontrol/articles');
+	    }
+
+	    $data["sections_headers"] = $this->adminmodel->get_sections_headers();
+	    $checkpermission          = $this->checkUserPermission('4', '2');
+	    $data["permission"]       = $checkpermission;
+	    $this->allpage('articlesaction', $data);
+	}
+
+	function deletearticles()
+	{
+	    $deleteid = $this->input->post("deleteid");
+	    $this->checksessionout();
+
+	    $newposition      = $this->adminmodel->getLastPosition() + 1;
+        $oldpositiondata  = $this->adminmodel->getdata_articles('row', ['id' => $deleteid]);
+        $oldposition      = (int) $oldpositiondata['position'];
+        $plusoldposition  = $oldposition + 1;
+        $minusoldposition = $oldposition - 1;
+
+        $plusnewposition  = $newposition + 1;
+        $minusnewposition = $newposition - 1;
+
+        if ($oldposition > $newposition) {
+            $query1 = $this->db->query("update articles set position = position+1 where position >= '" . $newposition . "' AND position <= '" . $oldposition . "' ");
+        } elseif ($oldposition < $newposition) {
+            $query1 = $this->db->query("update articles set position = position-1 where position >= '" . $plusoldposition . "' AND position <= '" . $newposition . "'");
+        }
+        
+	    $result = $this->adminmodel->deletedata("articles", $deleteid);
+	    $this->session->set_flashdata('success', 'Successfully Deleted Article.');
+	    redirect('admincontrol/articles');
+	}   
+
+	function writers_exists($key, $id = '')
+	{
+		$this->db->where('writers_name', $key);
+		if ($id != '') $this->db->where('id !=', $id);
+		$this->db->where('status', '1');
+		$query = $this->db->get('articles_writers');		
+		
+		if ($query->num_rows() == 0) {
+			return true;
+		} else {
+			$this->form_validation->set_message('writers_exists', 'Sorry, This Writer is already added.');
+			return false;
+		}
+	}
+
+	function writers($id = '')
+	{
+	    if ($this->input->post()) {	    	    	
+	    	$tagid = $this->input->post('id');        
+	        $this->form_validation->set_rules('writers_name', 	'Writer Name',		'trim|required|max_length[150]|callback_writers_exists[' . $tagid . ']');
+	        if ($this->form_validation->run() != FALSE) {
+	        	$requestData = $this->input->post();
+	        	
+		        $result      = $this->adminmodel->writersAction($requestData);
+		        if ($result == 'insert') {
+		            $this->session->set_flashdata('success', 'Successfully Created New Writer.');
+		        } elseif ($result == 'update') {
+		            $this->session->set_flashdata('success', 'Successfully Updated Writer.');
+		        } else {
+		            $this->session->set_flashdata('error', 'Try Later.');
+		        }
+		        redirect('admincontrol/writers');
+		    }
+	    }
+
+	    $this->checksessionout();
+	    $this->checkUserPermission('4', '1', '1');
+	    $data["header_title"]      = $this->magazine_writers_title;
+	    $data["header_title2"]     = $this->magazine_writers_title2;
+	    $data["leftsidebar_value"] = $this->magazine_writers_value;
+
+	    $checkpermission    = $this->checkUserPermission('4', '2');
+	    $data["permission"] = $checkpermission;
+
+	    if ($id == '') {
+	        $data["action"]  = "new";
+	        $data["getdata"] = $this->adminmodel->getdata_writers();
+	    } else {
+	        $data["action"] = "edit";
+	        $datas          = $this->adminmodel->getdata_writers($id);
+	        if ($datas) {
+	            $data["data"]    = $datas;
+	            $data["getdata"] = $this->adminmodel->getdata_writers();
+	        } else {
+	            redirect('admincontrol/writers');
+	        }
+	    }
+
+	    $this->allpage('writers', $data);
+	}
+
+	function deletewriters()
+	{
+		$data = [
+            'status' => '0',
+        ];
+	    $deleteid = $this->input->post("deleteid");
+	    $this->checksessionout();
+	    $this->adminmodel->updatedata("articles_writers", $data, $deleteid);	    
+	    $this->session->set_flashdata('success', 'Successfully Deleted Writer.');
+	    redirect('admincontrol/writers');
+	}
+
+	function autocomplete_writers() {
+        $returnData = array();
+
+        $conditions['searchTerm'] = $this->input->get('term');
+        $conditions['conditions']['status'] = '1';
+        $skillData = $this->adminmodel->autocomplete_writers($conditions);
+                
+        if(!empty($skillData)){
+            foreach ($skillData as $row){
+                $data['id'] = $row['id'];
+                $data['value'] = $row['writers_name'];
+                array_push($returnData, $data);
+            }
+        }
+                
+        echo json_encode($returnData);die;
+    }	
+
+    function client_exists($key, $id = '')
+	{
+		$this->db->where('client_name', $key);
+		if ($id != '') $this->db->where('id !=', $id);
+		$this->db->where('status', '1');
+		$query = $this->db->get('advertising_clients');		
+		
+		if ($query->num_rows() == 0) {
+			return true;
+		} else {
+			$this->form_validation->set_message('client_exists', 'Sorry, This Client Name is already added.');
+			return false;
+		}
+	}
+
+	function email_exists($key, $id = '')
+	{
+		$this->db->where('email', $key);
+		if ($id != '') $this->db->where('id !=', $id);
+		$this->db->where('status', '1');
+		$query = $this->db->get('advertising_clients');		
+		
+		if ($query->num_rows() == 0) {
+			return true;
+		} else {
+			$this->form_validation->set_message('email_exists', 'Sorry, This Email Address is already added.');
+			return false;
+		}
+	}
+
+	function login_exists($key, $id = '')
+	{
+		$this->db->where('login', $key);
+		if ($id != '') $this->db->where('id !=', $id);
+		$this->db->where('status', '1');
+		$query = $this->db->get('advertising_clients');		
+		
+		if ($query->num_rows() == 0) {
+			return true;
+		} else {
+			$this->form_validation->set_message('login_exists', 'Sorry, This Login is already added.');
+			return false;
+		}
+	}
+
+    function clients($id = '')
+	{
+	    if ($this->input->post()) {	  	    		     
+	    	$id = $this->input->post('id');
+	       	
+	       	$this->form_validation->set_rules('client_name', 'Client Name', 'trim|required|max_length[150]|callback_client_exists[' . $id . ']');
+	       	
+	       	$this->form_validation->set_rules('email', 'Email Address', 'trim|required|callback_email_exists[' . $id . ']');
+	       	
+	       	$this->form_validation->set_rules('login', 'Login Password', 'trim|required|max_length[15]|callback_login_exists[' . $id . ']');
+
+	        if ($this->form_validation->run() != FALSE) {
+	        	$requestData = $this->input->post();
+	        	
+		        $result      = $this->adminmodel->clientsAction($requestData);
+			    if ($result == 'insert') {
+			    	$this->session->set_flashdata('success', 'Successfully Created New Client.');
+				} elseif ($result == 'update') {
+			    	$this->session->set_flashdata('success', 'Successfully Updated Client.');
+			    } else {
+			    	$this->session->set_flashdata('error', 'Try Later.');
+			    }
+			    redirect('admincontrol/clients');
+		    }
+	    }
+
+	    $this->checksessionout();
+	    $this->checkUserPermission('3', '1', '1');
+	    $data["header_title"]      = $this->advertising_clients_title;
+	    $data["header_title2"]     = $this->advertising_clients_title2;
+	    $data["leftsidebar_value"] = $this->advertising_clients_value;
+
+	    $checkpermission    = $this->checkUserPermission('3', '2');
+	    $data["permission"] = $checkpermission;
+
+	    if ($id == '') {
+	        $data["action"]  = "new";
+	        $data["getdata"] = $this->adminmodel->getdata_clients();
+	    } else {
+	        $data["action"] = "edit";
+	        $datas          = $this->adminmodel->getdata_clients($id);
+	        if ($datas) {
+	            $data["data"]    = $datas;
+	            $data["getdata"] = $this->adminmodel->getdata_clients();
+	        } else {
+	            redirect('admincontrol/clients');
+	        }
+	    }
+
+	    $this->allpage('clients', $data);
+	}
+
+	function deleteclients()
+	{
+		$data = [
+            'status' => '0',
+        ];
+	    $deleteid = $this->input->post("deleteid");
+	    $this->checksessionout();
+	    $this->adminmodel->updatedata("advertising_clients", $data, $deleteid);	    
+	    $this->session->set_flashdata('success', 'Successfully Deleted Client.');
+	    redirect('admincontrol/clients');
+	}
+
+	function adbanners()
+	{	    
+	    $this->checksessionout();
+	    $this->checkUserPermission('3', '1', '1');
+	    $data["header_title"]      = $this->advertising_adbanners_title;
+	    $data["header_title2"]     = $this->advertising_adbanners_title2;
+	    $data["leftsidebar_value"] = $this->advertising_adbanners_value;
+
+	    $checkpermission    = $this->checkUserPermission('3', '2');
+	    $data["permission"] = $checkpermission;
+	    $data["getdata"]    = $this->adminmodel->getdata_adbanners('all');	
+	    $this->allpage('adbanners', $data);
+	}
+
+	function newadbanners()
+	{
+	    if ($this->input->post()) {
+	        $reportData = $this->input->post();
+	        $result = $this->adminmodel->adbannersaction($reportData);
+	        if ($result) {
+	            $this->session->set_flashdata('success', 'Successfully Created new Advertisement.');
+	        } else {
+	            $this->session->set_flashdata('error', 'Try Later.');
+	        }
+	        redirect('admincontrol/adbanners');
+	    }
+
+	    $data["pagesdata"]=$this->adminmodel->getfulldata("pages", ['pagetype' => 'bannerlist']);
+	    
+	    $this->checksessionout();
+	    $this->checkUserPermission('4', '1', '1');
+	    $currentdate               = date("Y-m-d");
+	    $data["fromdate"]          = $currentdate;
+	    $data["todate"]            = $currentdate;
+	    $data["client_name_list"]  = $this->adminmodel->getdata_clients();
+	    $data["header_title"]      = $this->advertising_adbanners_title;
+	    $data["header_title2"]     = $this->advertising_adbanners_title2;
+	    $data["leftsidebar_value"] = $this->advertising_adbanners_value;
+	    $data["getdata"]           = '';	    
+
+	    $checkpermission    = $this->checkUserPermission('4', '2');
+	    $data["permission"] = $checkpermission;
+	    $this->allpage('adbannersaction', $data);
+	}
+
+	function editadbanners()
+	{
+	    if ($this->input->post()) {
+	        $reportData = $this->input->post();	    
+	        // echo "<pre>";    print_r($reportData); die();
+	        $result     = $this->adminmodel->adbannersaction($reportData);	        
+	        if ($result) {
+	            $this->session->set_flashdata('success', 'Successfully Updated Advertisement.');
+	        } else {
+	            $this->session->set_flashdata('error', 'Try Later.');
+	        }
+	        redirect('admincontrol/adbanners');
+	    }	    
+
+	    $data["pagesdata"]=$this->adminmodel->getfulldata("pages", ['pagetype' => 'bannerlist']);
+	    
+	    $uid         = $this->uri->segment(3);
+	    $userid      = $this->getUserID();
+	    $userDetails = $this->getUserDetails();
+	    $this->checksessionout();
+	    $this->checkUserPermission('4', '1', '1');
+	    $currentdate               = date("Y-m-d");
+	    $data["fromdate"]          = $currentdate;
+	    $data["todate"]            = $currentdate;
+	    $data["client_name_list"]  = $this->adminmodel->getdata_clients();
+	    $data["header_title"]      = $this->advertising_adbanners_title;
+	    $data["header_title2"]     = $this->advertising_adbanners_title2;
+	    $data["leftsidebar_value"] = $this->advertising_adbanners_value;
+
+	    $getdata                   = $this->adminmodel->getdata_adbanners('row', ['id' => $uid]);
+	    if (!empty($getdata)) {
+	        $data["getdata"] = $getdata;
+	    } else {
+	        redirect('admincontrol/adbanners');
+	    }
+
+	    $data["sections_headers"] = $this->adminmodel->get_sections_headers();
+	    $checkpermission          = $this->checkUserPermission('4', '2');
+	    $data["permission"]       = $checkpermission;
+	    $this->allpage('adbannersaction', $data);
+	}
+
+	function deleteadbanners()
+	{
+	    $deleteid = $this->input->post("deleteid");
+	    $this->checksessionout();
+	    $result = $this->adminmodel->deletedata("advertising_adbanners", $deleteid);
+	    $this->session->set_flashdata('success', 'Successfully Deleted Advertisement.');
+	    redirect('admincontrol/adbanners');
+	}
+
+	function autocomplete_clients() {
+        $returnData = array();
+
+        $conditions['searchTerm'] = $this->input->get('term');
+        $conditions['conditions']['status'] = '1';
+        $skillData = $this->adminmodel->autocomplete_clients($conditions);
+                
+        if(!empty($skillData)){
+            foreach ($skillData as $row){
+                $data['id'] = $row['id'];
+                $data['value'] = $row['client_name'];
+                array_push($returnData, $data);
+            }
+        }
+                
+        echo json_encode($returnData);die;
+    }	
+
+    function reports_exists($key, $id = '')
+	{
+		$this->db->where('report_name', $key);
+		if ($id != '') $this->db->where('id !=', $id);
+		$this->db->where('status', '1');
+		$query = $this->db->get('articles_comments_reports');		
+		
+		if ($query->num_rows() == 0) {
+			return true;
+		} else {
+			$this->form_validation->set_message('reports_exists', 'Sorry, This Report Reason is already added.');
+			return false;
+		}
+	}
+
+    function commentsreports($id = '')
+	{
+	    if ($this->input->post()) {	    	    		    	
+	    	$reportid = $this->input->post('id');        
+	    	$this->form_validation->set_rules('report_name', 	'Report Reason',		'trim|required|max_length[150]|callback_reports_exists[' . $reportid . ']');	        
+	        if ($this->form_validation->run() != FALSE) {
+	        	$requestData = $this->input->post();
+
+		        $result      = $this->adminmodel->commentsreportsAction($requestData);
+		        if ($result == 'insert') {
+		            $this->session->set_flashdata('success', 'Successfully Created New Report.');
+		        } elseif ($result == 'update') {
+		            $this->session->set_flashdata('success', 'Successfully Updated Report.');
+		        } else {
+		            $this->session->set_flashdata('error', 'Try Later.');
+		        }
+		        redirect('admincontrol/commentsreports');
+		    }
+	    }
+
+	    $this->checksessionout();
+	    $this->checkUserPermission('4', '1', '1');
+	    $data["header_title"]      = $this->magazine_reports_title;
+	    $data["header_title2"]     = $this->magazine_reports_title2;
+	    $data["leftsidebar_value"] = $this->magazine_reports_value;
+
+	    $checkpermission    = $this->checkUserPermission('4', '2');
+	    $data["permission"] = $checkpermission;
+
+	    if ($id == '') {
+	        $data["action"]  = "new";
+	        $data["getdata"] = $this->adminmodel->getdata_commentsreports();
+	    } else {
+	        $data["action"] = "edit";
+	        $datas          = $this->adminmodel->getdata_commentsreports($id);
+	        if ($datas) {
+	            $data["data"]    = $datas;
+	            $data["getdata"] = $this->adminmodel->getdata_commentsreports();
+	        } else {
+	            redirect('admincontrol/commentsreports');
+	        }
+	    }
+
+	    $this->allpage('commentsreports', $data);
+	}
+
+	function deletecommentsreports()
+	{
+		$data = [
+            'status' => '0',
+        ];
+	    $deleteid = $this->input->post("deleteid");
+	    $this->checksessionout();
+	    $this->adminmodel->updatedata("articles_comments_reports", $data, $deleteid);	    
+	    $this->session->set_flashdata('success', 'Successfully Deleted Report.');
+	    redirect('admincontrol/commentsreports');
+	}
+
+	public function positionchange()
+    {
+        if ($this->input->post()) {
+            $postData = $this->input->post();
+            $newposition      = (int) $postData['position'];
+
+            $last_pos = $this->adminmodel->getLastPosition();
+            if(($newposition >= 1) && ($newposition <= $last_pos)){
+	            $article_id       = $postData['id'];            
+	            $oldpositiondata  = $this->adminmodel->getdata_articles('row', ['id' => $article_id]);
+	            $oldposition      = (int) $oldpositiondata['position'];
+	            $plusoldposition  = $oldposition + 1;
+	            $minusoldposition = $oldposition - 1;
+
+	            $plusnewposition  = $newposition + 1;
+	            $minusnewposition = $newposition - 1;
+
+	            if ($oldposition > $newposition) {
+	                $query1 = $this->db->query("update articles set position = position+1 where position >= '" . $newposition . "' AND position <= '" . $minusoldposition . "' ");
+
+	                $query2 = $this->db->query("update articles set position = '$newposition' where id = '" . $article_id . "'");
+	            } elseif ($oldposition < $newposition) {
+	                $query1 = $this->db->query("update articles set position = position-1 where position >= '" . $plusoldposition . "' AND position <= '" . $newposition . "'");
+
+	                $query2 = $this->db->query("update articles set position = '$newposition' where id = '" . $article_id . "'");
+	            }
+
+	            if ($query1 || $query2) {
+	                $this->session->set_flashdata('success', 'Successfully positions Updated.');
+	            } else {
+	                $this->session->set_flashdata('error', 'Try Later.');
+	            }
+	            redirect('admincontrol/articles');
+	        }else {
+	           	$this->session->set_flashdata('error', 'Please enter a value between 1 and '.$last_pos.'.');
+	           	redirect('admincontrol/articles');
+			}	        
+	    }
+    }
+
+    function newdashboard(){
+		$this->checksessionout();
+		$data["header_title"]=$this->newdashboard_title;
+		$data["header_title2"]="";
+		$data["leftsidebar_value"]=$this->newdashboard_value;
+
+		if(! $this->input->post("activeval")){ $condition="1"; } 
+		else{ 
+			if($this->input->post("activeval") == 1){ $condition="1"; }
+			else{ $condition="0"; }
+		}
+		
+		if(! $this->input->post("fromdateA")){
+			$currentdateA 	= date("Y-m-d");
+			$fromdateA 		= date('Y-m-01', strtotime($currentdateA)); 
+			$todateA 		= date('Y-m-t', strtotime($currentdateA));
+		}else{
+			$fromdateA 		= $this->input->post("fromdateA");  
+			$todateA 		= $this->input->post("todateA");
+			$searchtype 	= $this->input->post("searchtype");
+		}
+		
+		$userdetails 				= $this->getUserDetails();
+		$fromdateA1 				= date("Y-m-d", strtotime($fromdateA));
+		$todateA1 					= date("Y-m-d", strtotime($todateA));
+		$data["fromdateA"] 			= $fromdateA1;
+		
+		$data["warehouse_staff"] 	= $userdetails['warehouse_staff'];
+		$data["todateA"] 			= $todateA1;
+		$data["userdetails"] 		= $userdetails;
+		$data["daterangevalueA"] 	= $this->input->post("daterangevalueA");
+		$data["activestatus"]   	= $condition;
+		$data["getdata"] 			= $this->adminmodel->getdata_newdashboard($condition,$fromdateA1,$todateA1, ['warehouse_staff' => $userdetails['warehouse_staff']]);
+
+		if(! $this->input->post("fromdate")){
+			$currentdate 	= date("Y-m-d");
+			$fromdate1 		= date('Y-m-01', strtotime($currentdate)); 
+			$todate1 		= date('Y-m-t', strtotime($currentdate));
+		}
+		else{
+
+			$fromdate1 		= $this->input->post("fromdate");  
+			$todate1 		= $this->input->post("todate");
+			$searchtype 	= $this->input->post("searchtype");
+		}
+		
+		$fromdate 				= date("Y-m-d", strtotime($fromdate1));
+		$todate 				= date("Y-m-d", strtotime($todate1));
+		$data["fromdate"] 		= $fromdate;
+		$data["todate"] 		= $todate;
+		$data["daterangevalue"] =$this->input->post("daterangevalue");
+		$data["activestatus"]   = $condition;
+		$data["searchtype"] 	= isset($searchtype) ? $searchtype : '';
+		
+		$data["getdata2"] 		=$this->adminmodel->getdata_dashboardpages($fromdate,$todate, ['warehouse_staff' => $userdetails['warehouse_staff']]);			
+			
+		$this->allpage('newdashboard',$data);
+	}
+
 }

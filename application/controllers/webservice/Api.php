@@ -6064,5 +6064,621 @@ echo '<div class="col-md-6">Select Category
 		}
 		echo json_encode($jsonArray);
 	}
+
+	public function getarticlesHeadersList($id = '')
+	{		
+	    if ($id != '') {
+	        // $data = $this->adminmodel->get_sections_headers($id);
+	        $data = $this->Apimodel->get_sections_headers('row', ['id' => $id]);
+	        if ($data != '') {
+	            $jsonArray = array("status" => '1', "message" => 'Articles sections headers', 'result' => array_column($data, 'header', 'header_id'));
+	        } else {
+	            $jsonArray = array("status" => '0', "message" => 'No articles sections headers found', 'result' => []);
+	        }
+
+	    } else {
+	        $data = $this->Apimodel->get_sections_headers('all');
+
+	        if (count($data) > 0) {
+	            $jsonArray = array("status" => '1', "message" => 'Articles sections headers', 'result' => array_column($data, 'header', 'header_id'));
+	        } else {
+	            $jsonArray = array("status" => '0', "message" => 'No articles sections headers found', 'result' => []);
+	        }
+	    }
+
+	    echo json_encode($jsonArray);
+	}	
+
+	public function getarticlesList()
+	{
+	    if ($this->input->post() && $this->input->post('user_id') && $this->input->post('header_id')) {
+	        $postdata     = $this->input->post();
+	        $length = 10;
+	        if ($postdata['length'] == '' || $postdata['length'] == 0) {
+				$offset = 0;
+			}else{
+				$offset = $postdata['length'];
+			}
+
+	        $currentdate  = date("Y-m-d");	       
+	        $articlesdata = $this->Apimodel->getdata_articles('all', ['date' => $currentdate, 'header_id' => $postdata['header_id'], 'length' => $length, 'start' => $offset]);
+
+	        foreach ($articlesdata as $articlesdatakey => $articlesdatavalue) {
+	            $sections_headers = $this->Apimodel->get_sections_headers('all', ['id' => $articlesdatavalue['sections_headers']]);
+	            $sections_header = [];
+	            $sections_headerD = '';
+	            foreach ($sections_headers as $sections_headersdatakey => $sections_headersdatavalue) {
+	            	$sections_header[] = $sections_headersdatavalue['header'];	            	
+	            }
+	            
+	            $sections_headerD = implode(",",$sections_header);
+
+	            $bookmark = $this->Apimodel->get_bookmarks('row', ['article_id' => $articlesdatavalue['id'], 'user_id' => $postdata['user_id']]);
+
+	            if(!empty($bookmark)){
+	            	$bookmarkdata = 1;
+	            }else{
+	            	$bookmarkdata = 0;
+	            }
+
+				$jsonData['articlesdata'][] = [
+		        	'articleid'           => $articlesdatavalue['id'],
+		            'article_title'       => $articlesdatavalue['title'],
+		            'article_description' => $articlesdatavalue['description'],
+		            'article_image'   => isset($articlesdatavalue['file_thumb']) ? base_url() . 'images/' . $articlesdatavalue['file_thumb'] : '',
+		            // 'article_image'       => base_url() . 'images/' . $articlesdatavalue['file'],
+		            'sections_headers'    => $sections_headerD,
+		            'position'       	  => $articlesdatavalue['position'],
+		            'article_taggs'       => $articlesdatavalue['tags'],
+		            'bookmark'			  => $bookmarkdata,
+		            'created_at'          => $articlesdatavalue['created_at'],
+				];		        
+	        }
+	        $jsonArray = array("status" => '1', "message" => 'Article deatils', 'result' => isset($jsonData) ? $jsonData : []);
+	    } else {
+	        $jsonArray = array("status" => '0', "message" => 'Invalid request', 'result' => []);
+	    }
+	    echo json_encode($jsonArray);
+	}
+
+	public function article_details_api()
+	{
+	    if ($this->input->post() && $this->input->post('user_id') && $this->input->post('article_id')) {
+	        $postdata     = $this->input->post();
+	        
+	        $currentdate  = date("Y-m-d");	       
+	        $articlesdata = $this->Apimodel->getdata_articles('row', ['date' => $currentdate, 'id' => $postdata['article_id']]);	  
+	        if($articlesdata){
+		        $sections_headers = $this->Apimodel->get_sections_headers('all', ['id' => $articlesdata['sections_headers']]);
+		            
+		        foreach ($sections_headers as $sections_headersdatakey => $sections_headersdatavalue) {
+		        	$sections_header[] = $sections_headersdatavalue['header'];
+		        }
+
+				$sections_headerD = implode(",",$sections_header);
+
+				$bookmark = $this->Apimodel->get_bookmarks('row', ['article_id' => $articlesdata['id'], 'user_id' => $postdata['user_id']]);
+
+	            if(!empty($bookmark)){
+	            	$bookmarkdata = 1;
+	            }else{
+	            	$bookmarkdata = 0;
+	            }
+
+	            $no_of_comments = $this->Apimodel->getArticleCommentsList('count', ['article_id' => $articlesdata['id'], 'status' => '1']);
+		            
+		        $jsonData['artical_details'][] = [
+		        		'id'           		  => $articlesdata['id'],
+					    'published'           => $articlesdata['published'],
+					    'start_date'          => $articlesdata['start_date'],
+					    'end_date'            => $articlesdata['end_date'],
+					    'article_title'       => $articlesdata['title'],
+					    'article_description' => $articlesdata['description'],
+					    'article_image'       => base_url() . 'images/' . $articlesdata['file'],
+					    'position'            => $articlesdata['position'],
+					    'detail_file'         => base_url() . 'images/' . $articlesdata['detail_file'],
+					    'detail_file_type'    => $articlesdata['detail_file_type'],
+					    'audio_image'    	  => $articlesdata['audio_image'] ? base_url() . 'images/' . $articlesdata['audio_image'] : '',
+					    'details_level1'      => $articlesdata['details_level1'],
+					    'details_level2'      => $articlesdata['details_level2'],
+					    'sections_headers'    => $sections_headerD,
+					    'article_taggs'       => $articlesdata['tags'],
+					    'writers_name'        => $articlesdata['writers_name'],
+					    'bookmark'			  => $bookmarkdata,
+					    'impressions'         => $articlesdata['no_of_impressions'],					    
+					    'comments'            => $no_of_comments,
+					    'created_at'          => $articlesdata['created_at'],
+				];
+		        
+		        $jsonArray = array("status" => '1', "message" => 'Article deatils', 'result' => isset($jsonData) ? $jsonData : []);
+		    }
+		    else{
+		    	$jsonArray = array("status" => '1', "message" => 'Article deatils', 'result' => []);	
+		    }
+	    } else {
+	        $jsonArray = array("status" => '0', "message" => 'Invalid request', 'result' => []);
+	    }
+	    echo json_encode($jsonArray);
+	}
+
+	public function getarticlecommentslist()
+	{
+	    if ($this->input->post('user_id') && $this->input->post('article_id')) {
+	        $post        = $this->input->post();
+	        $commentdata = $this->Apimodel->getArticleCommentsList('all', ['article_id' => $post['article_id'], 'order' => 1, 'status' => '1']);
+
+	        foreach ($commentdata as $commentdatakey => $commentdatavalue) {
+	            $like = $this->Apimodel->CheckLike(['article_id' => $commentdatavalue['posted_on_article'], 'user_id' => $post['user_id'], 'comment_id' => $commentdatavalue['id'], 'action' => '1']);
+
+	            if (!empty($like)) {
+	                $likes = 1;
+	            } else {
+	                $likes = 0;
+	            }
+
+	            $reports = $this->Apimodel->CheckReport('all', ['article_id' => $commentdatavalue['posted_on_article'], 'user_id' => $post['user_id'], 'comment_id' => $commentdatavalue['id']]);
+
+	            if (!empty($reports)) {
+	                $report = 1;
+	            } else {
+	                $report = 0;
+	            }
+
+	            $likescount = $commentdatavalue['likes'];
+	            
+	            $reportscount = $this->Apimodel->CheckReport('count', ['article_id' => $commentdatavalue['posted_on_article'], 'comment_id' => $commentdatavalue['id']]);
+
+	            // echo $this->db->last_query();
+	            
+	            if($commentdatavalue['published'] == 1 || ($commentdatavalue['published'] == 0 && $commentdatavalue['posted_by'] == $post['user_id'])){
+		            $jsonData['commentsdata'][] = [
+		            	'commentsid'        => $commentdatavalue['id'],	                
+		                'user_id'           => $commentdatavalue['posted_by'],
+		                'posted_by'         => $commentdatavalue['username'],
+		                'posted_on_article' => $commentdatavalue['posted_on_article'],
+		                'comment'           => $commentdatavalue['comment'],	                
+		                'created_at'        => $commentdatavalue['created_at'],	                
+		                'likes'             => $likes,
+		                'report'            => $report,
+		                'likescount'        => $likescount,
+		                'published'         => $commentdatavalue['published'],
+		                'reportscount'      => $reportscount,
+		            ];
+	            }	                	            
+	        }
+	        
+	        $jsonArray = array("status" => '1', "message" => 'Article comment list', 'result' => isset($jsonData) ? $jsonData : []);
+	    } else {
+	        $jsonArray = array("status" => '0', "message" => 'Invalid request', 'result' => []);
+	    }
+	    echo json_encode($jsonArray);
+	}
+
+    public function articlecommentsaction()
+    {
+        if ($this->input->post() && $this->input->post('user_id') && $this->input->post('article_id')) {
+            $this->form_validation->set_rules('comments', 'Comments', 'trim|required');
+
+            if ($this->form_validation->run() == false) {
+                $findtext    = ['<div class="form_error">', "</div>"];
+                $replacetext = ['', ''];
+                $errorMsg    = str_replace($findtext, $replacetext, validation_errors());
+                $jsonArray   = array("status" => '0', "message" => $errorMsg, 'result' => []);
+            } else {
+                $post        = $this->input->post();
+                $commentdata = $this->Apimodel->articlecommentsAction($post);
+                $post['id']  = $commentdata['id'];
+                $jsonArray   = array("status" => '1', "message" => 'Comments created successfully', 'result' => $post);
+            }
+
+        } else {
+            $jsonArray = array("status" => '0', "message" => 'Invalid request', 'result' => []);
+        }
+        echo json_encode($jsonArray);
+    }
+
+    public function deletearticlecomment()
+    {
+        if ($this->input->post() && $this->input->post('user_id') && $this->input->post('article_id') && $this->input->post('comment_id')) {
+            $post                 = $this->input->post();
+            $commentdata          = $this->Apimodel->articlecommentsAction($post);
+            $post['id']           = $commentdata['id'];            
+            $jsonArray            = array("status" => '1', "message" => 'Comments deleted successfully', 'result' => $post);
+
+        } else {
+            $jsonArray = array("status" => '0', "message" => 'Invalid request', 'result' => []);
+        }
+        echo json_encode($jsonArray);
+    }
+
+    public function articlecommentlikes(){
+		if ($this->input->post() && $this->input->post('user_id') && $this->input->post('article_id') && $this->input->post('comment_id') && $this->input->post('type')) {
+			$post 			= $this->input->post();
+			
+			if ($this->input->post('type') !='' && $this->input->post('type') =='like') {
+				$votedata 	= $this->Apimodel->articlecommentlikesaction($post);
+				$sataus = '1';
+				$message = 'Like successfully.';
+
+			}elseif($this->input->post('type') !='' && $this->input->post('type') =='dislike'){
+				$votedata 	= $this->Apimodel->articlecommentlikesaction($post);
+				$sataus = '1';
+				$message = 'Dislike successfully.';
+			}
+			
+			// $post['likecount'] 	= $votedata['like'];			
+			$likecount = $this->Apimodel->GetLikesCount(['article_id' => $post['article_id'], 'comment_id' => $post['comment_id']]);
+	        $post['likecount'] 	= $likecount['like'];
+
+			$jsonArray = array("status"=>$sataus, "message"=>$message, 'result' => $post);
+			
+		}else{
+			$jsonArray = array("status"=>'0', "message"=>'Invalid request', 'result' => []);
+		}
+		echo json_encode($jsonArray);
+	}
+
+	public function articlebookmark(){
+		if ($this->input->post() && $this->input->post('user_id') && $this->input->post('article_id') && $this->input->post('type')) {
+			$post 			= $this->input->post();
+			
+			if ($this->input->post('type') !='' && $this->input->post('type') =='bookmark') {
+				$data 	= $this->Apimodel->articlebookmarkaction($post);
+				$sataus = '1';
+				$message = 'Bookmark successfully.';
+
+			}elseif($this->input->post('type') !='' && $this->input->post('type') =='unbookmark'){
+				$data 	= $this->Apimodel->articlebookmarkaction($post);
+				$sataus = '1';
+				$message = 'Unbookmark successfully.';
+			}
+						
+			$jsonArray = array("status"=>$sataus, "message"=>$message, 'result' => $data);
+			
+		}else{
+			$jsonArray = array("status"=>'0', "message"=>'Invalid request', 'result' => []);
+		}
+		echo json_encode($jsonArray);
+	}
+
+	public function getarticlebookmark()
+	{
+		if ($this->input->post('user_id')) {
+	        $post        = $this->input->post();
+	        $bookmarkdata = $this->Apimodel->get_bookmarks('all', ['user_id' => $post['user_id']]);
+
+	        $currentdate  = date("Y-m-d");	  
+
+	        if($bookmarkdata){
+		        foreach ($bookmarkdata as $bookmarkdatakey => $bookmarkdatavalue) {	   
+		        	$articlesdata = $this->Apimodel->getdata_articles('row', ['date' => $currentdate, 'id' => $bookmarkdatavalue['article_id']]);	  
+		        	
+		        	if($articlesdata){
+				        $sections_headers = $this->Apimodel->get_sections_headers('all', ['id' => $articlesdata['sections_headers']]);
+				            
+				        foreach ($sections_headers as $sections_headersdatakey => $sections_headersdatavalue) {
+				        	$sections_header[] = $sections_headersdatavalue['header'];
+				        }
+
+						$sections_headerD = implode(",",$sections_header);
+
+						$bookmark = $this->Apimodel->get_bookmarks('row', ['article_id' => $articlesdata['id'], 'user_id' => $post['user_id']]);
+
+			            if(!empty($bookmark)){
+			            	$bookmarksdata = 1;
+			            }else{
+			            	$bookmarksdata = 0;
+			            }
+
+				        $jsonData['bookmarkdata'][] = [			        		
+							    'articleid'           => $articlesdata['id'],
+				                'article_title'       => $articlesdata['title'],
+				                'article_description' => $articlesdata['description'],
+				                'article_image'       => base_url() . 'images/' . $articlesdata['file'],
+				                'sections_headers'    => $sections_headerD,
+				                'position'       	  => $articlesdata['position'],
+				                'article_taggs'       => $articlesdata['tags'],
+				                'bookmark'			  => $bookmarksdata,
+				                'created_at'          => $articlesdata['created_at'],
+						];
+				        
+				        $jsonArray = array("status" => '1', "message" => 'Article bookmark list', 'result' => isset($jsonData) ? $jsonData : []);
+				    }		
+			    } 
+		    } else {
+	        	$jsonArray = array("status" => '0', "message" => 'You have no bookmarks yet', 'result' => []);
+	    	}             	           
+	    } else {
+	        $jsonArray = array("status" => '0', "message" => 'Invalid request', 'result' => []);
+	    }
+	    echo json_encode($jsonArray);
+	}
+
+	public function articlesearch()
+	{
+		if ($this->input->post() && $this->input->post('user_id')) {
+	        $post        = $this->input->post();	        
+	        $currentdate  = date("Y-m-d");	  
+
+	        $articlesdata = $this->Apimodel->getdata_articles('all', ['date' => $currentdate, 'keyword' => $post['keyword']]);
+
+	        // echo $this->db->last_query(); die();
+	        foreach ($articlesdata as $articlesdatakey => $articlesdatavalue) {
+	            $sections_headers = $this->Apimodel->get_sections_headers('all', ['id' => $articlesdatavalue['sections_headers']]);
+	            $sections_header  = [];
+	            $sections_headerD = '';
+	            foreach ($sections_headers as $sections_headersdatakey => $sections_headersdatavalue) {
+	                $sections_header[]    = $sections_headersdatavalue['header'];	                
+	            }
+	            
+	            $sections_headerD = implode(",", $sections_header);
+
+	            $bookmark = $this->Apimodel->get_bookmarks('row', ['article_id' => $articlesdatavalue['id'], 'user_id' => $post['user_id']]);
+
+	            if (!empty($bookmark)) {
+	                $bookmarkdata = 1;
+	            } else {
+	                $bookmarkdata = 0;
+	            }
+	            
+	            $jsonData['articlesearchdata'][] = [
+	                'articleid'           => $articlesdatavalue['id'],
+	                'article_title'       => $articlesdatavalue['title'],
+	                'article_description' => $articlesdatavalue['description'],
+	                'article_image'       => base_url() . 'images/' . $articlesdatavalue['file'],
+	                'sections_headers'    => $sections_headerD,
+	                'position'            => $articlesdatavalue['position'],
+	                'article_taggs'       => $articlesdatavalue['tags'],
+	                'bookmark'            => $bookmarkdata,
+	                'created_at'          => $articlesdatavalue['created_at'],
+	            ];	            
+	        }           
+	        $jsonArray = array("status" => '1', "message" => 'Article search list', 'result' => isset($jsonData) ? $jsonData : []);
+	    } else {
+	        $jsonArray = array("status" => '0', "message" => 'Invalid request', 'result' => []);
+	    }
+	    echo json_encode($jsonArray);
+	}
+
+	public function articleimpressioncount()
+	{				
+		if ($this->input->post() && $this->input->post('user_id') && $this->input->post('article_id')) {
+			$post        = $this->input->post();
+
+			$this->db->set('no_of_impressions', '`no_of_impressions`+ 1', FALSE);
+			$this->db->where('id', $post['article_id']);
+			$result = $this->db->update('articles');
+			$jsonArray = array("status" => '1', "message" => 'New Impression count Added', 'result' => []);
+		} else {
+	        $jsonArray = array("status" => '0', "message" => 'Invalid request', 'result' => []);
+	    }
+		echo json_encode($jsonArray);
+	}
+
+	public function getadvertList()
+	{
+	    if ($this->input->post() && $this->input->post('user_id')) {
+	        $postdata     = $this->input->post();
+	        
+	        $currentdate  = date("Y-m-d");	       
+	        $advertisementdata = $this->Apimodel->getdata_advertisement('all', ['date' => $currentdate, 'advert_type' => '1']);
+
+	        foreach ($advertisementdata as $advertisementdatakey => $advertisementdatavalue) {
+	        	if($advertisementdatavalue['level'] == 'Level 1'){
+				    $jsonData['level1'][] = [
+				    	'id'           		=> $advertisementdatavalue['id'],					    
+						'status'			=> $advertisementdatavalue['campaign_status'],
+						'advert_type'       => $advertisementdatavalue['advert_type'],
+						'level'       		=> $advertisementdatavalue['level'],					
+						'client_name'		=> $advertisementdatavalue['client_name'],
+						'description'		=> $advertisementdatavalue['description'],
+						'url'				=> $advertisementdatavalue['url'],					
+						'file_type'			=> $advertisementdatavalue['file_type'],
+						'file'    			=> base_url() . 'images/' . $advertisementdatavalue['file'],
+						'autoplay_video'	=> $advertisementdatavalue['autoplay_video'],						
+					];	
+				}elseif($advertisementdatavalue['level'] == 'Level 2'){
+					$jsonData['level2'][] = [
+				    	'id'           		=> $advertisementdatavalue['id'],					    
+						'status'			=> $advertisementdatavalue['campaign_status'],
+						'advert_type'       => $advertisementdatavalue['advert_type'],
+						'level'       		=> $advertisementdatavalue['level'],					
+						'client_name'		=> $advertisementdatavalue['client_name'],
+						'description'		=> $advertisementdatavalue['description'],
+						'url'				=> $advertisementdatavalue['url'],					
+						'file_type'			=> $advertisementdatavalue['file_type'],
+						'file'    			=> base_url() . 'images/' . $advertisementdatavalue['file'],
+						'autoplay_video'	=> $advertisementdatavalue['autoplay_video'],						
+					];
+				}
+			}	        
+			$jsonArray = array("status" => '1', "message" => 'Article deatils', 'result' => isset($jsonData) ? $jsonData : []);
+	    } else {
+	        $jsonArray = array("status" => '0', "message" => 'Invalid request', 'result' => []);
+	    }
+	    echo json_encode($jsonArray);
+	}
+
+	public function getheaderList()
+	{
+	    if ($this->input->post() && $this->input->post('user_id')) {
+	        $postdata     = $this->input->post();
+	        
+	        $currentdate  = date("Y-m-d");	       
+	        $advertisementdata = $this->Apimodel->getdata_advertisement('all', ['date' => $currentdate, 'advert_type' => '0']);
+
+	        foreach ($advertisementdata as $advertisementdatakey => $advertisementdatavalue) {
+	        	if($advertisementdatavalue['level'] == 'Level 1'){
+				    $jsonData['level1'][] = [
+				    	'id'           		=> $advertisementdatavalue['id'],					    
+						'status'			=> $advertisementdatavalue['campaign_status'],
+						'advert_type'       => $advertisementdatavalue['advert_type'],
+						'level'       		=> $advertisementdatavalue['level'],					
+						'client_name'		=> $advertisementdatavalue['client_name'],
+						'description'		=> $advertisementdatavalue['description'],
+						'url'				=> $advertisementdatavalue['url'],					
+						'file_type'			=> $advertisementdatavalue['file_type'],
+						'file'    			=> base_url() . 'images/' . $advertisementdatavalue['file'],
+						'autoplay_video'	=> $advertisementdatavalue['autoplay_video'],						
+					];	
+				}elseif($advertisementdatavalue['level'] == 'Level 2'){
+					$jsonData['level2'][] = [
+				    	'id'           		=> $advertisementdatavalue['id'],					    
+						'status'			=> $advertisementdatavalue['campaign_status'],
+						'advert_type'       => $advertisementdatavalue['advert_type'],
+						'level'       		=> $advertisementdatavalue['level'],					
+						'client_name'		=> $advertisementdatavalue['client_name'],
+						'description'		=> $advertisementdatavalue['description'],
+						'url'				=> $advertisementdatavalue['url'],					
+						'file_type'			=> $advertisementdatavalue['file_type'],
+						'file'    			=> base_url() . 'images/' . $advertisementdatavalue['file'],
+						'autoplay_video'	=> $advertisementdatavalue['autoplay_video'],						
+					];
+				}
+			}	        
+			$jsonArray = array("status" => '1', "message" => 'Article deatils', 'result' => isset($jsonData) ? $jsonData : []);
+	    } else {
+	        $jsonArray = array("status" => '0', "message" => 'Invalid request', 'result' => []);
+	    }
+	    echo json_encode($jsonArray);
+	}
+
+	public function advertisementimpressioncount()
+	{				
+		if ($this->input->post() && $this->input->post('user_id') && $this->input->post('ad_id') && $this->input->post('newpageid')) {
+			$post        = $this->input->post();			
+
+			$date 		= date('Y-m-d');
+			$data 		= $this->Apimodel->ad_impressionsClicksgetList('row', ['date' => $date, 'ad_id' => $post['ad_id'], 'newpageid' => $post['newpageid']]);
+			if ($data ) $isdata = '1';
+			else $isdata = '0';
+				
+			$impressionsdata = $this->Apimodel->ad_impressionsClicksAction(['date' => $date, 'requesttype' => 'impressionscount', 'isdata' => $isdata, 'bannerdata' => isset($data) ? $data : '', 'ad_id' => $post['ad_id'], 'newpageid' => $post['newpageid']]);
+			$result = $impressionsdata;
+			
+			$jsonArray = array("status" => '1', "message" => 'New Impression count Added', 'result' => $result);
+		} else {
+	        $jsonArray = array("status" => '0', "message" => 'Invalid request', 'result' => []);
+	    }
+		echo json_encode($jsonArray);
+	}
+
+	public function advertisementclickcount()
+	{						
+		if ($this->input->post() && $this->input->post('user_id') && $this->input->post('ad_id') && $this->input->post('newpageid')) {
+			$post        = $this->input->post();
+
+			$date 		= date('Y-m-d');
+			$data 		= $this->Apimodel->ad_impressionsClicksgetList('row', ['date' => $date, 'ad_id' => $post['ad_id'], 'newpageid' => $post['newpageid']]);
+			
+			if ($data ) $isdata = '1';
+			else $isdata = '0';
+				
+			$clicksdata = $this->Apimodel->ad_impressionsClicksAction(['date' => $date, 'requesttype' => 'clickscount', 'isdata' => $isdata, 'bannerdata' => isset($data) ? $data : '', 'ad_id' => $post['ad_id'], 'newpageid' => $post['newpageid']]);
+			$result = $clicksdata;
+
+			$jsonArray = array("status" => '1', "message" => 'New Click count Added', 'result' => $result);
+		} else {
+	        $jsonArray = array("status" => '0', "message" => 'Invalid request', 'result' => []);
+	    }
+		echo json_encode($jsonArray);
+	}
+
+	public function getcommentsreports()
+    {        
+        if ($this->input->post('user_id')) {
+            $post        = $this->input->post();
+            $reportdata = $this->Apimodel->getArticleCommentsReports('all', ['status' => '1']);
+            
+            foreach ($reportdata as $reportdatakey => $reportdatavalue) {                
+                $jsonData['reportsdata'][] = [
+                    'report_id'         => $reportdatavalue['id'],
+                    'report_name'       => $reportdatavalue['report_name'],
+                ];
+            }
+        
+            $jsonArray   = array("status" => '1', "message" => 'Article Comments Reports list', 'result' => isset($jsonData) ? $jsonData : []);
+        } else {
+            $jsonArray = array("status" => '0', "message" => 'Invalid request', 'result' => []);
+        }
+        echo json_encode($jsonArray);
+    }
+
+    public function commentsreportsaction()
+    {
+        if ($this->input->post('user_id') && $this->input->post('article_id') && $this->input->post('comment_id') && $this->input->post('report_id')) {
+            $post       = $this->input->post();
+            $reportdata = $this->Apimodel->articlecommentsreportAction($post);
+            if ($reportdata) {
+                $jsonArray = array("status" => '1', "message" => 'Reported successfully', 'result' => $post);
+            } else {
+                $jsonArray = array("status" => '0', "message" => 'Something went wrong please try again!', 'result' => []);
+            }
+        } else {
+            $jsonArray = array("status" => '0', "message" => 'Invalid request', 'result' => []);
+        }
+        echo json_encode($jsonArray);
+    }
+
+    public function newbanner_global()
+	{
+		if ($this->input->post() && $this->input->post('user_id')) {
+			$post 				= $this->input->post();
+			$global 			= $this->config->item('pagesid')['33'];
+			$globalpage 		= $this->adminmodel->getpageid_api("pages",$global);
+			$data 				= array();
+			$globaltopbanner 	= $this->adminmodel->getfulldata_newapi("advertising_adbanners",$global);
+			$userlogdata 		= $this->userlog($post['user_id']);
+			$userdetails 		= $this->Usersmodel->getList('row', ['userid' => $post['user_id']]);
+			$data['userlog']	= $userlogdata['log'];
+			$data['ban_unban']	= $userdetails['is_ban'];
+			$data['email']		= $userdetails['email'];
+			for($i=0; $i < count($globaltopbanner); $i++){			
+				$data['globaltopbanner'][$i]['image']		= base_url().'./images/'.$globaltopbanner[$i]['file'];
+				$data['globaltopbanner'][$i]['link']		= $globaltopbanner[$i]['url'];
+				$data['globaltopbanner'][$i]['imageid']		= $globaltopbanner[$i]['id'];
+				$data['globaltopbanner'][$i]['pageid']		= $global;
+				$data['globaltopbanner'][$i]['type']		= $globaltopbanner[$i]['file_type'];
+			}
+		}else{
+			$global 			= $this->config->item('pagesid')['33'];
+			$globalpage 		= $this->adminmodel->getpageid_api("pages",$global);
+			$globaltopbanner 	= $this->adminmodel->getfulldata_newapi("advertising_adbanners",$global);
+			for($i=0; $i < count($globaltopbanner); $i++){			
+				$data['globaltopbanner'][$i]['image']		= base_url().'./images/'.$globaltopbanner[$i]['file'];
+				$data['globaltopbanner'][$i]['link']		= $globaltopbanner[$i]['url'];
+				$data['globaltopbanner'][$i]['imageid']		= $globaltopbanner[$i]['id'];
+				$data['globaltopbanner'][$i]['pageid']		= $global;
+				$data['globaltopbanner'][$i]['type']		= $globaltopbanner[$i]['file_type'];
+			}
+			// $data = array("status"=>'0', "message"=>'Invalid request', 'result' => []);
+		}	
+		echo json_encode($data);
+	}
+
+	public function newtopbanner()
+	{
+		if ($this->input->post() && $this->input->post('page_id')) {
+			$post 				= $this->input->post();
+			$global 			= $post['page_id'];	
+
+			$newtopbanner 	= $this->adminmodel->getfulldata_newapi("advertising_adbanners",$global);		
+
+	        foreach ($newtopbanner as $globaltopbannerkey => $globaltopbannervalue) {	        	
+				$jsonData['newtopbanner'][] = [
+				   	'id'           		=> $globaltopbannervalue['id'],					    
+					'url'				=> $globaltopbannervalue['url'],					
+					'file_type'			=> $globaltopbannervalue['file_type'],
+					'file'    			=> base_url() . 'images/' . $globaltopbannervalue['file'],
+					'autoplay_video'	=> $globaltopbannervalue['autoplay_video'],						
+				];					
+			}	        
+
+			$jsonArray = array("status" => '1', "message" => 'newtopbanner deatils', 'result' => isset($jsonData) ? $jsonData : []);
+		} else {
+            $jsonArray = array("status" => '0', "message" => 'Invalid request', 'result' => []);
+        }
+        echo json_encode($jsonArray);
+	}
 }
 ?>

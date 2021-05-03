@@ -331,4 +331,75 @@ class Cron extends CI_Controller {
 
         $this->db->insert('cron_log', $data1);
     }
+
+    public function ad_cron1()
+	{
+	    $start_time     = date('Y-m-d H:i:s');
+	    $current_date   = date('Y-m-d');
+	    $yesterday_date = date('Y-m-d', strtotime("yesterday"));
+
+	    $this->db->where('campaign_status', '1');
+	    $this->db->where('end_date <=', $yesterday_date);
+	    $query   = $this->db->get('advertising_adbanners');
+	    $getdata = $query->result_array();
+
+	    // echo $this->db->last_query(); die();
+
+	    foreach ($getdata as $row) {
+	        $request['campaign_status'] = '0';
+
+	        $request['inactive_date'] = $current_date;
+
+	        $data = $this->db->update('advertising_adbanners', $request, ['id' => $row['id']]);
+	    }
+
+	    $end_time = date('Y-m-d H:i:s');
+
+	    $data1 = array(
+	        'filename'   => base_url().'common/Cron/ad_cron1',
+	        'start_time' => $start_time,
+	        'end_time'   => $end_time,
+	    );
+
+	    $this->db->insert('cron_log', $data1);
+	}
+
+	public function ad_cron2()
+	{
+	    $start_time   = date('Y-m-d H:i:s');
+	    $current_date = date('Y-m-d');
+
+	    $this->db->select('ad.id as ad_id, ad.impressions, SUM(ct.impressions) AS count_impressions');
+	    $this->db->from('advertising_adbanners ad');
+	    $this->db->join('advertising_adbanners_impressions_count ct', 'ct.bannerid = ad.id', 'left');
+
+	    $this->db->where('ad.campaign_status', '1');
+	    $this->db->where('ad.impressions >', 0);
+
+	    $this->db->group_by('ad.id');
+	    $this->db->order_by('ad.id desc');
+
+	    $query1   = $this->db->get();
+	    $getdata1 = $query1->result_array();
+	    // echo $this->db->last_query(); die();
+
+	    foreach ($getdata1 as $row1) {
+	        if ($row1['count_impressions'] >= $row1['impressions']) {
+	            $request1['campaign_status'] = '0';
+	            $request1['inactive_date']   = $current_date;
+
+	            $data = $this->db->update('advertising_adbanners', $request1, ['id' => $row1['ad_id']]);
+	        }
+	    }
+
+	    $end_time = date('Y-m-d H:i:s');
+
+	    $data1 = array(
+	        'filename'   => base_url().'common/Cron/ad_cron2',
+	        'start_time' => $start_time,
+	        'end_time'   => $end_time,
+	    );
+
+	    $this->db->insert('cron_log', $data1);
+	}
 }
