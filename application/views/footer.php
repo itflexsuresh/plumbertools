@@ -108,6 +108,13 @@
 				$("#treeview-menu6").toggle(); 
 			});
 
+			$("#treeview7").click(function(){
+				$("#treeview-menu7").toggle(); 
+			});
+			$("#treeview8").click(function(){
+				$("#treeview-menu8").toggle(); 
+			});
+
 
 			$("#datepick").click(function(){ 
 				$('#datepick').datepicker();
@@ -155,12 +162,12 @@
 			  $(".nav > li > ul > li.active").parent().parent().addClass("cus-tog");
 			}
 
-			var target = $(".cus-tog");
-			if( target.length != '0') {
-				$('.sidebar-wrapper').animate({
-	            	scrollTop: target.offset().top
-	  			}, 2000);
-			}
+		var target = $(".cus-tog");
+		if( target.length != '0') {
+			$('.sidebar-wrapper').animate({
+            	scrollTop: target.offset().top
+  			}, 2000);
+		}
 
 });
 
@@ -170,7 +177,6 @@
 //         scrollTop: jQuery(".cus-tog").offset().top
 //     }, 2000);
 // });
-
 	</script>
 
 </html>
