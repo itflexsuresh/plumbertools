@@ -474,6 +474,30 @@ $writepermission  = explode(',', $userdetails['write_permission']);
                         </ul>
                      </li>
                   <?php }?>
+                  <?php if ($usertype =='1' || (in_array('37', $readpermission)) || in_array('37', $writepermission)) { ?>
+                     <li id="treeview8">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                           <i class="pe-7s-helm"></i>                
+                           <p>Advanced Valves <b class="caret"></b></p>
+                        </a>
+                        <ul id="treeview-menu8">
+                           <?php if ($usertype =='1' || (in_array('37', $readpermission)) || in_array('37', $writepermission)) { ?>
+                              <li <?php if($leftsidebar_value == 68 ) { ?> class="active" <?php } ?>>
+                                 <a href="<?php echo base_url();?>admincontrol/productrange">
+                                    <p> Product Range</p>
+                                 </a>
+                              </li>
+                           <?php } ?>
+                           <?php if ($usertype =='1' || (in_array('38', $readpermission)) || in_array('38', $writepermission)) { ?>
+                              <li <?php if($leftsidebar_value == 69 ) { ?> class="active" <?php } ?>>
+                                 <a href="<?php echo base_url();?>admincontrol/advancedcontactus">
+                                    <p> Contact Us</p>
+                                 </a>
+                              </li>
+                           <?php } ?>
+                        </ul>
+                     </li>
+                  <?php }?>
                </ul>
             <?php } ?>
             

@@ -80,6 +80,13 @@ $config['pagesid'] 					= 	[
 											'57' 	=> '58', // Findar
 											'58' 	=> '59', // SAW
 											'59' 	=> '60', // Rate my work
+											'60' 	=> '61', // Coming Soon
+											'61' 	=> '62', // Why Builders?
+											'62' 	=> '63', // Plumbing Essentials and Promotions
+											'63' 	=> '64', // Builders Trade Card
+											'64' 	=> '65', // Plumbing Tips
+											'65' 	=> '66', // Store Locator
+											'66' 	=> '67', // Advance Valves
 
 										];
 $config['truefalse'] 				= 	[
@@ -201,5 +208,98 @@ $config['buildertitle'] 			= 	[
 
 											'4' 	=> 'Store Locator',
 
+										];
+
+$config['advance_valves_adminEmail'] 	= 	[
+
+											'0' 	=> 'sheikmadhar@itflexsolutions.com',
+											'1' 	=> 'info@advancedvalves.co.za',
+											'2' 	=> 'manikandanrengasamy@itflexsolutions.com',
+											'1' 	=> 'suresh@itflexsolutions.com',
+
+										];
+
+$config['advcancevalvestitle'] 			= 	[
+
+											'0' 	=> 'Product Range',
+
+											'1' 	=> 'Video Demos',
+
+											'2' 	=> 'Certifications',
+
+											'3' 	=> 'About Us',
+
+											'4' 	=> 'Contact Us',
+
+											'5' 	=> 'The most advanced valves',
+
+											'6' 	=> 'click here',
+
+											'7' 	=> 'Pressure Control Valve',
+
+											'8' 	=> 'Vacuum Breaker',
+
+											'9' 	=> 'Safety Valves',
+
+										];
+
+$config['socialsharelinks'] 			= 	[
+
+											'0' 	=> 'https://www.facebook.com/AdvancedValves',
+										];
+
+$config['advance_valves_contact_details'] = 	[
+
+											'0' 	=> '+27 11 493 1244',
+											'1' 	=> 'info@advancedvalves.co.za',
+											'2' 	=> 'Mon - Thurs: 7am - 5pm',
+											'3' 	=> 'Fri: 7am - 1pm',
+										];
+
+$config['videodemos_aboutus'] = 	[
+
+											'0' 	=> 'Polymer strength test – the valve is driven over numerous times! Take a look at how it passes a 10 000 kPa pressure test.',
+											'1' 	=> 'Cartridge clean.',
+											'2' 	=> 'Relief clean.',
+										];
+$config['videodemos_pressurevalve'] = 	[
+
+											'0' 	=> 'The valve is driven over numerous times! Take a look at how it passes a 10 000 kPa pressure test.',
+											'1' 	=> '',
+											'2' 	=> '',
+											'3' 	=> 'Calibration of 380 kPa with high pressure test at 2 000 kPa.',
+											'4' 	=> 'Calibration of 380 kPa with high pressure test at 2 000 kPa.',
+											'5' 	=> '',
+											'6' 	=> '',
+											'7' 	=> '',
+										];
+$config['videodemos_vacuumvalve'] = 	[
+
+											'0' 	=> 'Polymer strength test – the valve is driven over numerous times! Take a look at how it passes a 10 000 kPa pressure test.',
+											'1' 	=> 'Cartridge clean.',
+											'2' 	=> 'Relief clean.',
+										];
+$config['videodemos_safetyvalves'] = 	[
+
+											'0' 	=> 'Polymer strength test – the valve is driven over numerous times! Take a look at how it passes a 10 000 kPa pressure test.',
+											'1' 	=> 'Cartridge clean.',
+											'2' 	=> 'Relief clean.',
+										];
+$config['aboutus_content'] = 	[
+
+											'0' 	=> '27 years ago, Richard Wiederhold started a geyser valve maintenance business in Johannesburg. Through the knowledge and experience gained in manufacturing, Richard discovered that technical polymers are as good as brass but cost way less, and that engineering plastics is the way forward. The business evolved into Advanced Valves, which is now the largest hot water ancillary product manufacturing business in South Africa, and a “Proudly South African” member.',
+											'1' 	=> 'Advanced Valves now has 72 employees assembling over 2 million components a month, to produce 56 000 completed products for the South African market. With growth in market share year on year, Advanced Valves continues to make giant advances in producing the most affordable, highest quality products available in South Africa.',
+											'2' => 'Our Pressure Control Valve is patented and the PCV body is moulded in WRAS approved Nylon PA 66 polymer. Each unit is tested and calibrated to ensure individual quality control with a two-year guarantee. There is no better value for money pressure control geyser valve on the market. Our product range is designed to withstand 10 000 kPa water pressure & 180 degrees Celsius temperature, and all our products are SABS and SACPS approved (listed on the SABS website under the SANS 198 and SANS 1808-53 specifications).',
+										];
+
+$config['video_url'] = 	[
+
+											'0' 	=> 'adv-drive-over-test-fnl-1_dvd.mp4',
+											'1' 	=> 'cartridge-clean1_dvd.mp4',
+											'2' 	=> 'relief-clean2_dvd.mp4',
+											'3' 	=> 'control-set-point-1_dvd.mp4',
+											'4' 	=> 'relief-set-point1_dvd.mp4',
+											'5' 	=> 'pressure-test-to-10-000kpa_dvd.mp4',
+											'6' 	=> 'vacuum-breaker_dvd.mp4',
 										];
 

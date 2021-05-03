@@ -6680,5 +6680,419 @@ echo '<div class="col-md-6">Select Category
         }
         echo json_encode($jsonArray);
 	}
+
+	// Advance Valves :
+
+	public function aadvanced_valves_contactus()
+	{
+		
+		$data = array();	
+		if($this->input->post("name") != '' && $this->input->post("email") != '' && $this->input->post("message") != '')
+		{
+			$post = $this->input->post();
+			
+			$to 			= $this->config->item('advance_valves_adminEmail')[1];
+			$name 			= $post['name'];
+			$email 			= $post['email'];
+			$message 		= $post['message'];
+			$body 			= "Good day <br/><br/> You have recieved a message from ".$name." regarding your Advanced Valves Contactus, the user details are: <br/><br/> Email Address: ".$email." <br/><br/> Message :".$message."<br/><br/>  Note: <br/> This is an auto-generated email.";
+			$mailsubject 	= 'Message from APP Plumber Advanced Valves Contact Us';
+			// $from 			= 'donotreply@advancedvalves.co.za';
+			$from 			= 'donotreply@plumbertools.co.za';
+
+			$mailData = $this->Commonmodel->sentCustomMail($to, $mailsubject, $body, $from);
+			if ($mailData == 'true') {
+
+				$insertdata = [
+					"name" 			=> $post['name'],
+					"email" 		=> $post['email'],
+					"message" 		=> $post['message'],
+					"createddate" 	=> date("Y-m-d h:i:s"),
+					"published" 	=> '1'
+					];
+				$statusvalue 		= $this->adminmodel->insertdata("advanced_valves_contactus",$insertdata);
+				$data = [
+					'message' 	=> "Thanks for reaching us. We'll get back to you soon.",
+					'status' 	=> "1",
+				];
+			}else{
+
+				$data = [
+					'message' 	=> "Something went wrong please try again!.",
+					'status' 	=> "0",
+				];
+			}
+		}
+		else{
+
+			$data = [
+				'message' 	=> "Mandatory fields are missing",
+				'status' 	=> "0",
+			];
+		}
+		echo json_encode($data);
+	}
+
+	public function advancedvalves(){
+
+		if ($this->input->post() && $this->input->post('user_id')) {
+
+			$pageid = $this->config->item('pagesid')[66];
+
+			$jsonData['logo'] = base_url().'appicons/advanced_valves_logo.jpg';
+
+			$jsonData['advancedvalves'][0] = [
+				'image' => base_url().'appicons/advance_valves_product_range.png',
+				'title' => $this->config->item('advcancevalvestitle')[0],
+				'url' => 'AdvancedValvesProduct.html',
+			];
+			$jsonData['advancedvalves'][1] = [
+				'image' => base_url().'appicons/advance_valves_videos_demos.png',
+				'title' => $this->config->item('advcancevalvestitle')[1],
+				'url' => 'AdvancedValves_Video.html',
+			];
+			$jsonData['advancedvalves'][2] = [
+				'image' => base_url().'appicons/advanced_valves_certification.png',
+				'title' => $this->config->item('advcancevalvestitle')[2],
+				'url' => 'AdvancedValves_Certification.html',
+			];
+			$jsonData['advancedvalves'][3] = [
+				'image' => base_url().'appicons/advance_valves_aboutus.png',
+				'title' => $this->config->item('advcancevalvestitle')[3],
+				'url' => 'AdvancedValvesAbout.html',
+			];
+			$jsonData['advancedvalves'][4] = [
+				'image' => base_url().'appicons/advanced_valves_contactus.png',
+				'title' => $this->config->item('advcancevalvestitle')[4],
+				'url' => 'AdvancedValvesContactus.html',
+			];
+
+			$jsonData['advancedvalves'][5] = [
+				'title' => $this->config->item('advcancevalvestitle')[5],
+			];
+
+			$jsonData['advancedvalves'][6] = [
+				'title' => $this->config->item('advcancevalvestitle')[6],
+			];
+		
+			$scrollingtickerline = $this->adminmodel->getfulldata_scrolling_api("scrollingticker","1");		
+			for($i=0; $i < count($scrollingtickerline); $i++){			
+				$jsonData["scrollingticker"][$i]['content'] = $scrollingtickerline[$i]['scrollingticker'];
+			}
+
+			$jsonArray = array("status"=>'1', "message"=>'Advance Valves', 'result' => $jsonData);
+		}else{
+			$jsonArray = array("status"=>'0', "message"=>'Invalid request', 'result' => []);
+		}
+		echo json_encode($jsonArray);
+	}
+
+	public function aboutusLanding(){
+		if ($this->input->post() && $this->input->post('user_id')) {
+
+			$pageid = $this->config->item('pagesid')[66];
+
+			$jsonData['logo'] = base_url().'appicons/advanced_valves_logo.jpg';
+
+			//$jsonData['advancedvalves'][0] = [
+			//	'video' 	=> base_url().'videos/b247be1247bae737123e09a02dedf387.mp4',
+			//	'content' 	=> $this->config->item('aboutus_content')[0],
+			//];
+			//$jsonData['advancedvalves'][1] = [
+			//	'image' 	=> base_url().'appicons/Image18.png',
+			//	'content' 	=> $this->config->item('aboutus_content')[1],
+			//	'content2' 	=> $this->config->item('aboutus_content')[2],
+			//];
+			$jsonData['advancedvalves'] = [
+			];
+
+			$scrollingtickerline = $this->adminmodel->getfulldata_scrolling_api("scrollingticker","1");		
+			for($i=0; $i < count($scrollingtickerline); $i++){			
+				$jsonData["scrollingticker"][$i]['content'] = $scrollingtickerline[$i]['scrollingticker'];
+			}
+
+			//$jsonArray = array("status"=>'1', "message"=>'About Us', 'result' => $jsonData);
+			$jsonArray = array("status"=>'1', "message"=>'This function is currently undergoing maintenance, after which user experience will be optimal.', 'result' => $jsonData);
+		}else{
+			$jsonArray = array("status"=>'0', "message"=>'Invalid request', 'result' => []);
+		}
+		echo json_encode($jsonArray);
+	}
+
+	public function videosdemosLanding(){
+
+		if ($this->input->post() && $this->input->post('user_id')) {
+
+			$pageid = $this->config->item('pagesid')[66];
+
+			$jsonData['logo'] = base_url().'appicons/advanced_valves_logo.jpg';
+
+			$jsonData['advancedvalves'][0] = [
+				'image' 	=> base_url().'appicons/Group343.png',
+				'content' 	=> $this->config->item('advcancevalvestitle')[3],
+			];
+			$jsonData['advancedvalves'][1] = [
+				'image' 	=> base_url().'appicons/Group344.png',
+				'content' 	=> $this->config->item('advcancevalvestitle')[7],
+			];
+			$jsonData['advancedvalves'][2] = [
+				'image' 	=> base_url().'appicons/Group346.png',
+				'content' 	=> $this->config->item('advcancevalvestitle')[8],
+			];
+			$jsonData['advancedvalves'][3] = [
+				'image' 	=> base_url().'appicons/Group345.png',
+				'content' 	=> $this->config->item('advcancevalvestitle')[9],
+			];
+		
+			$scrollingtickerline = $this->adminmodel->getfulldata_scrolling_api("scrollingticker","1");		
+			for($i=0; $i < count($scrollingtickerline); $i++){			
+				$jsonData["scrollingticker"][$i]['content'] = $scrollingtickerline[$i]['scrollingticker'];
+			}
+
+			$jsonArray = array("status"=>'1', "message"=>'Videos and demos landing page', 'result' => $jsonData);
+		}else{
+			$jsonArray = array("status"=>'0', "message"=>'Invalid request', 'result' => []);
+		}
+		echo json_encode($jsonArray);
+	}
+
+	public function certificationLanding(){
+
+		if ($this->input->post() && $this->input->post('user_id')) {
+
+			$pageid = $this->config->item('pagesid')[66];
+
+			$jsonData['logo'] = base_url().'appicons/advanced_valves_logo.jpg';
+
+			$jsonData['advancedvalves'][0] = [
+				'image' 	=> base_url().'appicons/Group350.png',
+				'title' 	=> '',
+				// 'pdfurl' 	=> base_url().'pdf/SANS-1808-53-2012.pdf'
+				'pdfurl' 	=> base_url().'pdf/SANS-1808-53-2012_(2).pdf'
+			];
+			$jsonData['advancedvalves'][1] = [
+				'image' 	=> base_url().'appicons/Group349.png',
+				'title' 	=> '',
+				'pdfurl' 	=> base_url().'pdf/SANS-198-SABS-Permit-and-Schedule.pdf'
+			];
+			
+
+			$scrollingtickerline = $this->adminmodel->getfulldata_scrolling_api("scrollingticker","1");		
+			for($i=0; $i < count($scrollingtickerline); $i++){			
+				$jsonData["scrollingticker"][$i]['content'] = $scrollingtickerline[$i]['scrollingticker'];
+			}
+
+			$jsonArray = array("status"=>'1', "message"=>'Certification Landing page', 'result' => $jsonData);
+
+			$scrollingtickerline=$this->adminmodel->getfulldata_scrolling_api("scrollingticker",'1');		
+			for($i=0; $i < count($scrollingtickerline); $i++){			
+				$jsonArray["scrollingticker"][$i]['content']=$scrollingtickerline[$i]['scrollingticker'];
+			}
+		}else{
+			$jsonArray = array("status"=>'0', "message"=>'Invalid request', 'result' => []);
+		}
+		echo json_encode($jsonArray);
+	}
+
+	public function advancedvalves_productrange()
+	{
+		$data 								=	array();
+		$requestdata 						=	array();
+		$data["title"] 						= 	'Product Range';
+		// $requestdata['orderby_position'] 	= 	'1';
+		$requestdata 						= 	$this->input->post();	
+		$getfulldata 						=	$this->adminmodel->getdata_productrange(['pagetype' => 'api_productrange']);
+
+		for($i=0; $i < count($getfulldata); $i++){
+
+			$data["productrange"][$i]["id"]					=	$getfulldata[$i]['id'];
+
+			$data["productrange"][$i]["content"]			=	$getfulldata[$i]['content'];
+			$data["productrange"][$i]["display"]			=	$getfulldata[$i]['display'];
+			$data["productrange"][$i]["display_content"]	=	$getfulldata[$i]['display_content'];
+
+			if ($getfulldata[$i]['description'] !='') $data["productrange"][$i]["description"]	=	$getfulldata[$i]['description'];
+			else $data["productrange"][$i]["description"]	=	'';
+
+			if ($getfulldata[$i]['file'] !='') $data["productrange"][$i]["file"]		=	base_url().'./images/'.$getfulldata[$i]['file'];
+			else $data["productrange"][$i]["file"]		=	'';
+
+			if ($getfulldata[$i]['image'] !='') $data["productrange"][$i]["image"]		=	base_url().'./images/'.$getfulldata[$i]['image'];
+			else $data["productrange"][$i]["image"]		=	'';
+
+			if ($getfulldata[$i]['feat_file'] !='') $data["productrange"][$i]["feat_file"]	=	base_url().'./images/'.$getfulldata[$i]['feat_file'];
+			else $data["productrange"][$i]["feat_file"]	=	'';
+			
+			$data["productrange"][$i]["type"]			=	$getfulldata[$i]['type'];
+			$data["productrange"][$i]["type_words"]		=	$this->config->item('magazinetype')[$getfulldata[$i]['type']];
+		}
+		echo json_encode($data);
+	}
+
+	public function social_sharelinks(){
+		if ($this->input->post() && $this->input->post('pagename')) {
+			$post = $this->input->post();
+
+			if ($post['pagename'] == 'advanced valves contact us') {
+				$sharelink = $this->config->item('socialsharelinks')[0];
+			}
+			$jsonArray = array("status"=>'1', "message"=>'share links', 'result' => $sharelink);
+		}else{
+			$jsonArray = array("status"=>'0', "message"=>'Invalid request', 'result' => []);
+		}
+		echo json_encode($jsonArray);
+	}
+
+	public function contact_details(){
+		if ($this->input->post() && $this->input->post('pagename')) {
+			$post = $this->input->post();
+
+			if ($post['pagename'] == 'advanced valves contact us') {
+				$jsonData = [
+					'mobile' 	=> $this->config->item('advance_valves_contact_details')[0],
+					'email' 	=> $this->config->item('advance_valves_contact_details')[1],
+					'hours1' 	=> $this->config->item('advance_valves_contact_details')[2],
+					'hours2' 	=> $this->config->item('advance_valves_contact_details')[3],
+				];
+			}
+
+			$scrollingtickerline = $this->adminmodel->getfulldata_scrolling_api("scrollingticker","1");		
+			for($i=0; $i < count($scrollingtickerline); $i++){			
+				$jsonData["scrollingticker"][$i]['content'] = $scrollingtickerline[$i]['scrollingticker'];
+			}
+			
+			$jsonArray = array("status"=>'1', "message"=>'Contact details', 'result' => $jsonData);
+		}else{
+			$jsonArray = array("status"=>'0', "message"=>'Invalid request', 'result' => []);
+		}
+		echo json_encode($jsonArray);
+	}
+
+	public function aboutus_videodemo(){
+		if ($this->input->post() && $this->input->post('user_id')) {
+
+			$jsonData = [
+					'video1' 	=> base_url().'videos/b247be1247bae737123e09a02dedf387.mp4',
+					'content1' 	=> $this->config->item('videodemos_aboutus')[0],
+					'video2' 	=> base_url().'appicons/b247be1247bae737123e09a02dedf387.mp4',
+					'content2' 	=> $this->config->item('videodemos_aboutus')[1],
+					'video3' 	=> base_url().'videos/b247be1247bae737123e09a02dedf387.mp4',
+					'content3' 	=> $this->config->item('videodemos_aboutus')[2],
+				];
+			$jsonArray = array("status"=>'0', "message"=>'About Us', 'result' => $jsonData);
+
+			$scrollingtickerline=$this->adminmodel->getfulldata_scrolling_api("scrollingticker",'1');		
+			for($i=0; $i < count($scrollingtickerline); $i++){			
+				$jsonArray["scrollingticker"][$i]['content']=$scrollingtickerline[$i]['scrollingticker'];
+			}
+
+		}else{
+			$jsonArray = array("status"=>'0', "message"=>'Invalid request', 'result' => []);
+		}
+		echo json_encode($jsonArray);
+	}
+
+	public function pressurevalves_videodemo(){
+		if ($this->input->post() && $this->input->post('user_id')) {
+
+			// $jsonData = [
+			// 		'video1' 	=> base_url().'videos/b247be1247bae737123e09a02dedf387.mp4',
+			// 		'content1' 	=> $this->config->item('videodemos_pressurevalve')[0],
+			// 		'video2' 	=> base_url().'videos/b247be1247bae737123e09a02dedf387.mp4',
+			// 		'content2' 	=> $this->config->item('videodemos_pressurevalve')[1],
+			// 		'video3' 	=> base_url().'videos/b247be1247bae737123e09a02dedf387.mp4',
+			// 		'content3' 	=> $this->config->item('videodemos_pressurevalve')[2],
+			// 	];
+
+			$jsonData['pressurevalves'][0] = [
+				'video' 	=> base_url().'videos/'.$this->config->item('video_url')[0].'',
+				'content' 	=> $this->config->item('videodemos_pressurevalve')[0],
+				'title' 	=> 'Polymer strength test',
+			];
+			
+			$jsonData['pressurevalves'][1] = [
+				'video' 	=> base_url().'videos/'.$this->config->item('video_url')[1].'',
+				'content' 	=> $this->config->item('videodemos_pressurevalve')[1],
+				'title' 	=> 'Cartridge clean',
+			];
+
+			$jsonData['pressurevalves'][2] = [
+				'video' 	=> base_url().'videos/'.$this->config->item('video_url')[2].'',
+				'content' 	=> $this->config->item('videodemos_pressurevalve')[2],
+				'title' 	=> 'Relief clean.',
+			];
+
+			$jsonData['pressurevalves'][3] = [
+				'video' 	=> base_url().'videos/'.$this->config->item('video_url')[3].'',
+				'content' 	=> $this->config->item('videodemos_pressurevalve')[3],
+				'title' 	=> 'Control Set Point',
+			];
+
+			$jsonData['pressurevalves'][4] = [
+				'video' 	=> base_url().'videos/'.$this->config->item('video_url')[4].'',
+				'content' 	=> $this->config->item('videodemos_pressurevalve')[4],
+				'title' 	=> 'Relief Set Point',
+			];
+
+			$jsonData['pressurevalves'][5] = [
+				'video' 	=> base_url().'videos/'.$this->config->item('video_url')[5].'',
+				'content' 	=> $this->config->item('videodemos_pressurevalve')[5],
+				'title' 	=> 'Pressure test to 10 000 kPa.',
+			];
+
+			$jsonArray = array("status"=>'1', "message"=>'AD-S-400 Pressure Control Valve', 'result' => $jsonData);
+			$scrollingtickerline=$this->adminmodel->getfulldata_scrolling_api("scrollingticker",'1');		
+			for($i=0; $i < count($scrollingtickerline); $i++){			
+				$jsonArray["scrollingticker"][$i]['content']=$scrollingtickerline[$i]['scrollingticker'];
+			}
+
+		}else{
+			$jsonArray = array("status"=>'0', "message"=>'Invalid request', 'result' => []);
+		}
+		echo json_encode($jsonArray);
+	}
+
+	public function vacuumvalves_videodemo(){
+		if ($this->input->post() && $this->input->post('user_id')) {
+
+			$jsonData['pressurevalves'][0] = [
+				'video' 	=> base_url().'videos/'.$this->config->item('video_url')[6].'',
+				'content' 	=> $this->config->item('videodemos_pressurevalve')[7],
+				'title' 	=> '22 mm pressure test at 10 000 kPa.',
+			];
+			$jsonArray = array("status"=>'1', "message"=>'AD Vacuum Breaker', 'result' => $jsonData);	
+			$scrollingtickerline=$this->adminmodel->getfulldata_scrolling_api("scrollingticker",'1');		
+			for($i=0; $i < count($scrollingtickerline); $i++){			
+				$jsonArray["scrollingticker"][$i]['content']=$scrollingtickerline[$i]['scrollingticker'];
+			}
+
+		}else{
+			$jsonArray = array("status"=>'0', "message"=>'Invalid request', 'result' => []);
+		}
+		echo json_encode($jsonArray);
+	}
+
+	public function safetyvalves_videodemo(){
+		if ($this->input->post() && $this->input->post('user_id')) {
+
+			$jsonData = [
+					'video1' 	=> base_url().'videos/b247be1247bae737123e09a02dedf387.mp4',
+					'content1' 	=> $this->config->item('videodemos_safetyvalves')[0],
+					'video2' 	=> base_url().'videos/b247be1247bae737123e09a02dedf387.mp4',
+					'content2' 	=> $this->config->item('videodemos_safetyvalves')[1],
+					'video3' 	=> base_url().'videos/b247be1247bae737123e09a02dedf387.mp4',
+					'content3' 	=> $this->config->item('videodemos_safetyvalves')[2],
+				];
+			$jsonArray = array("status"=>'0', "message"=>'Safety Valves', 'result' => $jsonData);
+			$scrollingtickerline=$this->adminmodel->getfulldata_scrolling_api("scrollingticker",'1');		
+			for($i=0; $i < count($scrollingtickerline); $i++){			
+				$jsonArray["scrollingticker"][$i]['content']=$scrollingtickerline[$i]['scrollingticker'];
+			}
+			
+		}else{
+			$jsonArray = array("status"=>'0', "message"=>'Invalid request', 'result' => []);
+		}
+		echo json_encode($jsonArray);
+	}
 }
 ?>

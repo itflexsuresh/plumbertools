@@ -50,6 +50,54 @@ class Commonmodel extends CI_Model {
 		}
 	}
 
+	public function sentCustomMail($to, $subject, $message, $from='', $file='', $cc='')
+	{
+		
+		$this->load->library('email');
+		
+		$config['protocol'] = 'sendmail';
+		$config['mailpath'] = '/usr/sbin/sendmail';
+		$config['mailtype'] = 'html';
+		$config['charset'] 	= 'iso-8859-1';
+		$config['wordwrap'] = TRUE;
+
+		/*
+		$config['protocol']    	= 'mail';
+        $config['smtp_host']    = 'ssl://smtp.gmail.com';
+        $config['smtp_port']    = '465';
+        $config['smtp_user']    = 'norwin.kairo5@gmail.com';
+        $config['smtp_pass']    = 'jedczpvjwxdyhqlo';
+		$config['mailtype'] 	= 'html';
+		$config['charset'] 		= 'iso-8859-1';
+		$config['newline']      = '\r\n';
+		$config['wordwrap'] 	= TRUE;
+		*/
+
+		if($from !='') $from = $from;
+			else $from = 'do_not_reply@articulateit.co.za';
+
+		if($subject !='') $subject = $subject;
+			else $from = 'Message from APP Plumber';
+		
+		$this->email->initialize($config);
+		$this->email->from($from, $subject);
+		$this->email->to($to);
+		if($cc!='') $this->email->cc($cc);
+		$this->email->subject($subject);
+		$this->email->message($message);
+		
+		if($file!="") $this->email->attach($file);
+
+		if($this->email->send()){
+			$this->email->clear(true);
+			return 'true';
+		}else{
+			//print_r($this->email->print_debugger());die;
+			$this->email->clear(true);
+			return 'false';
+		}
+	}
+
 	public function sentMail2($to, $subject, $message, $file='', $cc='')
 	{
 		

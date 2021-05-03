@@ -7718,4 +7718,315 @@ class Admincontrol extends CI_Controller {
 		$this->allpage('newdashboard',$data);
 	}
 
+	// ADVANCED VALVES
+
+    public function productrange(){
+    	$data["header_title"] 		= $this->advanced_valves_title;
+		$data["header_title2"] 		= "";
+		$data["leftsidebar_value"] 	= $this->advanced_valves_value;
+
+		$this->checkUserPermission('37', '1', '1');
+
+		$checkpermission    	= $this->checkUserPermission('37', '2');
+		$data["permission"] 	= $checkpermission;
+		$data["getdata"] 		= $this->adminmodel->getdata_productrange();
+		// echo "<pre>";print_r($data["getdata"]);die;
+		$this->allpage('productrangelist',isset($data) ? $data : '');
+    }
+
+    public function newproductrange(){
+    	$data["header_title"] 		= $this->advanced_valves_title;
+		$data["header_title2"] 		= "";
+		$data["leftsidebar_value"] 	= $this->advanced_valves_value;
+
+		$this->checkUserPermission('37', '1', '1');
+
+		$checkpermission    	= $this->checkUserPermission('37', '2');
+		$data["action"] 		= "new";
+		$data["permission"] 	= $checkpermission;
+		$data["getdata"] 		= $this->adminmodel->getdata_productrange();
+		$this->allpage('productrangeaction',isset($data) ? $data : '');
+    }
+
+    public function editproductrange($id = ''){
+    	$data["header_title"] 		= $this->advanced_valves_title;
+		$data["header_title2"] 		= "";
+		$data["leftsidebar_value"] 	= $this->advanced_valves_value;
+
+		$this->checkUserPermission('37', '1', '1');
+
+		$checkpermission    	= $this->checkUserPermission('37', '2');
+		$data["permission"] 	= $checkpermission;
+		$data["action"] 		= "edit";
+		$data["getdata"] 		= $this->adminmodel->getsingledata('productrange', $id);
+		// echo "<pre>";print_r($data["getdata"]);die;
+		$this->allpage('productrangeaction',isset($data) ? $data : '');
+    }
+
+    public function productrangeaction(){
+    	if($this->input->post("insert") || $this->input->post("update")){
+    		// echo "<pre>";print_r($this->input->post());die;
+
+    		if ($this->input->post("selecttype") =='2') {
+				$this->form_validation->set_rules("pdfcontent","Content",'trim|required');
+				// $this->form_validation->set_rules("pdfposition","Position",'trim|required');
+				$this->form_validation->set_rules("pdfdescription","Description",'trim|required');
+					if (empty($_FILES['pdffile']['name']) && $this->input->post("insert") =='1'){
+					    $this->form_validation->set_rules('pdffile', 'PDF File', 'required');
+					}
+					if($this->form_validation->run()==FALSE){
+						if($this->input->post("insert")){
+							$this->newproductrange();
+						}
+						if($this->input->post("update")){
+							$this->editproductrange($this->input->post("updateid"));
+						}
+					}else{
+
+					$productguidesid=$this->uri->segment(3);
+					$productguidessection1id=$this->uri->segment(4);
+
+					if ($_FILES['pdffile']['name'] !='') {
+						$config_image=array();
+						$config_image['upload_path']='./images';
+						$config_image['allowed_types']='jpg|jpeg|png|pdf';
+						$config_image['encrypt_name']=TRUE;
+						$this->load->library('upload',$config_image);			
+						if ( ! $this->upload->do_upload('pdffile')){
+							//print_r($this->upload->display_errors()); print_r($this->input->post("imagefile")); die;
+						}
+						else{
+							$imagedata=$this->upload->data();
+							if ($this->upload->data('file_ext') == '.pdf') {
+								$type = '2';
+							}else{
+								$type = '1';
+							}
+							$imagefile=$imagedata['file_name'];
+						}
+					}
+
+					if ($_FILES['featfile']['name'] !='') {
+						$config_image=array();
+						$config_image['upload_path']='./images';
+						$config_image['allowed_types']='jpg|jpeg|png|pdf';
+						$config_image['encrypt_name']=TRUE;
+						$this->load->library('upload',$config_image);			
+						if ( ! $this->upload->do_upload('featfile'))
+						{
+							// print_r($this->upload->display_errors()); print_r($this->input->post("featfile")); die;
+						}
+						else
+						{
+							$imagedata=$this->upload->data();
+							$featfile=$imagedata['file_name'];
+						}
+					}
+
+					if ($this->input->post('display') =='1') {
+						$display = '1';
+					}else{
+						$display = '0';
+					}
+
+					if ($this->input->post('display_content') =='1') {
+						$display_content = '1';
+					}else{
+						$display_content = '0';
+					}
+
+					$data=array(
+						"content" => $this->input->post("pdfcontent"),
+						"position" => $this->input->post("pdfposition"),
+						// "published" => $this->input->post("pdfpublishid"),
+						"published" => '1',
+						"display" => $display,
+						"display_content" => $display_content,
+						"description" => $this->input->post("pdfdescription"),
+						"type" => isset($type) ? $type : '2',
+						"image" => NULL
+
+					);
+
+					if(isset($imagefile)){
+						$data['file']=$imagefile;
+					}
+					if(isset($featfile)){
+						$data['feat_file']=$featfile;
+					}
+
+					if($this->input->post("insert")){				
+						$this->adminmodel->insertdata("productrange",$data);
+						redirect('admincontrol/productrange');
+					}			
+					if($this->input->post("update")){
+						$this->adminmodel->updatedata("productrange",$data,$this->input->post("updateid"));
+						redirect('admincontrol/productrange');
+					}
+				}
+
+			}elseif($this->input->post("selecttype") =='1'){
+
+				$this->form_validation->set_rules("content","Content",'trim|required');
+				$this->form_validation->set_rules("description","Description",'trim|required');
+				// $this->form_validation->set_rules("position","Position",'trim|required|numeric');
+				if($this->form_validation->run()==FALSE){
+					if($this->input->post("insert")){
+						$this->newproductrange();
+					}
+					if($this->input->post("update")){
+						$this->editproductrange($this->input->post("updateid"));
+					}
+				}else{
+					
+					$productguidesid=$this->uri->segment(3);
+					$productguidessection1id=$this->uri->segment(4);
+
+					if ($_FILES['imagefile']['name'] !='') {
+						$config_image=array();
+						$config_image['upload_path']='./images';
+						$config_image['allowed_types']='jpg|jpeg|png|pdf';
+						$config_image['encrypt_name']=TRUE;
+						$this->load->library('upload',$config_image);			
+						if ( ! $this->upload->do_upload('imagefile')){
+							//print_r($this->upload->display_errors()); print_r($this->input->post("imagefile")); die;
+						}
+						else{
+							$imagedata=$this->upload->data();
+							
+							$imagefile=$imagedata['file_name'];
+						}
+					}
+
+					if ($this->input->post('display') =='1') {
+						$display = '1';
+					}else{
+						$display = '0';
+					}
+
+					if ($this->input->post('display_content') =='1') {
+						$display_content = '1';
+					}else{
+						$display_content = '0';
+					}
+
+					$data=array(
+						"content" => $this->input->post("content"),
+						"position" => $this->input->post("position"),
+						// "published" => $this->input->post("publishid"),
+						"published" => '1',
+						"display" => $display,
+						"display_content" => $display_content,
+						"description" => $this->input->post("description"),
+						"type" => isset($type) ? $type : '1',
+						"feat_file" => NULL,
+						"file" => NULL,
+
+					);
+					if(isset($imagefile)){
+						$data['image']=$imagefile;
+					}	
+					if($this->input->post("insert")){				
+						$this->adminmodel->insertdata("productrange",$data);
+						redirect('admincontrol/productrange');
+					}			
+					if($this->input->post("update")){
+						$this->adminmodel->updatedata("productrange",$data,$this->input->post("updateid"));
+						redirect('admincontrol/productrange');
+					}		
+				}
+
+			}
+
+    	}else{
+    		redirect('admincontrol/productrange');
+    	}
+    }
+
+    public function deleteproductrange(){
+
+    	$deleteid = $this->input->post("deleteid");
+		$this->checksessionout();		
+		$this->adminmodel->deletedata("productrange",$deleteid);		
+		redirect('admincontrol/productrange');
+
+    }
+
+    public function advancedcontactus(){
+    	$data["header_title"] 		= $this->advanced_valves_contactus_title;
+		$data["header_title2"] 		= "";
+		$data["leftsidebar_value"] 	= $this->advanced_valves_contactus_value;
+
+		$this->checkUserPermission('38', '1', '1');
+
+		$checkpermission    	= $this->checkUserPermission('38', '2');
+		$data["permission"] 	= $checkpermission;
+
+		$data["getdata"] 		= $this->adminmodel->getdata_productrangecontactus();
+		$this->allpage('productrange_contactuslist',isset($data) ? $data : '');
+    }
+
+    function newadvancedcontactus(){
+		$this->checksessionout();
+		$data["header_title"] 			= $this->advanced_valves_contactus_title;
+		$data["header_title2"] 			= $this->advanced_valves_contactus_title2;
+		$data["leftsidebar_value"] 		= $this->advanced_valves_contactus_value;
+		$data["action"] 				= "new";		
+		$this->allpage('productrange_contactusaction',$data);
+	}
+
+    public function viewadvancedcontactus($id = ''){
+    	$data["header_title"] 		= $this->advanced_valves_contactus_title;
+		$data["header_title2"] 		= "";
+		$data["leftsidebar_value"] 	= $this->advanced_valves_contactus_value;
+
+		$this->checkUserPermission('38', '1', '1');
+
+		$checkpermission    	= $this->checkUserPermission('38', '2');
+		$data["permission"] 	= $checkpermission;
+		$data["action"] 		= "view";
+
+		$data["getdata"] 		= $this->adminmodel->getsingledata('advanced_valves_contactus', $id);
+		$this->allpage('productrange_contactusaction',isset($data) ? $data : '');
+    }
+
+    function advancecontactaction(){
+		if($this->input->post("insert") || $this->input->post("update")){
+			$this->form_validation->set_rules("name","Name",'trim|required');
+			$this->form_validation->set_rules("email","Email",'trim|required');			
+			if($this->form_validation->run()==FALSE){
+				if($this->input->post("insert")){					
+					$this->newadvancedcontactus();
+				}
+				// if($this->input->post("update")){
+				// 	$this->editcontact();
+				// }
+			}		
+			else{			
+				
+							
+				$data=array(
+				"name" => $this->input->post("name"),				
+				"email" => $this->input->post("email"),
+				/*"mobile" => $this->input->post("mobile"),
+				"address" => $this->input->post("address"),*/
+				"message" => $this->input->post("message"),
+				"published" => '1'
+				);					
+							
+				if($this->input->post("insert")){				
+					$this->adminmodel->insertdata("advanced_valves_contactus",$data);
+					$this->advancedcontactus();
+				}			
+				if($this->input->post("update")){
+					$this->adminmodel->updatedata("advanced_valves_contactus",$data,$this->input->post("updateid"));
+					$this->advancedcontactus();
+				}		
+			}
+		}
+		else{			
+			$this->advancedcontactus();
+		}
+	}
+
 }

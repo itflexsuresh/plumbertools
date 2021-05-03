@@ -2266,4 +2266,29 @@ class Adminmodel extends CI_Model {
 		$query=$this->db->get($table);		
 		return $query->result_array();
 	}
+
+	public function getdata_productrange($data =[]){
+    	$this->db->select('pr.*');
+    	$this->db->from('productrange as pr');
+    	
+    	if (isset($data['id'])) $this->db->where('pr.id', $data['id']);
+
+    	$query = $this->db->get();
+    	$result = $query->result_array();
+
+		return $result;
+    }
+
+    public function getdata_productrangecontactus($data =[]){
+    	$this->db->select('advc.*');
+    	$this->db->from('advanced_valves_contactus as advc');
+    	$this->db->order_by('advc.id', 'DESC');
+    	
+    	if (isset($data['id'])) $this->db->where('advc.id', $data['id']);
+
+    	$query = $this->db->get();
+    	$result = $query->result_array();
+
+		return $result;
+    }
 }
