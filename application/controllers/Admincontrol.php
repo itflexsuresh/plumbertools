@@ -11,6 +11,7 @@ class Admincontrol extends CI_Controller {
 		$this->load->model('Apimodel');
 		$this->load->model('Diarymodel');
 		$this->dashboard_title	 			=	"Dashboard";$this->dashboard_value 				=	1;
+		$this->newdashboard_title	 		=	"New Dashboard";$this->newdashboard_value 		=	1;
 
 		$this->advertising_title 			=	"Plumber";	$this->advertising_title2 			=	""; 
 		$this->advertising_value 			=	2;
