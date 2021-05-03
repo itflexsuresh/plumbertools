@@ -166,4 +166,36 @@ class Commonmodel extends CI_Model {
         return $query->result_array();		
 	}
 
+	public function download_articles()
+	{			
+		/*$this->db->select('*');
+		$this->db->from('articles');			
+		$this->db->order_by('id desc');	*/
+
+		$this->db->select('ac.*, COUNT(acc.id) as commentcount');
+		$this->db->from('articles ac');        
+		$this->db->join('articles_comments acc', 'acc.posted_on_article = ac.id AND acc.status = "1"', 'left');		
+		$this->db->group_by('ac.id');
+        $this->db->order_by('ac.position ASC');
+		$query = $this->db->get();		
+		$result = $query->result_array();	
+		return $result;			
+	}
+
+	public function download_adbanners()
+	{			
+		$this->db->select('ad.*, cl.client_name, SUM(ct.impressions) AS count_impressions, SUM(ct.clickscount) AS count_clicks, pg.title as pagename');
+		$this->db->from('advertising_adbanners ad');	
+		$this->db->join('advertising_clients cl', 'cl.id = ad.client_id', 'left');
+		$this->db->join('advertising_adbanners_impressions_count ct', 'ct.bannerid = ad.id', 'left');
+		$this->db->join('pages as pg', 'pg.id = ad.page_id', 'left');
+
+		$this->db->group_by('ad.id');
+		$this->db->order_by('ad.id desc');	
+			
+		$query = $this->db->get();		
+		$result = $query->result_array();	
+		return $result;			
+	}
+
 }

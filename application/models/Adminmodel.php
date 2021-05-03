@@ -1719,4 +1719,551 @@ class Adminmodel extends CI_Model {
 		return $result;	
 
 	}
+
+	public function getdata_tags($id = '')
+    {
+        /*if ($id == '') {
+            $query = $this->db->query("Select * From articles_tags where status = '1' order by id desc");
+            return $query->result_array();
+        } else {
+            $query = $this->db->query("Select * From articles_tags where status = '1' and id =" . $id);
+            return $query->result_array();
+        }*/
+
+        if ($id == '') {
+            $query = $this->db->query("SELECT t1.*,(SELECT COUNT(1) FROM articles t2 WHERE t2.tags LIKE CONCAT('%', t1.tag_name, '%')) AS tag_count FROM articles_tags t1 WHERE t1.status = '1' ORDER BY id DESC");
+            return $query->result_array();
+        } else {
+            $query = $this->db->query("SELECT t1.*,(SELECT COUNT(1) FROM articles t2 WHERE t2.tags LIKE CONCAT('%', t1.tag_name, '%')) AS tag_count FROM articles_tags t1 WHERE t1.status = '1' AND t1.id =" . $id);
+            return $query->result_array();
+        }
+    }
+
+    public function tagsAction($data)
+    {
+    	$userid   = $this->getUserID();
+        $action               = '';
+        $id                   = isset($data['id']) ? $data['id'] : '';
+        $datetime             = date('Y-m-d H:i:s');
+        $request1['tag_name'] = $data['tag_name'];
+
+        if ($id == '') {
+        	$request1['created_by'] = $userid;
+            $request1['created_at'] = $datetime;
+            $data                   = $this->db->insert('articles_tags', $request1);
+            $id                     = $this->db->insert_id();
+            $action                 = 'insert';
+        } else {
+        	$request1['updated_by'] = $userid;
+            $request1['updated_at'] = $datetime;
+            $data                   = $this->db->update('articles_tags', $request1, ['id' => $id]);
+            $action                 = 'update';
+        }
+        return $action;
+    }
+
+    public function getdata_comments()
+    {
+        $this->db->select('ac.*, ar.title as article_name, us.name as user_name')->select('(SELECT COUNT(*) FROM articles_comments_likes WHERE comment_id = ac.id AND ACTION = "1") AS likes', false)->select('(SELECT COUNT(*) FROM articles_comments_likes WHERE comment_id = ac.id AND ACTION = "0") AS dislikes', false)->select('(SELECT COUNT(*) FROM articles_comments_reports_count WHERE comment_id = ac.id) AS reports', false);
+        $this->db->from('articles_comments ac');
+        $this->db->join('articles ar', 'ar.id = ac.posted_on_article', 'left');
+        $this->db->join('users us', 'us.id = ac.posted_by', 'left');
+        $this->db->where('ac.status', '1');
+        $query = $this->db->get();
+        return $query->result_array();
+    }
+
+    public function commentsAction($data)
+    {
+        $action   = '';
+        $id       = isset($data['id']) ? $data['id'] : '';
+        $datetime = date('Y-m-d H:i:s');
+
+        if ($id == '') {
+            $request1['created_at'] = $datetime;
+            $data                   = $this->db->insert('articles_comments', $request1);
+            $id                     = $this->db->insert_id();
+            $action                 = 'insert';
+
+        } else {
+            $request1['published']  = $data['value'];
+            $request1['updated_at'] = $datetime;
+            $data                   = $this->db->update('articles_comments', $request1, ['id' => $id]);
+            $action                 = 'update';
+        }
+        return $action;
+    }
+
+    public function get_sections_headers($id = '')
+    {
+        if ($id == '') {
+            $query = $this->db->query("Select * From articles_sections_headers order by id");
+            return $query->result_array();
+        } else {
+            $query = $this->db->query("Select * From articles_sections_headers where id =" . $id);
+            return $query->result_array();
+        }
+    }
+    
+    public function getTagData()
+    {	
+    	$this->db->select('tag_name');
+    	$this->db->from('articles_tags');
+    	$this->db->where('status', '1');
+    	$query = $this->db->get();			
+    	$result = $query->result_array();		
+		return $result;
+	}
+	
+	public function getdata_articles($type, $requestData = [])
+	{			
+		$this->db->select('ac.*, COUNT(acc.id) as commentcount');
+		$this->db->from('articles ac');        
+		$this->db->join('articles_comments acc', 'acc.posted_on_article = ac.id AND acc.status = "1"', 'left');
+		if(isset($requestData['id'])) 				$this->db->where('ac.id', $requestData['id']);
+		
+		$this->db->group_by('ac.id');
+        if (isset($requestData['order'])) {
+            $this->db->order_by('ac.id');
+        }else{
+            $this->db->order_by('ac.position ASC');
+        }
+		
+		if($type=='count'){
+			$result = $this->db->count_all_results();
+		}else{
+			$query = $this->db->get();			
+			if($type=='all') 		$result = $query->result_array();
+			elseif($type=='row') 	$result = $query->row_array();
+		}
+		
+		return $result;			
+	}
+
+	public function articlesaction($data)
+	{		
+	    $userid   = $this->getUserID();
+	    $id       = isset($data['id']) ? $data['id'] : '';
+	    $datetime = date('Y-m-d H:i:s');    	    
+
+	    if (!isset($data['published'])) {	    	
+		    if (isset($data['publishid'])) {
+		        $request1['published'] = 1;
+		    } else {
+		        $request1['published'] = 0;
+		    }
+
+		    if (isset($data['fromdate'])) {
+		        $request1['start_date'] = date("Y-m-d", strtotime($data['fromdate']));
+		    }
+		    
+	    	if (isset($data['todate']) && $data['todate'] != '') {
+		        $request1['end_date'] = date("Y-m-d", strtotime($data['todate']));
+		    }
+
+		    if (isset($data['title'])) {
+		        $request1['title'] = $data['title'];
+		    }
+
+		    if (isset($data['description'])) {
+		        $request1['description'] = $data['description'];
+		    }
+
+		    if (isset($data['image1'])) {
+		        $request1['file'] = $data['image1'];
+		    }
+
+		    if (isset($data['image1thumb'])) {
+                $request1['file_thumb'] = $data['image1thumb'];
+            }
+
+		    if (isset($data['position'])) {
+		        $request1['position'] = $data['position'];
+		    }
+
+		    if (isset($data['writers_name'])) {
+		        $request1['writers_name'] = $data['writers_name'];
+		    }
+
+		    if (isset($data['selecttype'])) {
+		        if ($data['selecttype'] == 1) {
+		            $request1['detail_file'] = $data['image4'];
+		            $request1['detail_file_type'] = 'Audio';
+
+		            if(isset($data['audiofrontimg'])){
+		        		$request1['audio_image'] = $data['image1'];	
+		        		$request1['as_per_front_audioimg'] = '1';	        				        		
+		        	}else{
+		        		$request1['audio_image'] = $data['audio_image'];
+		        		$request1['as_per_front_audioimg'] = '0';		        		
+		        	}
+		        } elseif ($data['selecttype'] == 2) {
+		            $request1['detail_file'] = $data['image3'];
+		            $request1['detail_file_type'] = 'Video';
+		        } elseif ($data['selecttype'] == 3) {
+		        	if(isset($data['frontimg'])){
+		        		$request1['detail_file'] = $data['image1'];		        		
+		        		$request1['as_per_front_img'] = '1';
+		        	}else{
+		        		$request1['detail_file'] = $data['image2'];
+		        		$request1['as_per_front_img'] = '0';
+		        	}		            
+		            $request1['detail_file_type'] = 'Image';
+		        }
+		    }
+
+		    if (isset($data['level1'])) {
+		        $request1['details_level1'] = $data['level1'];
+		    }
+
+		    if (isset($data['level2'])) {
+		        $request1['details_level2'] = $data['level2'];
+		    }
+
+		    if (isset($data['sections_headers']) && $data['sections_headers'] != '') {
+		        $request1['sections_headers'] = implode(',', $data['sections_headers']);
+		    }
+
+		    if (isset($data['tags'])) {
+		        $request1['tags'] = $data['tags'];
+		    }
+		}else{
+			$request1['published']  = $data['value'];
+		}
+
+	    if ($id == '') {
+	        $request1['created_by'] = $userid;
+	        $request1['created_at'] = $datetime;
+
+	        $data = $this->db->insert('articles', $request1);
+	        $id   = $this->db->insert_id();
+	    } else {
+	        $request1['updated_by'] = $userid;
+	        $request1['updated_at'] = $datetime;
+
+	        $data = $this->db->update('articles', $request1, ['id' => $id]);
+	    }
+	    return $id;
+	}
+
+	public function getdata_writers($id = '')
+    {
+        if ($id == '') {
+            $query = $this->db->query("Select * From articles_writers where status = '1' order by id desc");
+            return $query->result_array();
+        } else {
+            $query = $this->db->query("Select * From articles_writers where status = '1' and id =" . $id);
+            return $query->result_array();
+        }
+    }
+
+    public function writersAction($data)
+    {
+    	$userid   = $this->getUserID();
+        $action               = '';
+        $id                   = isset($data['id']) ? $data['id'] : '';
+        $datetime             = date('Y-m-d H:i:s');
+        $request1['writers_name'] = $data['writers_name'];
+
+        if ($id == '') {
+        	$request1['created_by'] = $userid;
+            $request1['created_at'] = $datetime;
+            $data                   = $this->db->insert('articles_writers', $request1);
+            $id                     = $this->db->insert_id();
+            $action                 = 'insert';
+        } else {
+        	$request1['updated_by'] = $userid;
+            $request1['updated_at'] = $datetime;
+            $data                   = $this->db->update('articles_writers', $request1, ['id' => $id]);
+            $action                 = 'update';
+        }
+        return $action;
+    }
+
+    function autocomplete_writers($params = array()){
+        $this->db->select("*");
+        $this->db->from("articles_writers");
+        
+        //fetch data by conditions
+        if(array_key_exists("conditions",$params)){
+            foreach ($params['conditions'] as $key => $value) {
+                $this->db->where($key,$value);
+            }
+        }
+        
+        //search by terms
+        if(!empty($params['searchTerm'])){
+            $this->db->like('writers_name', $params['searchTerm']);
+        }
+        
+        $this->db->order_by('writers_name', 'asc');
+        
+        if(array_key_exists("id",$params)){
+            $this->db->where('id',$params['id']);
+            $query = $this->db->get();
+            $result = $query->row_array();
+        }else{
+            $query = $this->db->get();
+            $result = ($query->num_rows() > 0)?$query->result_array():FALSE;
+        }
+
+        //return fetched data
+        return $result;
+    }    
+
+    public function clientsAction($data)
+    {
+    	$userid   = $this->getUserID();
+        $action               = '';
+        $id                   = isset($data['id']) ? $data['id'] : '';
+        $datetime             = date('Y-m-d H:i:s');
+
+        $request1['client_name'] 	= $data['client_name'];
+        $request1['contact_person'] = $data['contact_person'];
+        $request1['contact_number'] = $data['contact_number'];
+        $request1['email'] 			= $data['email'];
+        $request1['login'] 			= $data['login'];
+
+        if ($id == '') {
+        	$request1['created_by'] = $userid;
+            $request1['created_at'] = $datetime;
+            $data                   = $this->db->insert('advertising_clients', $request1);
+            $id                     = $this->db->insert_id();
+            $action                 = 'insert';
+        } else {
+        	$request1['updated_by'] = $userid;
+            $request1['updated_at'] = $datetime;
+            $data                   = $this->db->update('advertising_clients', $request1, ['id' => $id]);
+            $action                 = 'update';
+        }
+        return $action;
+    }
+
+    public function getdata_clients($id = '')
+    {
+        if ($id == '') {
+            $query = $this->db->query("Select * From advertising_clients where status = '1' order by id desc");
+            return $query->result_array();
+        } else {
+            $query = $this->db->query("Select * From advertising_clients where status = '1' and id =" . $id);
+            return $query->result_array();
+        }
+    }
+
+    public function getdata_adbanners($type, $requestData = [])
+	{							
+		$this->db->select('ad.*, cl.client_name, SUM(ct.impressions) AS count_impressions, SUM(ct.clickscount) AS count_clicks, pg.title as pagename');
+		$this->db->from('advertising_adbanners ad');	
+		$this->db->join('advertising_clients cl', 'cl.id = ad.client_id', 'left');
+		$this->db->join('advertising_adbanners_impressions_count ct', 'ct.bannerid = ad.id', 'left');
+		$this->db->join('pages as pg', 'pg.id = ad.page_id', 'left');
+
+		if(isset($requestData['id'])) 				$this->db->where('ad.id', $requestData['id']);
+
+		$this->db->group_by('ad.id');
+		$this->db->order_by('ad.id desc');	
+		
+		if($type=='count'){
+			$result = $this->db->count_all_results();
+		}else{
+			$query = $this->db->get();			
+			if($type=='all') 		$result = $query->result_array();
+			elseif($type=='row') 	$result = $query->row_array();
+		}
+		
+		return $result;			
+	}
+
+	function autocomplete_clients($params = array()){
+        $this->db->select("*");
+        $this->db->from("advertising_clients");
+        
+        //fetch data by conditions
+        if(array_key_exists("conditions",$params)){
+            foreach ($params['conditions'] as $key => $value) {
+                $this->db->where($key,$value);
+            }
+        }
+        
+        //search by terms
+        if(!empty($params['searchTerm'])){
+            $this->db->like('client_name', $params['searchTerm']);
+        }
+        
+        $this->db->order_by('client_name', 'asc');
+        
+        if(array_key_exists("id",$params)){
+            $this->db->where('id',$params['id']);
+            $query = $this->db->get();
+            $result = $query->row_array();
+        }else{
+            $query = $this->db->get();
+            $result = ($query->num_rows() > 0)?$query->result_array():FALSE;
+        }
+
+        //return fetched data
+        return $result;
+    }
+
+    public function adbannersaction($data)
+	{
+	    $userid         = $this->getUserID();
+	    $id             = isset($data['id']) ? $data['id'] : '';
+	    $datetime       = date('Y-m-d H:i:s');
+	    $request1['autoplay_video'] = '0';
+	    $request1['reason'] = NULL;
+
+	    if (isset($data['c_status'])) {
+	    	$request1['campaign_status'] = $data['c_status'];
+	        if ($data['c_status'] == 2) {
+	        	if (isset($data['c_status'])) {
+	        		$request1['reason'] = $data['reason'];
+	        	}
+	        } 
+	    }	
+
+	    if (isset($data['advert_type'])) {
+	    	$request1['advert_type'] = $data['advert_type'];
+	        if ($data['advert_type'] == 0 || $data['advert_type'] == 1) {
+	        	if (isset($data['level'])) {
+	        		$request1['level'] = $data['level'];
+	        		$request1['page_id'] = 0;
+	        	}
+	       	} elseif ($data['advert_type'] == 2) {
+	       		if (isset($data['pages'])) {
+	        		$request1['page_id'] = $data['pages'];
+	        		$request1['level'] = NULL;
+	        	}
+	       	}
+	    }	
+
+	    if (isset($data['fromdate'])) {
+	        $request1['start_date'] = date("Y-m-d", strtotime($data['fromdate']));
+	    }
+
+	    if (isset($data['todate']) && $data['todate'] != '') {
+	        $request1['end_date'] = date("Y-m-d", strtotime($data['todate']));
+	    }
+
+	    if (isset($data['description'])) {
+	        $request1['description'] = $data['description'];
+	    }
+
+	    if (isset($data['url'])) {
+	        $request1['url'] = $data['url'];
+	    }
+
+	    if (isset($data['impression'])) {
+	        $request1['impressions'] = $data['impression'];
+	    }
+
+	    if (isset($data['client_name'])) {
+	        $request1['client_id'] = $data['client_name'];
+	    }
+
+	    if (isset($data['media'])) {
+	        if ($data['media'] == 2) {
+	            $request1['file']      = $data['image'];
+	            $request1['file_type'] = 'Image';
+	        } elseif ($data['media'] == 1) {
+	            $request1['file']      = $data['video'];
+	            $request1['file_type'] = 'Video';
+	            if (isset($data['autoplay_video'])) {
+	                $request1['autoplay_video'] = '1';
+	            }
+	        }
+	    }
+
+	    if ($id == '') {
+	        $request1['created_by'] = $userid;
+	        $request1['created_at'] = $datetime;
+
+	        $data = $this->db->insert('advertising_adbanners', $request1);
+	        $id   = $this->db->insert_id();
+	    } else {
+	        $request1['updated_by'] = $userid;
+	        $request1['updated_at'] = $datetime;
+
+	        $data = $this->db->update('advertising_adbanners', $request1, ['id' => $id]);
+	    }
+	    return $id;
+	}
+
+	public function getdata_commentsreports($id = '')
+    {
+        if ($id == '') {
+            $query = $this->db->query("Select * From articles_comments_reports where status = '1' order by id desc");
+            return $query->result_array();
+        } else {
+            $query = $this->db->query("Select * From articles_comments_reports where status = '1' and id =" . $id);
+            return $query->result_array();
+        }
+    }
+
+    public function commentsreportsAction($data)
+    {
+    	$userid   = $this->getUserID();
+        $action               = '';
+        $id                   = isset($data['id']) ? $data['id'] : '';
+        $datetime             = date('Y-m-d H:i:s');
+        $request1['report_name'] = $data['report_name'];
+
+        if ($id == '') {
+        	$request1['created_by'] = $userid;
+            $request1['created_at'] = $datetime;
+            $data                   = $this->db->insert('articles_comments_reports', $request1);
+            $id                     = $this->db->insert_id();
+            $action                 = 'insert';
+        } else {
+        	$request1['updated_by'] = $userid;
+            $request1['updated_at'] = $datetime;
+            $data                   = $this->db->update('articles_comments_reports', $request1, ['id' => $id]);
+            $action                 = 'update';
+        }
+        return $action;
+    }
+
+    public function getLastPosition()
+    {
+        $this->db->select_max('position');
+        $result = $this->db->get('articles')->row();
+        $data   = $result->position;
+        return $data;
+    }
+
+    public function getdata_newdashboard($condition,$fromdate,$todate, $extras = []){
+		$groupCodition = array("bic.bannerid", "bic.newpageid");			
+
+		$this->db->select('bic.id as bicid, bic.bannerid, bic.newpageid, SUM(bic.impressions) as impressionscount, SUM(bic.clickscount) as clickscount, ban.client_id, ban.description, ban.file, ban.url, ban.campaign_status, pg.title as pagename, ban.created_at, ban.inactive_date, cl.client_name');
+		$this->db->from('advertising_adbanners_impressions_count as bic');		
+		$this->db->join('advertising_adbanners as ban', 'ban.id = bic.bannerid', 'left');
+		$this->db->join('advertising_clients cl', 'cl.id = ban.client_id', 'left'); 
+        $this->db->join('pages as pg', 'pg.id = bic.newpageid', 'left');
+
+        // $this->db->where_in('ban.active', $condition);
+        $this->db->where('bic.created_at >=', $fromdate);
+        $this->db->where('bic.created_at <=', $todate);
+        $this->db->group_by($groupCodition);
+
+        if (isset($extras['warehouse_staff']) && $extras['warehouse_staff'] == '1') {
+        	$pageid = $this->config->item('pagesid')[21]; // Builder Page ID
+        	$this->db->group_start();
+        		$this->db->where('bic.newpageid', $pageid);
+        	$this->db->group_end();
+        }
+        // $this->db->group_by('bic.newpageid');
+
+        $query = $this->db->get();
+        // print_r($this->db->last_query());die;
+        return $query->result_array();				
+	}
+
+	function getfulldata_newapi($table,$pageid)
+	{			
+		$this->db->select('*');	
+		$this->db->where("page_id",$pageid);
+		$this->db->where("campaign_status","1");
+		$query=$this->db->get($table);		
+		return $query->result_array();
+	}
 }
