@@ -9,6 +9,9 @@ $searchtype = isset($searchtype) ? $searchtype : '';
 				<div class="card">
 					<div class="header">
 						<h4 class="title">Advert Summary</h4>
+						<a href="<?php echo base_url().'admincontrol/newdashboard'; ?>">
+							<button type="button" class="btn btn-success btn-fill pull-right">New Dashboard</button>
+						</a>
 						<p class="category"></p>
 						</br></br>
 						Selected Date: <?php echo date("m/d/Y", strtotime($fromdateA)); ?> to <?php echo date("m/d/Y", strtotime($todateA)); ?>
