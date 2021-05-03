@@ -348,6 +348,242 @@ function fileupload(data1=[], data2=[], multiple='', customfunction=''){
 	})
 }
 
+function fileupload2(data1=[], data2=[], multiple='', customfunction=''){
+	var ajaxurl 	= baseurl()+"ajax/index/ajaxfileupload2";
+	var loader 		= baseurl()+"icons/ajax-loader.gif";
+	
+	var selector 	= data1[0];
+	var extension 	= data1[2] ? data1[2] : ['jpg','jpeg','png'];
+	
+	$(document).on('change', selector, function(){
+		var name 		= $(this).val();
+		var ext 		= name.split('.').pop().toLowerCase();
+		
+		if($.inArray(ext, extension) !== -1){
+			var form_data 	= new FormData();
+			form_data.append("file", $(selector)[0].files[0]);
+			form_data.append("path", data1[1]);
+			form_data.append("type", extension.join('|'));
+			
+			var datasrc = (data2[1]) ? $(document).find(data2[1]).attr('src') : '';
+			if(multiple!=''){
+				var mutiplesection = $(document).find(data2[1]).parent().find('div:first');
+				var defaultimg = mutiplesection.find('img').attr('src');
+			}
+			
+			ajax(ajaxurl, form_data, fileappend2, {
+				contenttype : 1, 
+				processdata : 1,
+				beforesend : function(){
+					if(multiple!=''){
+						mutiplesection.show();
+						mutiplesection.find('img').attr('src', loader);
+					}else if(datasrc!=''){
+						$(document).find(data2[1]).attr('src', loader);
+					}
+				},
+				complete : function(){
+					if(multiple!=''){
+						var mutiplesection = $(document).find(data2[1]).parent().find('div:first');
+						mutiplesection.hide();
+						mutiplesection.find('img').attr('src', defaultimg);
+					}
+				}
+			});
+		}else{
+			$(selector).val('');
+			alert('Supported file format are '+extension.join(','));
+		}
+	})
+	
+	function fileappend2(data){
+		if(typeof data !== 'object'){
+			alert(data);
+		}
+		
+		if((data.file_name && data2.length) || (data.file_name && customfunction!='')){
+			var file 		= data.file_name;
+			var file2 		= data.file_name2;
+			
+			if(customfunction!=''){
+				customfunction(file);
+			}else{
+				if(data2[1] && data2[2]){
+					var ext = data.file_name.split('.').pop().toLowerCase();
+					
+					if(ext=='jpg' || ext=='jpeg' || ext=='png' || ext=='tif' || ext=='tiff'){
+						var filesrc = data2[2]+'/'+file;
+					}else if(ext=='pdf'){
+						var filesrc = data2[3];
+					}
+				}
+				
+				if(multiple==''){
+					$(data2[0]).val(file);
+					$(data2[4]).val(file2);
+					
+					if(filesrc){
+						$(data2[1]).attr('src', filesrc);
+					}				
+				}else{
+					if(filesrc){
+						$(data2[1]).append('<p><div class="multipleupload"><input type="hidden" value="'+file+'" name="'+data2[0]+'"><img src="'+filesrc+'" width="100"><i class="fa fa-times"></i></div></p>');
+					}
+				}
+			}
+		}
+		
+		$(selector).val('');
+		if (typeof installationdefaultimage !== 'undefined' && $.isFunction(installationdefaultimage)) installationdefaultimage();
+	}
+	
+	$(document).on('click', '.multipleupload i', function(){
+		$(this).parent().remove();
+		if (typeof installationdefaultimage !== 'undefined' && $.isFunction(installationdefaultimage)) installationdefaultimage();
+	})
+}
+
+function fileuploadvideo(data1=[], data2=[], multiple='', customfunction=''){
+	var ajaxurl 	= baseurl()+"ajax/index/ajaxfileupload";
+	var loader 		= baseurl()+"icons/ajax-loader.gif";
+	
+	var selector 	= data1[0];
+	var extension 	= data1[2] ? data1[2] : ['mp4'];
+	var videduration 	= data1[3] ? data1[3] : 0;
+	
+	var vid = document.createElement('video');
+	$(document).on('change', selector, function(){
+		var name 		= $(this).val();
+		var ext 		= name.split('.').pop().toLowerCase();				
+		
+		if($.inArray(ext, extension) !== -1){			
+			var fileURL = URL.createObjectURL(this.files[0]);
+			vid.src = fileURL;			  
+			vid.ondurationchange = function() {
+				// alert(Math.floor(this.duration));
+				duration = Math.floor(this.duration);				
+				if(videduration != 0)
+				{
+					if(duration > videduration){
+						alert('Video should not be longer than '+videduration+' sec');					
+					}else{
+						var form_data 	= new FormData();
+						form_data.append("file", $(selector)[0].files[0]);
+						form_data.append("path", data1[1]);
+						form_data.append("type", extension.join('|'));
+							
+						var datasrc = (data2[1]) ? $(document).find(data2[1]).attr('src') : '';
+						if(multiple!=''){
+							var mutiplesection = $(document).find(data2[1]).parent().find('div:first');
+							var defaultimg = mutiplesection.find('img').attr('src');
+						}
+							
+						ajax(ajaxurl, form_data, fileappendvideo, {
+							contenttype : 1, 
+							processdata : 1,
+							beforesend : function(){
+								if(multiple!=''){
+									mutiplesection.show();
+									mutiplesection.find('img').attr('src', loader);
+								}else if(datasrc!=''){
+									$(document).find(data2[1]).attr('src', loader);
+								}
+							},
+							complete : function(){
+								if(multiple!=''){
+									var mutiplesection = $(document).find(data2[1]).parent().find('div:first');
+									mutiplesection.hide();
+									mutiplesection.find('img').attr('src', defaultimg);
+								}
+							}
+						});
+					}
+				}else{
+					var form_data 	= new FormData();
+					form_data.append("file", $(selector)[0].files[0]);
+					form_data.append("path", data1[1]);
+					form_data.append("type", extension.join('|'));
+						
+					var datasrc = (data2[1]) ? $(document).find(data2[1]).attr('src') : '';
+					if(multiple!=''){
+						var mutiplesection = $(document).find(data2[1]).parent().find('div:first');
+						var defaultimg = mutiplesection.find('img').attr('src');
+					}
+						
+					ajax(ajaxurl, form_data, fileappendvideo, {
+						contenttype : 1, 
+						processdata : 1,
+						beforesend : function(){
+							if(multiple!=''){
+								mutiplesection.show();
+								mutiplesection.find('img').attr('src', loader);
+							}else if(datasrc!=''){
+								$(document).find(data2[1]).attr('src', loader);
+							}
+						},
+						complete : function(){
+							if(multiple!=''){
+								var mutiplesection = $(document).find(data2[1]).parent().find('div:first');
+								mutiplesection.hide();
+								mutiplesection.find('img').attr('src', defaultimg);
+							}
+						}
+					});
+				}
+			};			
+		}else{
+			$(selector).val('');
+			alert('Supported file format are '+extension.join(','));
+		}
+	})
+	
+	function fileappendvideo(data){
+		if(typeof data !== 'object'){
+			alert(data);
+		}
+		
+		if((data.file_name && data2.length) || (data.file_name && customfunction!='')){
+			var file 		= data.file_name;
+			
+			if(customfunction!=''){
+				customfunction(file);
+			}else{
+				if(data2[1] && data2[2]){
+					var ext = data.file_name.split('.').pop().toLowerCase();
+					
+					if(ext=='jpg' || ext=='jpeg' || ext=='png' || ext=='tif' || ext=='tiff'){
+						var filesrc = data2[2]+'/'+file;
+					}else if(ext=='pdf'){
+						var filesrc = data2[3];					
+					}else if(ext=='mp4'){
+						var filesrc = data2[3];
+					}
+				}
+				
+				if(multiple==''){
+					$(data2[0]).val(file);
+					
+					if(filesrc){
+						$(data2[1]).attr('src', filesrc);
+					}				
+				}else{
+					if(filesrc){
+						$(data2[1]).append('<p><div class="multipleupload"><input type="hidden" value="'+file+'" name="'+data2[0]+'"><img src="'+filesrc+'" width="100"><i class="fa fa-times"></i></div></p>');
+					}
+				}
+			}
+		}
+		
+		$(selector).val('');
+		if (typeof installationdefaultimage !== 'undefined' && $.isFunction(installationdefaultimage)) installationdefaultimage();
+	}
+	
+	$(document).on('click', '.multipleupload i', function(){
+		$(this).parent().remove();
+		if (typeof installationdefaultimage !== 'undefined' && $.isFunction(installationdefaultimage)) installationdefaultimage();
+	})
+}
+
 function localstorage(type, name, value){
 	if(type=='set'){
 		localStorage.setItem(name, value);
