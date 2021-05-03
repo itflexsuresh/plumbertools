@@ -209,6 +209,12 @@ class Admincontrol extends CI_Controller {
 		$this->magazine_reports_title 		=	"MAGAZINE";		$this->magazine_reports_title2 	=	"";
 		$this->magazine_reports_value 		=	67;
 
+		$this->advanced_valves_title 		=	"Advanced Valves";		$this->advanced_valves_title2 	=	"";
+		$this->advanced_valves_value 		=	68;
+
+		$this->advanced_valves_contactus_title 		=	"Advanced Valves Contact us";		$this->advanced_valves_contactus_title2 	=	"";
+		$this->advanced_valves_contactus_value 		=	69;
+
 		$this->load->library('session');
 		$this->load->library('ckeditor');
 		$this->ckeditor->basePath 			= base_url().'assets/ckeditor/';
