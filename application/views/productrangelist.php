@@ -11,7 +11,7 @@
 					<!--<button type="button" activevalue="1" class="btn btn-success btn-fill pull-left active">Active</button>
 					<button type="button" activevalue="2" class="btn btn-warning btn-fill pull-left active">Inactive</button>-->
 					<?php if (isset($permission) && ($permission =='1')) { 
-						if (!isset($getdata[0]) && $getdata[0]['id'] =='') {
+						if (empty($getdata)) {
 							?>
 						<a href="<?php echo base_url();?>admincontrol/newproductrange"><button type="button" class="btn btn-info btn-fill pull-right">Add New</button></a><br><br>	
 					<?php } } ?>
