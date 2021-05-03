@@ -156,7 +156,7 @@
                 type: 'info',
                 timer: 4000
             });
-			*/
+			*////
 
 			if ($(".nav > li > ul > li.active")) {
 			  $(".nav > li > ul > li.active").parent().parent().addClass("cus-tog");
