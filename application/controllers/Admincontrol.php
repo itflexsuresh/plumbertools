@@ -188,6 +188,27 @@ class Admincontrol extends CI_Controller {
 		$this->system_user_title 		=	"System Users";		$this->system_user_title2 	=	"";
 		$this->system_user_value 		=	60;
 
+		$this->magazine_article_title 		=	"MAGAZINE";		$this->magazine_article_title2 	=	"";
+		$this->magazine_article_value 		=	61;
+
+		$this->magazine_tags_title 		=	"MAGAZINE";		$this->magazine_tags_title2 	=	"";
+		$this->magazine_tags_value 		=	62;
+
+		$this->magazine_comments_title 		=	"MAGAZINE";		$this->magazine_comments_title2 	=	"";
+		$this->magazine_comments_value 		=	63;
+
+		$this->magazine_writers_title 		=	"MAGAZINE";		$this->magazine_writers_title2 	=	"";
+		$this->magazine_writers_value 		=	64;
+
+		$this->advertising_clients_title 		=	"Advertising";		$this->advertising_clients_title2 	=	"";
+		$this->advertising_clients_value 		=	65;
+
+		$this->advertising_adbanners_title 		=	"Advertising";		$this->advertising_adbanners_title2 	=	"";
+		$this->advertising_adbanners_value 		=	66;
+
+		$this->magazine_reports_title 		=	"MAGAZINE";		$this->magazine_reports_title2 	=	"";
+		$this->magazine_reports_value 		=	67;
+
 		$this->load->library('session');
 		$this->load->library('ckeditor');
 		$this->ckeditor->basePath 			= base_url().'assets/ckeditor/';
