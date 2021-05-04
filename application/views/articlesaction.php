@@ -72,6 +72,7 @@ if ($file != '') {
 $detailsidD_audio  = $detailsidD_video  = $detailsidD_image  = $detailsidD_audioimage = $uploadimg;
 $detailsurlD_audio = $detailsurlD_video = $detailsurlD_image = $detailsurlD_audioimage = 'javascript:void(0)';
 $details_media_url = isset($getdata['detail_file']) ? $getdata['detail_file'] : '';
+$details_audioimageurl = isset($getdata['audio_image']) ? $getdata['audio_image'] : '';
 $details_media     = (isset($getdata['detail_file']) && $getdata['detail_file'] != '') ? $filepath . $getdata['detail_file'] : $uploadimg;
 
 $as_per_front_img = 1;
