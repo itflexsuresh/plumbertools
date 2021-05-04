@@ -155,9 +155,9 @@ class Api extends CI_Controller {
 		$data["centericon"][7]['title']="Findar";
 		$data["centericon"][7]['pagelink']="ComingSoon.html";
 		
-		$data["centericon"][15]['image']=base_url().'./appicons/advancedvalve_logo_new.png';	
-		$data["centericon"][15]['title']="Advanced Valves";
-		$data["centericon"][15]['pagelink']="AdvancedValves.html";
+		$data["centericon"][8]['image']=base_url().'./appicons/advancedvalve_logo_new.png';	
+		$data["centericon"][8]['title']="Advanced Valves";
+		$data["centericon"][8]['pagelink']="AdvancedValves.html";
 				
 		$data["centericon"][9]['image']=base_url().'./appicons/tools1.png';	
 		$data["centericon"][9]['title']="Tools";
@@ -183,9 +183,9 @@ class Api extends CI_Controller {
 		$data["centericon"][14]['title']="Builders Warehouse";
 		$data["centericon"][14]['pagelink']="bwarehouse.html";
 		
-		$data["centericon"][8]['image']=base_url().'./appicons/saw_new1.png';	
-		$data["centericon"][8]['title']="SAW";
-		$data["centericon"][8]['pagelink']="Saw.html";
+		$data["centericon"][15]['image']=base_url().'./appicons/saw_new1.png';	
+		$data["centericon"][15]['title']="SAW";
+		$data["centericon"][15]['pagelink']="Saw.html";
 		
 		// $data["bottomicon"][0]['image']=base_url().'./appicons/ico13.png';	
 		// $data["bottomicon"][0]['title']="MANAGE IT";
