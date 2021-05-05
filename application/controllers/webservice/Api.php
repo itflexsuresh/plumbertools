@@ -6800,25 +6800,27 @@ echo '<div class="col-md-6">Select Category
 
 			$jsonData['logo'] = base_url().'appicons/advanced_valves_logo.jpg';
 
-			//$jsonData['advancedvalves'][0] = [
-			//	'video' 	=> base_url().'videos/b247be1247bae737123e09a02dedf387.mp4',
-			//	'content' 	=> $this->config->item('aboutus_content')[0],
-			//];
-			//$jsonData['advancedvalves'][1] = [
-			//	'image' 	=> base_url().'appicons/Image18.png',
-			//	'content' 	=> $this->config->item('aboutus_content')[1],
-			//	'content2' 	=> $this->config->item('aboutus_content')[2],
-			//];
-			$jsonData['advancedvalves'] = [
+			$jsonData['advancedvalves'][0] = [
+				// 'video' 	=> base_url().'videos/b247be1247bae737123e09a02dedf387.mp4',
+				'video' 	=> '',
+				'content' 	=> $this->config->item('aboutus_content')[0],
 			];
+			$jsonData['advancedvalves'][1] = [
+				'image' 	=> base_url().'appicons/Image18.png',
+				'content' 	=> $this->config->item('aboutus_content')[1],
+				'content2' 	=> $this->config->item('aboutus_content')[2],
+			];
+			
+			// $jsonData['advancedvalves'] = [
+			// ];
 
 			$scrollingtickerline = $this->adminmodel->getfulldata_scrolling_api("scrollingticker","1");		
 			for($i=0; $i < count($scrollingtickerline); $i++){			
 				$jsonData["scrollingticker"][$i]['content'] = $scrollingtickerline[$i]['scrollingticker'];
 			}
 
-			//$jsonArray = array("status"=>'1', "message"=>'About Us', 'result' => $jsonData);
-			$jsonArray = array("status"=>'1', "message"=>'This function is currently undergoing maintenance, after which user experience will be optimal.', 'result' => $jsonData);
+			$jsonArray = array("status"=>'1', "message"=>'About Us', 'result' => $jsonData);
+			// $jsonArray = array("status"=>'1', "message"=>'This function is currently undergoing maintenance, after which user experience will be optimal.', 'result' => $jsonData);
 		}else{
 			$jsonArray = array("status"=>'0', "message"=>'Invalid request', 'result' => []);
 		}
