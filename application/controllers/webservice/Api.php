@@ -148,9 +148,12 @@ class Api extends CI_Controller {
 		// $data["centericon"][5]['title']="Installation Guides";
 		$data["centericon"][5]['title']="Reference Guides";
 		$data["centericon"][5]['pagelink']="ProductGuide.html";
-		$data["centericon"][6]['image']=base_url().'./appicons/cpd1.png';	
-		$data["centericon"][6]['title']="CPD Activities";
-		$data["centericon"][6]['pagelink']="Homecpd.html";
+		// $data["centericon"][6]['image']=base_url().'./appicons/cpd1.png';	
+		// $data["centericon"][6]['title']="CPD Activities";
+		// $data["centericon"][6]['pagelink']="Homecpd.html";
+		$data["centericon"][6]['image']=base_url().'./appicons/builder_werehouse.png';	
+		$data["centericon"][6]['title']="Builders Warehouse";
+		$data["centericon"][6]['pagelink']="bwarehouse.html";
 		$data["centericon"][7]['image']=base_url().'./appicons/finder_new1.png';	
 		$data["centericon"][7]['title']="Findar";
 		$data["centericon"][7]['pagelink']="ComingSoon.html";
@@ -177,11 +180,7 @@ class Api extends CI_Controller {
 		$data["centericon"][13]['image']=base_url().'./appicons/ratemywork.png';	
 		// $data["centericon"][13]['title']="Rate My Work";
 		$data["centericon"][13]['title']="Community Board";		
-		$data["centericon"][13]['pagelink']="rate_my_work.html";
-
-		$data["centericon"][14]['image']=base_url().'./appicons/builder_werehouse.png';	
-		$data["centericon"][14]['title']="Builders Warehouse";
-		$data["centericon"][14]['pagelink']="bwarehouse.html";
+		$data["centericon"][13]['pagelink']="rate_my_work.html";		
 		
 		$data["centericon"][15]['image']=base_url().'./appicons/saw_new1.png';	
 		$data["centericon"][15]['title']="SAW";
