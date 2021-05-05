@@ -152,7 +152,7 @@ class Api extends CI_Controller {
 		// $data["centericon"][6]['title']="CPD Activities";
 		// $data["centericon"][6]['pagelink']="Homecpd.html";
 		$data["centericon"][6]['image']=base_url().'./appicons/builder_werehouse.png';	
-		$data["centericon"][6]['title']="Warehouse";
+		$data["centericon"][6]['title']="Builders";
 		$data["centericon"][6]['pagelink']="bwarehouse.html";
 		$data["centericon"][7]['image']=base_url().'./appicons/finder_new1.png';	
 		$data["centericon"][7]['title']="Findar";
