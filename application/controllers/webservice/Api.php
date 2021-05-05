@@ -176,8 +176,8 @@ class Api extends CI_Controller {
 		// $data["centericon"][13]['pagelink']="Profile.html";
 		$data["centericon"][13]['image']=base_url().'./appicons/ratemywork.png';	
 		// $data["centericon"][13]['title']="Rate My Work";
-		$data["centericon"][13]['title']="Community Board";
-		$data["centericon"][13]['pagelink']="";
+		$data["centericon"][13]['title']="Community Board";		
+		$data["centericon"][13]['pagelink']="rate_my_work.html";
 
 		$data["centericon"][14]['image']=base_url().'./appicons/builder_werehouse.png';	
 		$data["centericon"][14]['title']="Builders Warehouse";
