@@ -908,7 +908,7 @@ class Apimodel extends CI_Model {
 
     public function getArticleCommentsList($type, $requestdata = [])
     {    	
-    	$this->db->select('ac.*, us.name as username')->select('(SELECT COUNT(*) FROM articles_comments_likes WHERE comment_id = ac.id AND ACTION = "1") AS likes', false);
+    	$this->db->select('ac.*, us.name as username')->select('(SELECT COUNT(id) FROM articles_comments_likes WHERE comment_id = ac.id AND ACTION = "1") AS likes', false);
         $this->db->from('articles_comments ac');        
         $this->db->join('users us', 'us.id = ac.posted_by', 'left');
         $this->db->join('users_details ud', 'ud.user_id=ac.posted_by', 'left');
@@ -1015,13 +1015,13 @@ class Apimodel extends CI_Model {
 
     public function GetLikesCount($requestData)
     {             
-       	$this->db->select('*');
+       	$this->db->select('id');
 	    $this->db->from('articles_comments_likes');	    	    
 	    $this->db->where($requestData);	 
 	    $this->db->where('action', '1');
 	    $result['like'] = $this->db->count_all_results();
 
-	    $this->db->select('*');
+	    $this->db->select('id');
 	    $this->db->from('articles_comments_likes');	    	    
 	    $this->db->where($requestData);	 
 	    $this->db->where('action', '0');
