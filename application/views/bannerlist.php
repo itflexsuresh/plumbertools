@@ -39,7 +39,7 @@
 						<button type="button" topactivevalue="1" class="btn btn-success btn-fill pull-left topactive">Active</button>
 						<button type="button" topactivevalue="2" class="btn btn-warning btn-fill pull-left topactive">Inactive</button>
 						<?php if ((isset($permission) && ($permission =='1')) || ($userdetails['warehouse_staff'] =='1')) { ?>
-							<button id="newtopbutton" type="button" class="btn btn-info btn-fill pull-right">Add New</button><br><br>
+							<button id="newtopbutton" type="button" class="btn btn-info btn-fill pull-right" disabled style="border: 1px solid #3876a7;background-color: #3876a7;color: white;">Add New</button><br><br>
 						<?php } ?>
 					</div>
 					
