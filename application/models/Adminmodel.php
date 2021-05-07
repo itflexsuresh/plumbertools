@@ -1801,7 +1801,7 @@ class Adminmodel extends CI_Model {
 
     public function getdata_comments()
     {
-        $this->db->select('ac.*, ar.title as article_name, us.name as user_name')->select('(SELECT COUNT(id) FROM articles_comments_likes WHERE comment_id = ac.id AND ACTION = "1") AS likes', false)->select('(SELECT COUNT(id) FROM articles_comments_likes WHERE comment_id = ac.id AND ACTION = "0") AS dislikes', false)->select('(SELECT COUNT(id) FROM articles_comments_reports_count WHERE comment_id = ac.id) AS reports', false);
+        $this->db->select('ac.*, ar.title as article_name, us.name as user_name')->select('(SELECT COUNT(*) FROM articles_comments_likes WHERE comment_id = ac.id AND ACTION = "1") AS likes', false)->select('(SELECT COUNT(*) FROM articles_comments_likes WHERE comment_id = ac.id AND ACTION = "0") AS dislikes', false)->select('(SELECT COUNT(*) FROM articles_comments_reports_count WHERE comment_id = ac.id) AS reports', false);
         $this->db->from('articles_comments ac');
         $this->db->join('articles ar', 'ar.id = ac.posted_on_article', 'left');
         $this->db->join('users us', 'us.id = ac.posted_by', 'left');
