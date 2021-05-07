@@ -2097,6 +2097,13 @@ class Adminmodel extends CI_Model {
 
 		if(isset($requestData['id'])) 				$this->db->where('ad.id', $requestData['id']);
 
+		if(isset($requestData['advert_type'])) 		$this->db->where('ad.advert_type', $requestData['advert_type']);
+
+		if (isset($requestData['warehouse_staff']) && $requestData['warehouse_staff'] == '1') {
+        	$pageid = $this->config->item('pagesid')[21]; // Builder Page ID
+        	$this->db->where('ad.page_id', $pageid);        	
+        }
+
 		$this->db->group_by('ad.id');
 		$this->db->order_by('ad.id desc');	
 		
