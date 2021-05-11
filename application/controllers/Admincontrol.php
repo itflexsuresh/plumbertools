@@ -11,6 +11,7 @@ class Admincontrol extends CI_Controller {
 		$this->load->model('Apimodel');
 		$this->load->model('Diarymodel');
 		$this->dashboard_title	 			=	"Dashboard";$this->dashboard_value 				=	1;
+		$this->newdashboard_title	 		=	"New Dashboard"; $this->newdashboard_value 		=	1;
 
 		$this->advertising_title 			=	"Plumber";	$this->advertising_title2 			=	""; 
 		$this->advertising_value 			=	2;
@@ -7440,14 +7441,22 @@ class Admincontrol extends CI_Controller {
 	function adbanners()
 	{	    
 	    $this->checksessionout();
-	    $this->checkUserPermission('3', '1', '1');
+	    $userdetails 		= 	$this->getUserDetails();
+	    if ($userdetails['warehouse_staff'] =='0') {
+			$this->checkUserPermission('3', '1', '1');
+		}
+
 	    $data["header_title"]      = $this->advertising_adbanners_title;
 	    $data["header_title2"]     = $this->advertising_adbanners_title2;
 	    $data["leftsidebar_value"] = $this->advertising_adbanners_value;
 
-	    $checkpermission    = $this->checkUserPermission('3', '2');
-	    $data["permission"] = $checkpermission;
-	    $data["getdata"]    = $this->adminmodel->getdata_adbanners('all');	
+	    if ($userdetails['warehouse_staff'] == '0') {	
+	    	$checkpermission		=	$this->checkUserPermission('3', '2');
+			$data["permission"] 	= 	$checkpermission;		
+			$data["getdata"]    = $this->adminmodel->getdata_adbanners('all');	
+		}else{			
+			$data["getdata"]    = $this->adminmodel->getdata_adbanners('all', ['advert_type' => '2', 'warehouse_staff' => '1']);				
+		}	
 	    $this->allpage('adbanners', $data);
 	}
 
@@ -7462,12 +7471,25 @@ class Admincontrol extends CI_Controller {
 	            $this->session->set_flashdata('error', 'Try Later.');
 	        }
 	        redirect('admincontrol/adbanners');
-	    }
-
-	    $data["pagesdata"]=$this->adminmodel->getfulldata("pages", ['pagetype' => 'bannerlist']);
+	    }	    
 	    
 	    $this->checksessionout();
-	    $this->checkUserPermission('4', '1', '1');
+	    $userdetails 		= 	$this->getUserDetails();
+	    if ($userdetails['warehouse_staff'] =='0') {
+			$this->checkUserPermission('3', '1', '1');
+		}
+
+	    if ($userdetails['warehouse_staff'] == '0') {
+			$data["pagesdata"]=$this->adminmodel->getfulldata("pages", ['pagetype' => 'bannerlist', 'warehouse_staff' => '0']);
+		}else{
+			$data["pagesdata"]=$this->adminmodel->getfulldata("pages", ['pagetype' => 'bannerlist', 'warehouse_staff' => '1']);
+		}
+
+	    if ($userdetails['warehouse_staff'] =='0') {
+			$checkpermission		=	$this->checkUserPermission('3', '2');
+			$data["permission"] 	= 	$checkpermission;
+		}	
+
 	    $currentdate               = date("Y-m-d");
 	    $data["fromdate"]          = $currentdate;
 	    $data["todate"]            = $currentdate;
@@ -7476,9 +7498,7 @@ class Admincontrol extends CI_Controller {
 	    $data["header_title2"]     = $this->advertising_adbanners_title2;
 	    $data["leftsidebar_value"] = $this->advertising_adbanners_value;
 	    $data["getdata"]           = '';	    
-
-	    $checkpermission    = $this->checkUserPermission('4', '2');
-	    $data["permission"] = $checkpermission;
+	    
 	    $this->allpage('adbannersaction', $data);
 	}
 
@@ -7496,13 +7516,25 @@ class Admincontrol extends CI_Controller {
 	        redirect('admincontrol/adbanners');
 	    }	    
 
-	    $data["pagesdata"]=$this->adminmodel->getfulldata("pages", ['pagetype' => 'bannerlist']);
+	    $this->checksessionout();
+	    $userdetails 		= 	$this->getUserDetails();
+	    if ($userdetails['warehouse_staff'] =='0') {
+			$this->checkUserPermission('3', '1', '1');
+		}
+		
+	    if ($userdetails['warehouse_staff'] == '0') {
+			$data["pagesdata"]=$this->adminmodel->getfulldata("pages", ['pagetype' => 'bannerlist', 'warehouse_staff' => '0']);
+		}else{
+			$data["pagesdata"]=$this->adminmodel->getfulldata("pages", ['pagetype' => 'bannerlist', 'warehouse_staff' => '1']);
+		}
+
+	    if ($userdetails['warehouse_staff'] =='0') {
+			$checkpermission		=	$this->checkUserPermission('3', '2');
+			$data["permission"] 	= 	$checkpermission;
+		}
 	    
 	    $uid         = $this->uri->segment(3);
-	    $userid      = $this->getUserID();
-	    $userDetails = $this->getUserDetails();
-	    $this->checksessionout();
-	    $this->checkUserPermission('4', '1', '1');
+	    $userid      = $this->getUserID();	   
 	    $currentdate               = date("Y-m-d");
 	    $data["fromdate"]          = $currentdate;
 	    $data["todate"]            = $currentdate;
@@ -7518,9 +7550,7 @@ class Admincontrol extends CI_Controller {
 	        redirect('admincontrol/adbanners');
 	    }
 
-	    $data["sections_headers"] = $this->adminmodel->get_sections_headers();
-	    $checkpermission          = $this->checkUserPermission('4', '2');
-	    $data["permission"]       = $checkpermission;
+	    $data["sections_headers"] = $this->adminmodel->get_sections_headers();	    
 	    $this->allpage('adbannersaction', $data);
 	}
 

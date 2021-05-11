@@ -88,6 +88,11 @@ if ($file_type == 'Video') {
     }
 }
 
+if ($userdetails['warehouse_staff'] =='1') { 
+	$advert_type = 2;
+	$readonly = true;
+}
+
 // echo $autoplay_video; die();
 ?>
 <link href="<?php echo base_url();?>assets/plugins/select2/select2.min.css" rel="stylesheet">
@@ -219,6 +224,8 @@ if ($file_type == 'Video') {
 										</select>											
 									</div>								
 								</div>
+								<?php
+								if ($userdetails['warehouse_staff'] !='1') { ?>
 								<div class="col-md-6">
 									<div class="form-group">
 										<br>
@@ -227,6 +234,7 @@ if ($file_type == 'Video') {
 										</a>
 									</div>										
 								</div>
+								<?php } ?>
 							</div>
 
 							<div class="row">								
@@ -314,7 +322,7 @@ if ($file_type == 'Video') {
 
 							<br>
 							<div>
-								<?php if (isset($permission) && ($permission =='1')) { ?>								
+								<?php if ((isset($permission) && ($permission =='1')) || ($userdetails['warehouse_staff'] =='1')) { ?>
 								<input name="id" type="hidden" value="<?php echo $id; ?>">
 								<button type="submit" id="store" class="btn btn-info btn-fill pull-left"><?php echo $btnvlue; ?></button>
 								<?php } ?>

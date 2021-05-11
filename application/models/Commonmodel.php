@@ -176,24 +176,13 @@ class Commonmodel extends CI_Model {
 	}
 
 	function getdata_dashboardbanner1($condition,$fromdate,$todate, $extras = [])
-	{			
-		/*$this->db->select('bic.id as bicid, bic.bannerid, bic.newpageid, SUM(bic.impressions) as impressionscount, SUM(bic.clickscount) as clickscount, ban.name as bannername, ban.client, ban.description, ban.topbottom, ban.image, ban.link, ban.active, pg.title as pagename');
-		$this->db->from('banner_impressions_count as bic');
-		$this->db->join('banner as ban', 'ban.id = bic.bannerid', 'left');
-        $this->db->join('pages as pg', 'pg.id = bic.newpageid', 'left');
+	{					
+		$groupCodition = array("bic.bannerid", "bic.newpageid");			
 
-        $this->db->where_in('ban.active', $condition);
-        $this->db->where('bic.created_at >=', $fromdate);
-        $this->db->where('bic.created_at <=', $todate);
-        $this->db->group_by('bic.newpageid');
-
-		$query = $this->db->get();		
-		return $query->result_array();	*/
-		$groupCodition = array("bic.bannerid", "bic.newpageid");
-
-		$this->db->select('bic.id as bicid, bic.bannerid, bic.newpageid, SUM(bic.impressions) as impressionscount, SUM(bic.clickscount) as clickscount, ban.name as bannername, ban.client, ban.description, ban.topbottom, ban.image, ban.link, ban.active, pg.title as pagename, ban.created_at, ban.inactivedate');
-		$this->db->from('banner_impressions_count as bic');
-		$this->db->join('banner as ban', 'ban.id = bic.bannerid', 'left');
+		$this->db->select('bic.id as bicid, bic.bannerid, bic.newpageid, SUM(bic.impressions) as impressionscount, SUM(bic.clickscount) as clickscount, ban.client_id, ban.description, ban.file, ban.url, ban.campaign_status, pg.title as pagename, ban.created_at, ban.inactive_date, cl.client_name');
+		$this->db->from('advertising_adbanners_impressions_count as bic');		
+		$this->db->join('advertising_adbanners as ban', 'ban.id = bic.bannerid', 'left');
+		$this->db->join('advertising_clients cl', 'cl.id = ban.client_id', 'left'); 
         $this->db->join('pages as pg', 'pg.id = bic.newpageid', 'left');
 
         // $this->db->where_in('ban.active', $condition);
@@ -211,7 +200,7 @@ class Commonmodel extends CI_Model {
 
         $query = $this->db->get();
         // print_r($this->db->last_query());die;
-        return $query->result_array();		
+        return $query->result_array();			
 	}
 
 	public function download_articles()

@@ -1073,6 +1073,43 @@ class Adminmodel extends CI_Model {
 		return $query->result_array();
 	}
 
+	public function fileUpload2($file, $path, $type = '')
+    {
+        $config['upload_path']   = $path;
+        $config['allowed_types'] = ($type == '') ? 'jpeg|jpg|png' : $type;
+        $config['remove_spaces'] = true;
+        $config['encrypt_name']  = true;
+
+        $this->load->library('upload', $config);
+
+        if (!$this->upload->do_upload($file)) {
+            return $this->upload->display_errors();
+            return '';
+        } else {
+            $data = $this->upload->data();
+            if (in_array($data['image_type'], array('png', 'jpeg', 'jpg'))) {
+                //$this->fileResize($data['file_name'], $path);
+                $path = rtrim($path, '/') . '/';
+                $this->fileResizeCore($path . $data['file_name'], $path . $data['file_name'], 80);
+                // image resize
+                $this->load->library('image_lib');
+                $config_resize['image_library']  = 'gd2';
+                $config_resize['create_thumb']   = true;
+                $config_resize['maintain_ratio'] = true;
+                $config_resize['master_dim']     = 'auto';
+                $config_resize['quality']        = "100%";
+                $config_resize['source_image']   = './' . $path . $data['file_name'];
+
+                $config_resize['height'] = 100;
+                $config_resize['width']  = 100;
+                $this->image_lib->initialize($config_resize);
+                $this->image_lib->resize();
+                $this->fileResizeCore($path . $data['raw_name'] . '_thumb' . $data['file_ext'], $path . $data['raw_name'] . '_thumb' . $data['file_ext'], 80);
+                $data['file_name2'] = $data['raw_name'] . '_thumb' . $data['file_ext'];
+            }
+            return $data;
+        }
+    }
 
 	public function fileUpload($file, $path, $type='')
 	{
@@ -2059,6 +2096,13 @@ class Adminmodel extends CI_Model {
 		$this->db->join('pages as pg', 'pg.id = ad.page_id', 'left');
 
 		if(isset($requestData['id'])) 				$this->db->where('ad.id', $requestData['id']);
+
+		if(isset($requestData['advert_type'])) 		$this->db->where('ad.advert_type', $requestData['advert_type']);
+
+		if (isset($requestData['warehouse_staff']) && $requestData['warehouse_staff'] == '1') {
+        	$pageid = $this->config->item('pagesid')[21]; // Builder Page ID
+        	$this->db->where('ad.page_id', $pageid);        	
+        }
 
 		$this->db->group_by('ad.id');
 		$this->db->order_by('ad.id desc');	

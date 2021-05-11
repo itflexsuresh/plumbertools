@@ -42,6 +42,10 @@ if (isset($getdata) && $getdata) {
 }
 
 $last_position = $last_pos;
+if ($last_position == 0) {
+	$last_position = 1;
+}
+
 $sections_headersD = explode(",", $sections_headersD);
 
 $file = isset($getdata['file']) ? $getdata['file'] : '';
@@ -65,9 +69,10 @@ if ($file != '') {
     $photoidurl = 'javascript:void(0)';
 }
 
-$detailsidD_audio  = $detailsidD_video  = $detailsidD_image  = $uploadimg;
-$detailsurlD_audio = $detailsurlD_video = $detailsurlD_image = 'javascript:void(0)';
+$detailsidD_audio  = $detailsidD_video  = $detailsidD_image  = $detailsidD_audioimage = $uploadimg;
+$detailsurlD_audio = $detailsurlD_video = $detailsurlD_image = $detailsurlD_audioimage = 'javascript:void(0)';
 $details_media_url = isset($getdata['detail_file']) ? $getdata['detail_file'] : '';
+$details_audioimageurl = isset($getdata['audio_image']) ? $getdata['audio_image'] : '';
 $details_media     = (isset($getdata['detail_file']) && $getdata['detail_file'] != '') ? $filepath . $getdata['detail_file'] : $uploadimg;
 
 $as_per_front_img = 1;

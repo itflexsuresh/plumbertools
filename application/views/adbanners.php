@@ -25,12 +25,14 @@
 						</div>
 					</div>
 										
-					<?php if (isset($permission) && ($permission =='1')) { ?> 	
-					<div class="pull-right" style="padding-right: 1%;">					
+					<div class="pull-right" style="padding-right: 1%;">		
+						<?php if (isset($permission) && ($permission =='1')) { ?> 			
 						<button type="button" id="download" class="btn btn-info btn-fill"><i class="fa fa-download"></i> Download</button>
-						<a href="<?php echo base_url();?>admincontrol/newadbanners"><button type="button" class="btn btn-info btn-fill">Add New</button></a>		
-					</div><br><br>				
-					<?php } ?>	
+						<?php }
+						if ((isset($permission) && ($permission =='1')) || ($userdetails['warehouse_staff'] =='1')) { ?>
+						<a href="<?php echo base_url();?>admincontrol/newadbanners"><button type="button" class="btn btn-info btn-fill">Add New</button></a>	
+						<?php } ?>	
+					</div><br><br>
 					
 					<div class="content table-responsive table-full-width">						
 						<table class="table table-hover table-striped">
@@ -91,7 +93,7 @@
 									<td><?php echo $row['count_clicks']; ?></td>
 									<td><?php echo $status; ?></td>
 									<td>
-										<a href="<?php echo base_url();?>admincontrol/editadbanners/<?php echo $row['id'] ; ?>">Edit</a> <?php if (isset($permission) && ($permission =='1')) { ?> / <a href="javascript:void(0)" deleteid="<?php echo $row['id']; ?>" class="delete">Delete</a>
+										<a href="<?php echo base_url();?>admincontrol/editadbanners/<?php echo $row['id'] ; ?>">Edit</a> <?php if ((isset($permission) && ($permission =='1')) || ($userdetails['warehouse_staff'] =='1')) { ?> / <a href="javascript:void(0)" deleteid="<?php echo $row['id']; ?>" class="delete">Delete</a>
 										<?php } ?>
 									</td>									
 								</tr>

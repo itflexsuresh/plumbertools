@@ -148,15 +148,20 @@ class Api extends CI_Controller {
 		// $data["centericon"][5]['title']="Installation Guides";
 		$data["centericon"][5]['title']="Reference Guides";
 		$data["centericon"][5]['pagelink']="ProductGuide.html";
-		$data["centericon"][6]['image']=base_url().'./appicons/cpd1.png';	
-		$data["centericon"][6]['title']="CPD Activities";
-		$data["centericon"][6]['pagelink']="Homecpd.html";
+		// $data["centericon"][6]['image']=base_url().'./appicons/cpd1.png';	
+		// $data["centericon"][6]['title']="CPD Activities";
+		// $data["centericon"][6]['pagelink']="Homecpd.html";
+		$data["centericon"][6]['image']=base_url().'./appicons/builder_werehouse.png';	
+		$data["centericon"][6]['title']="Builders";
+		$data["centericon"][6]['pagelink']="bwarehouse.html";
 		$data["centericon"][7]['image']=base_url().'./appicons/finder_new1.png';	
 		$data["centericon"][7]['title']="Findar";
 		$data["centericon"][7]['pagelink']="ComingSoon.html";
-		$data["centericon"][8]['image']=base_url().'./appicons/saw_new1.png';	
-		$data["centericon"][8]['title']="SAW";
-		$data["centericon"][8]['pagelink']="Saw.html";
+		
+		$data["centericon"][8]['image']=base_url().'./appicons/advancedvalve_logo_new.png';	
+		$data["centericon"][8]['title']="Advanced Valves";
+		$data["centericon"][8]['pagelink']="AdvancedValves.html";
+				
 		$data["centericon"][9]['image']=base_url().'./appicons/tools1.png';	
 		$data["centericon"][9]['title']="Tools";
 		$data["centericon"][9]['pagelink']="ToolsPage.html";
@@ -174,16 +179,12 @@ class Api extends CI_Controller {
 		// $data["centericon"][13]['pagelink']="Profile.html";
 		$data["centericon"][13]['image']=base_url().'./appicons/ratemywork.png';	
 		// $data["centericon"][13]['title']="Rate My Work";
-		$data["centericon"][13]['title']="PIRB Community Board";
-		$data["centericon"][13]['pagelink']="";
-
-		$data["centericon"][14]['image']=base_url().'./appicons/builder_werehouse.png';	
-		$data["centericon"][14]['title']="Builders Warehouse";
-		$data["centericon"][14]['pagelink']="bwarehouse.html";
+		$data["centericon"][13]['title']="Community Board";		
+		$data["centericon"][13]['pagelink']="rate_my_work.html";		
 		
-		$data["centericon"][15]['image']=base_url().'./appicons/advancedvalve_logo_new.png';	
-		$data["centericon"][15]['title']="Advanced Valves";
-		$data["centericon"][15]['pagelink']="AdvancedValves.html";
+		$data["centericon"][15]['image']=base_url().'./appicons/saw_new1.png';	
+		$data["centericon"][15]['title']="SAW";
+		$data["centericon"][15]['pagelink']="Saw.html";
 		
 		// $data["bottomicon"][0]['image']=base_url().'./appicons/ico13.png';	
 		// $data["bottomicon"][0]['title']="MANAGE IT";
@@ -4359,7 +4360,7 @@ echo '<div class="col-md-6">Select Category
 		$data = array();
 		$post = $this->input->post();
 
-		if ($post['appversion'] < '1.23') {
+		if ($post['appversion'] < '1.26') {
 			$data["status"]  	= "1";
 			$data["message"] 	= "Please Update your app";
 			$data["link"]	 	= "https://play.google.com/store/apps/details?id=com.app.plumber";
@@ -6798,25 +6799,27 @@ echo '<div class="col-md-6">Select Category
 
 			$jsonData['logo'] = base_url().'appicons/advanced_valves_logo.jpg';
 
-			//$jsonData['advancedvalves'][0] = [
-			//	'video' 	=> base_url().'videos/b247be1247bae737123e09a02dedf387.mp4',
-			//	'content' 	=> $this->config->item('aboutus_content')[0],
-			//];
-			//$jsonData['advancedvalves'][1] = [
-			//	'image' 	=> base_url().'appicons/Image18.png',
-			//	'content' 	=> $this->config->item('aboutus_content')[1],
-			//	'content2' 	=> $this->config->item('aboutus_content')[2],
-			//];
-			$jsonData['advancedvalves'] = [
+			$jsonData['advancedvalves'][0] = [
+				// 'video' 	=> base_url().'videos/b247be1247bae737123e09a02dedf387.mp4',
+				'video' 	=> '',
+				'content' 	=> $this->config->item('aboutus_content')[0],
 			];
+			$jsonData['advancedvalves'][1] = [
+				'image' 	=> base_url().'appicons/Image18.png',
+				'content' 	=> $this->config->item('aboutus_content')[1],
+				'content2' 	=> $this->config->item('aboutus_content')[2],
+			];
+			
+			// $jsonData['advancedvalves'] = [
+			// ];
 
 			$scrollingtickerline = $this->adminmodel->getfulldata_scrolling_api("scrollingticker","1");		
 			for($i=0; $i < count($scrollingtickerline); $i++){			
 				$jsonData["scrollingticker"][$i]['content'] = $scrollingtickerline[$i]['scrollingticker'];
 			}
 
-			//$jsonArray = array("status"=>'1', "message"=>'About Us', 'result' => $jsonData);
-			$jsonArray = array("status"=>'1', "message"=>'This function is currently undergoing maintenance, after which user experience will be optimal.', 'result' => $jsonData);
+			$jsonArray = array("status"=>'1', "message"=>'About Us', 'result' => $jsonData);
+			// $jsonArray = array("status"=>'1', "message"=>'This function is currently undergoing maintenance, after which user experience will be optimal.', 'result' => $jsonData);
 		}else{
 			$jsonArray = array("status"=>'0', "message"=>'Invalid request', 'result' => []);
 		}

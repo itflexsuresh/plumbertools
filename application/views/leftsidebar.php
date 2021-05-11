@@ -43,12 +43,18 @@ $writepermission  = explode(',', $userdetails['write_permission']);
                         <p>Dashboard</p>
                      </a>
                   </li>
-                  <li <?php if($leftsidebar_value == 20 ) { ?> class="active" <?php } ?> >
-                     <a href="<?php echo base_url();?>admincontrol/bannerlist">
+                  <li <?php if($leftsidebar_value == 66 ) { ?> class="active" <?php } ?> >
+                     <a href="<?php echo base_url();?>admincontrol/adbanners">
                         <i class="pe-7s-display2"></i>                        
                         <p>Advertising</p>
                      </a>
                   </li>
+                  <!-- <li <?php if($leftsidebar_value == 20 ) { ?> class="active" <?php } ?> >
+                     <a href="<?php echo base_url();?>admincontrol/bannerlist">
+                        <i class="pe-7s-display2"></i>                        
+                        <p>Advertising</p>
+                     </a>
+                  </li> -->
                </ul>
               
             <?php }else{ ?>
@@ -94,13 +100,13 @@ $writepermission  = explode(',', $userdetails['write_permission']);
                            <p>Advertising <b class="caret"></b></p>
                         </a>
                         <ul id="treeview-menu7">
-                           <?php if ($usertype == '1' || (in_array('3', $readpermission)) || in_array('3', $writepermission)) {?>
+                           <!-- <?php if ($usertype == '1' || (in_array('3', $readpermission)) || in_array('3', $writepermission)) {?>
                            <li <?php if($leftsidebar_value == 20 ) { ?> class="active" <?php } ?>>
                               <a href="<?php echo base_url(); ?>admincontrol/bannerlist">
                                  <p>Banner List</p>
                               </a>
                            </li>
-                           <?php } ?>
+                           <?php } ?> -->
                            <?php if ($usertype == '1' || (in_array('3', $readpermission)) || in_array('3', $writepermission)) {?>
                            <li <?php if($leftsidebar_value == 65 ) { ?> class="active" <?php } ?>>
                               <a href="<?php echo base_url(); ?>admincontrol/clients">
