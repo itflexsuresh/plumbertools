@@ -215,7 +215,7 @@ $config['advance_valves_adminEmail'] 	= 	[
 											'0' 	=> 'sheikmadhar@itflexsolutions.com',
 											'1' 	=> 'info@advancedvalves.co.za',
 											'2' 	=> 'manikandanrengasamy@itflexsolutions.com',
-											'1' 	=> 'suresh@itflexsolutions.com',
+											'3' 	=> 'suresh@itflexsolutions.com',
 
 										];
 
