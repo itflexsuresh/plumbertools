@@ -137,7 +137,7 @@ $pdfimg 				= base_url().'images/pdf.png';
 							<?php if (isset($permission) && ($permission =='1')) { ?>
 							<button type="button" id="submit-action" class="btn btn-info btn-fill pull-left"><?php echo $btn; ?></button>	
 							<?php } ?>
-							<button type="submit" id="submit-form" class="displaynone" style="display: none;"><?php echo "submit form"; ?></
+							<button type="submit" id="submit-form" class="displaynone" style="display: none;"><?php echo "submit form"; ?></button>
 							<input id="id" name="id" type="hidden" value="<?php echo $id; ?>">
 							<input id="userdetailid" name="userdetailid" type="hidden" value="<?php echo $userdetailid; ?>">
 							<input id="device_type" name="device_type" type="hidden" value="1">
