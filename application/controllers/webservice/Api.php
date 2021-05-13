@@ -4545,12 +4545,45 @@ echo '<div class="col-md-6">Select Category
 		
 	}
 
+		public function email_exists($key, $id = '')
+	{
+		$this->db->where('email', $key);
+		if ($id != '') $this->db->where('id !=', $id);
+		$this->db->where('status', '1');
+		$query = $this->db->get('users');
+		// echo $this->db->last_query();
+		// exit;
+		if ($query->num_rows() == 0) {
+			return true;
+		} else {
+			$this->form_validation->set_message('email_exists', 'has already been used! Try logging in.');
+			return false;
+		}
+	}
+
+	public function username_exists($key, $id = '')
+	{
+		$this->db->where('name', $key);
+		if ($id != '') $this->db->where('id !=', $id);
+		$this->db->where('status', '1');
+		$query = $this->db->get('users');
+		// echo $this->db->last_query();
+		// exit;
+		if ($query->num_rows() == 0) {
+			return true;
+		} else {
+			$this->form_validation->set_message('username_exists', 'has already been taken!');
+			return false;
+		}
+	}
+
 	public function userregisteration(){
 		if ($this->input->post()) {
-			$this->form_validation->set_rules('email','Email','trim|required');
+			$id 		= '';
+			$this->form_validation->set_rules('email', 'Email','required|callback_email_exists[' . $id . ']');
 			$this->form_validation->set_rules('password','Password','trim|required');
 			$this->form_validation->set_rules('repeatpassword','Repeat Password','trim|required');
-			$this->form_validation->set_rules('name','Username','trim|required');
+			$this->form_validation->set_rules('name', 'Username','required|callback_username_exists[' . $id . ']');
 			// $this->form_validation->set_rules('contact','Company name','trim|required');
 			// $this->form_validation->set_rules('profile_file','Profile','trim|required');
 
