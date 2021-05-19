@@ -4360,7 +4360,7 @@ echo '<div class="col-md-6">Select Category
 		$data = array();
 		$post = $this->input->post();
 
-		if ($post['appversion'] < '1.26') {
+		if ($post['appversion'] < '1.27') {
 			$data["status"]  	= "1";
 			$data["message"] 	= "Please Update your app";
 			$data["link"]	 	= "https://play.google.com/store/apps/details?id=com.app.plumber";
@@ -7133,6 +7133,118 @@ echo '<div class="col-md-6">Select Category
 			$jsonArray = array("status"=>'0', "message"=>'Invalid request', 'result' => []);
 		}
 		echo json_encode($jsonArray);
+	}
+
+	public function newtoolboxtalks_category()
+	{
+		$data 								=	array();
+		$requestdata 						=	array();
+		// $data["title"] 						= 	'Product and Installation Guides';	
+		$data["title"] 						= 	'Toolbox Talks';	
+		$requestdata['orderby_position'] 	= 	'1';			
+		$getfulldata 						=	$this->adminmodel->getfulldata("newtoolboxtalks",['orderby_position' => '1', 'extras' => 'pagetrue']);	
+		
+		for($i=0; $i < count($getfulldata); $i++){
+			$data["toolboxtalks"][$i]["id"]			=	$getfulldata[$i]['id'];	
+
+			$data["toolboxtalks"][$i]["content"]			=	$getfulldata[$i]['content'];
+			$data["toolboxtalks"][$i]["display"]			=	$getfulldata[$i]['display'];
+			$data["toolboxtalks"][$i]["display_content"]	=	$getfulldata[$i]['display_content'];
+
+			$data["toolboxtalks"][$i]["image"]	=	base_url().'./images/'.$getfulldata[$i]['image'];	
+		}
+		echo json_encode($data);
+	}
+
+	public function newtoolboxtalks_subcategory()
+	{
+		$data 								=	array();
+		$requestdata 						=	array();
+		// $data["title"] 						= 	'Product and Installation Guides';
+		$data["title"] 						= 	'Toolbox Talksides';
+		$requestdata 						= 	$this->input->post();	
+		$requestdata['orderby_position'] 	= 	'1';
+		$requestdata['pagename'] 			= 	'newtoolboxtalks_subcategory';
+		$requestdata['extras'] 				= 	'pagetrue';	
+		$getfulldata 						=	$this->adminmodel->getfulldata("newtoolboxtalks1",$requestdata);
+		// print_r($this->db->last_query());die;
+		for($i=0; $i < count($getfulldata); $i++){			
+			$data["toolboxtalks"][$i]["id"]			=	$getfulldata[$i]['id'];	
+
+			$data["toolboxtalks"][$i]["content"]			=	$getfulldata[$i]['content'];
+			$data["toolboxtalks"][$i]["display"]			=	$getfulldata[$i]['display'];
+			$data["toolboxtalks"][$i]["display_content"]	=	$getfulldata[$i]['display_content'];
+
+			$data["toolboxtalks"][$i]["image"]	=	base_url().'./images/'.$getfulldata[$i]['image'];	
+			$toolboxid						=	$getfulldata[$i]['toolboxid'];
+			$getfulldata_pg 						=	$this->adminmodel->getdata_newToolBox1('',$toolboxid);
+			for($j=0; $j < count($getfulldata_pg); $j++){
+				$data["toolboxtalks"][$i]["category"]	=	$getfulldata_pg[$j]['pgcontent'];
+			}
+		}
+		echo json_encode($data);
+	}
+
+	public function newtoolboxtalks_innersubcategory()
+	{
+		$data 								=	array();
+		$requestdata 						=	array();
+		if ($this->input->post()) {
+			// $data["title"] 						= 	'Product and Installation Guides';
+			$data["title"] 						= 	'Toolbox Talks';
+			// $requestdata['orderby_position'] 	= 	'1';
+			$requestdata 						= 	$this->input->post();	
+			$getfulldata 						=	$this->adminmodel->getdata_newToolBox2("",$requestdata['innersubid'], ['pagetype' => 'apinewtoolboxtalks_innersubcategory']);
+			// echo "<pre>";print_r($getfulldata);die;
+			for($i=0; $i < count($getfulldata); $i++){
+
+				$data["toolboxtalks"][$i]["id"]				=	$getfulldata[$i]['id'];
+
+				$data["toolboxtalks"][$i]["content"]			=	$getfulldata[$i]['content'];
+				$data["toolboxtalks"][$i]["display"]			=	$getfulldata[$i]['display'];
+				$data["toolboxtalks"][$i]["display_content"]	=	$getfulldata[$i]['display_content'];
+
+				if ($getfulldata[$i]['description'] !='') {
+					$data["toolboxtalks"][$i]["description"]	=	$getfulldata[$i]['description'];
+				}else{
+					$data["toolboxtalks"][$i]["description"]	=	'';
+				}
+				
+				$toolbox1id							=	$getfulldata[$i]['toolbox1id'];
+
+				if ($getfulldata[$i]['file'] !='') {
+					$data["toolboxtalks"][$i]["file"]		=	base_url().'./images/'.$getfulldata[$i]['file'];
+				}else{
+					$data["toolboxtalks"][$i]["file"]		=	'';
+				}
+				if ($getfulldata[$i]['image'] !='') {
+					$data["toolboxtalks"][$i]["image"]		=	base_url().'./images/'.$getfulldata[$i]['image'];
+				}else{
+					$data["toolboxtalks"][$i]["image"]		=	'';
+				}
+				if ($getfulldata[$i]['feat_file'] !='') {
+					$data["toolboxtalks"][$i]["feat_file"]	=	base_url().'./images/'.$getfulldata[$i]['feat_file'];
+				}else{
+					$data["toolboxtalks"][$i]["feat_file"]	=	'';
+				}
+				
+				$data["toolboxtalks"][$i]["type"]			=	$getfulldata[$i]['type'];
+				$data["toolboxtalks"][$i]["type_words"]		=	$this->config->item('magazinetype')[$getfulldata[$i]['type']];
+
+				$getfulldata_pg 						=	$this->adminmodel->getdata_toolbox3_api('',$toolbox1id);
+				
+				for($j=0; $j < count($getfulldata_pg); $j++){
+					$data["toolboxtalks"][$i]["category"]	=	$getfulldata_pg[$j]['pgcontent'];
+				}
+			}
+		}else{
+			$data = [
+				'status' => '0',
+				'message' => 'Invalid Request',
+			];
+		}
+		
+		echo json_encode($data);
 	}
 }
 ?>
