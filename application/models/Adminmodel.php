@@ -54,6 +54,9 @@ class Adminmodel extends CI_Model {
 		if(isset($requestdata['productguidesid'])){
 			$this->db->where_in('productguidesid', $requestdata['productguidesid']);
 		}
+		if(isset($requestdata['toolboxid'])){
+			$this->db->where_in('toolboxid', $requestdata['toolboxid']);
+		}
 		if(isset($requestdata['orderby_position'])){
 			$this->db->order_by('position ASC');
 		}
@@ -65,6 +68,9 @@ class Adminmodel extends CI_Model {
 			$this->db->where('published', '1');
 		}
 		if(isset($requestdata['pagename']) && $requestdata['pagename'] =='productguide_subcategory'){
+			$this->db->where('published', '1');
+		}
+		if(isset($requestdata['pagename']) && $requestdata['pagename'] =='newtoolboxtalks_subcategory'){
 			$this->db->where('published', '1');
 		}
 		if(isset($requestdata['extras']) && $requestdata['extras'] =='pagetrue'){
@@ -331,13 +337,22 @@ class Adminmodel extends CI_Model {
 		return $id;
 	}
 
-	function changestatus($table,$deleteid)
+	function changestatus($table, $deleteid, $userdetailid)
 	{
 		// $this->db->where("id",$deleteid);
 		// $query=$this->db->delete($table);
-		$request1['status']	= 	'0';
+		$request1['status']			= 	'0';
+		$request1['log']			= 	'0';
+		$request1['password']		= 	'';
+		$request1['password_raw']	= 	'';
+		$request2['companyname']	= 	'';
+		$request2['profile']		= 	'';
 
-		$data = $this->db->update($table, $request1, ['id' => $deleteid]);
+		$data 	= $this->db->update($table, $request1, ['id' => $deleteid]);
+		if ($data) {
+			$data1 	= $this->db->update('users_details', $request2, ['id' => $userdetailid]);
+		}
+		
 	}
 
 		
@@ -557,7 +572,8 @@ class Adminmodel extends CI_Model {
 		return $query->result_array();
 		
 	}
-	function getdata_bannertop_1($condition,$condition2)
+
+	/*function getdata_bannertop_1($condition,$condition2)
 	{			
 		//$query = $this->db->query("Select banner.*,pages.title as ptitle From banner INNER JOIN pages on pages.id =banner.pagesid WHERE banner.topbottom='top' and banner.pagesid=".$condition." and active=".$condition2." order by banner.id desc");
 		$groupCodition = array("banner_impressions_count.bannerid", "pages.id");
@@ -568,12 +584,71 @@ class Adminmodel extends CI_Model {
 		// $this->db->join('advertisingclickcount', 'advertisingclickcount.imageid = banner.id','left');
 		$this->db->join('banner_impressions_count', 'banner_impressions_count.bannerid = banner.id','left');
 		$this->db->where('banner.topbottom',$top);
-		$this->db->where_in('banner.pagesid', $condition);
-		$this->db->where_in('banner.active', $condition2);
+		$this->db->where('banner.pagesid', $condition);
+		$this->db->where('banner.active', $condition2);
 		$this->db->group_by($groupCodition);
 		$query = $this->db->get(); 
 		return $query->result_array();
 		
+	}*/
+
+	function getdata_bannertop_1($condition,$condition2)
+	{
+		$datas = [];
+		$top="top";
+		$this->db->select('banner.*');
+		$this->db->from('banner');
+		$this->db->where('banner.topbottom',$top);
+		$this->db->where('banner.pagesid', $condition);
+		$this->db->where('banner.active', $condition2);
+		$query = $this->db->get();
+		$bannerlist = $query->result_array();
+		$pagename = $this->getPages($condition);
+
+		foreach ($bannerlist as $bannerlistkey => $bannerlistvalue) {
+			$impressionscount = $this->getBannerImpressions($bannerlistvalue['id']);
+			$datas[] = [
+				'id' 			=> $bannerlistvalue['id'],
+				'name' 			=> $bannerlistvalue['name'],
+				'client' 		=> $bannerlistvalue['client'],
+				'description' 	=> $bannerlistvalue['description'],
+				'impressions1' 	=> isset($impressionscount['impressionscount']) ? $impressionscount['impressionscount'] : '0',
+				'totalcount1' 	=> isset($impressionscount['clickscount']) ? $impressionscount['clickscount'] : '0',
+				'pname' 		=> $pagename['title'],
+				'active' 		=> $bannerlistvalue['active'],
+				'created_at' 	=> $bannerlistvalue['created_at'],
+				'updated_at' 	=> $bannerlistvalue['updated_at'],
+				'inactivedate' 	=> $bannerlistvalue['inactivedate'],
+			]; 
+		}
+
+		return $datas;
+		
+	}
+
+	public function getPages($id = ''){
+		$this->db->select('pages.*');
+		$this->db->from('pages');
+		if ($id!='') {
+			$this->db->where('pages.id', $id);
+		}
+		$query = $this->db->get();
+		$pagelist = $query->row_array();
+		return $pagelist;
+	}
+	public function getBannerImpressions($id= ''){
+		$groupCodition = array("bic.bannerid");
+
+		$this->db->select('bic.id as bicid, bic.bannerid, bic.newpageid, SUM(bic.impressions) as impressionscount, SUM(bic.clickscount) as clickscount');
+		$this->db->from('banner_impressions_count as bic');
+
+		if ($id!='') {
+			$this->db->where('bic.bannerid', $id);
+		}
+		$this->db->group_by($groupCodition);
+		$query = $this->db->get();
+		$impressionscount = $query->row_array();
+		return $impressionscount;
 	}
 	function getdata_bannerbottom($condition,$condition3)
 	{			
@@ -690,14 +765,14 @@ class Adminmodel extends CI_Model {
 	
 	/*function getdata_dashboardbanner($condition,$fromdate,$todate)
 	{			
-		$this->db->select('bannernew.name, bannernew.client,bannernew.description, bannernew.impressions_count, bannernew.click_count, bannernew.pagesid, bannernew.active, pages.title as pname, SUM(bannernew.impressions_count) as bannerimpressions, SUM(bannernew.click_count) as bannerclicks');
+		$this->db->select('bannernew.*, pages.title as pname, SUM(bannernew.impressions_count) as bannerimpressions, SUM(bannernew.click_count) as bannerclicks');
         $this->db->from('bannernew');
         $this->db->join('pages', 'pages.id = bannernew.pagesid', 'left');
         $this->db->where('bannernew.topbottom', 'top'); // selecting top banner alone
         $this->db->where_in('bannernew.active', $condition);
         $this->db->where('bannernew.date_created >=', $fromdate);
         $this->db->where('bannernew.date_created <=', $todate);
-        $this->db->group_by('bannernew.banner_id');
+        $this->db->group_by('bannernew.pagesid');
         $query = $this->db->get();
         // print_r($this->db->last_query());die;
         return $query->result_array();
@@ -731,7 +806,7 @@ class Adminmodel extends CI_Model {
         return $query->result_array();
 				
 	}
-	
+
 	function getdata_dashboardpages($fromdate,$todate, $extras = [])
 	{			
 		$this->db->select('pages.*,count(pagescount.count) as totalcount');
@@ -1757,6 +1832,33 @@ class Adminmodel extends CI_Model {
 
 	}
 
+	public function impressionsClicksgetList($type, $requestdata=[]){
+
+		$this->db->select('bic.*');
+		$this->db->from('banner_impressions_count bic');
+
+		if(isset($requestdata['id'])) 			$this->db->where('bic.id', $requestdata['id']);
+		if(isset($requestdata['date']))			$this->db->where_in('bic.created_at', $requestdata['date']);
+		if(isset($requestdata['bannerid']))		$this->db->where_in('bic.bannerid', $requestdata['bannerid']);
+		if(isset($requestdata['newpageid']))	$this->db->where_in('bic.newpageid', $requestdata['newpageid']);
+
+
+		if($type=='count'){
+			$result = $this->db->count_all_results();
+		}
+		else
+		{
+			$query = $this->db->get();
+		
+			if($type=='all') 		$result = $query->result_array();
+			elseif($type=='row') 	$result = $query->row_array();
+		}
+		
+		return $result;
+
+	}
+
+	//start bala changes
 	public function getdata_tags($id = '')
     {
         /*if ($id == '') {
@@ -1801,7 +1903,7 @@ class Adminmodel extends CI_Model {
 
     public function getdata_comments()
     {
-        $this->db->select('ac.*, ar.title as article_name, us.name as user_name')->select('(SELECT COUNT(*) FROM articles_comments_likes WHERE comment_id = ac.id AND ACTION = "1") AS likes', false)->select('(SELECT COUNT(*) FROM articles_comments_likes WHERE comment_id = ac.id AND ACTION = "0") AS dislikes', false)->select('(SELECT COUNT(*) FROM articles_comments_reports_count WHERE comment_id = ac.id) AS reports', false);
+        $this->db->select('ac.*, ar.title as article_name, us.name as user_name')->select('(SELECT COUNT(id) FROM articles_comments_likes WHERE comment_id = ac.id AND ACTION = "1") AS likes', false)->select('(SELECT COUNT(id) FROM articles_comments_likes WHERE comment_id = ac.id AND ACTION = "0") AS dislikes', false)->select('(SELECT COUNT(id) FROM articles_comments_reports_count WHERE comment_id = ac.id) AS reports', false);
         $this->db->from('articles_comments ac');
         $this->db->join('articles ar', 'ar.id = ac.posted_on_article', 'left');
         $this->db->join('users us', 'us.id = ac.posted_by', 'left');
@@ -2311,7 +2413,9 @@ class Adminmodel extends CI_Model {
 		return $query->result_array();
 	}
 
-	public function getdata_productrange($data =[]){
+    //end bala changes
+
+    public function getdata_productrange($data =[]){
     	$this->db->select('pr.*');
     	$this->db->from('productrange as pr');
     	
@@ -2335,4 +2439,41 @@ class Adminmodel extends CI_Model {
 
 		return $result;
     }
+
+    function getdata_newToolBox($condition)
+	{			
+		$query = $this->db->query("Select * From newtoolboxtalks order by content asc");
+		return $query->result_array();
+	}
+
+	function getdata_newToolBox1($condition,$condition2, $requestdata = [])
+	{	
+		if (isset($requestdata['pagetype']) && $requestdata['pagetype'] =='newtoolboxtalks_subcategory') {
+			$published = '1';
+			$query = $this->db->query("Select newtoolboxtalks1.*,newtoolboxtalks.content as pgcontent from newtoolboxtalks1 LEFT JOIN newtoolboxtalks on newtoolboxtalks.id=newtoolboxtalks1.toolboxid WHERE  newtoolboxtalks1.toolboxid=".$condition2." AND newtoolboxtalks1.published = '".$published."' order by newtoolboxtalks1.published asc");
+		}else{
+			$query = $this->db->query("Select newtoolboxtalks1.*,newtoolboxtalks.content as pgcontent from newtoolboxtalks1 INNER JOIN newtoolboxtalks on newtoolboxtalks.id=newtoolboxtalks1.toolboxid WHERE  newtoolboxtalks1.toolboxid=".$condition2." order by newtoolboxtalks1.content asc");
+		}		
+				
+		return $query->result_array();
+	}
+
+	function getdata_newToolBox2($condition,$condition2, $requestdata = [])
+	{
+		if (isset($requestdata['pagetype']) && $requestdata['pagetype'] =='newtoolboxtalks_innersubcategory') {
+			$published = '1';
+			$query = $this->db->query("Select newtoolboxtalks2.*,newtoolboxtalks1.content as pgcontent from newtoolboxtalks2 INNER JOIN newtoolboxtalks1 on newtoolboxtalks1.id=newtoolboxtalks2.toolbox1id WHERE newtoolboxtalks2.toolbox1id=".$condition2." AND newtoolboxtalks2.published=".$published." order by newtoolboxtalks2.position asc");	
+		}else{
+			$query = $this->db->query("Select newtoolboxtalks2.*,newtoolboxtalks1.content as pgcontent from newtoolboxtalks2 INNER JOIN newtoolboxtalks1 on newtoolboxtalks1.id=newtoolboxtalks2.toolbox1id WHERE newtoolboxtalks2.toolbox1id=".$condition2." order by newtoolboxtalks2.id DESC");
+		}
+		
+		return $query->result_array();
+	}
+
+	function getdata_toolbox3_api($condition,$condition2)
+	{			
+		$query = $this->db->query("Select newtoolboxtalks2.*,newtoolboxtalks1.content as pgcontent from newtoolboxtalks2 INNER JOIN newtoolboxtalks1 on newtoolboxtalks1.id=newtoolboxtalks2.toolbox1id WHERE newtoolboxtalks2.toolbox1id=".$condition2." order by newtoolboxtalks2.content asc, newtoolboxtalks2.position asc");
+		return $query->result_array();
+	}
+
 }

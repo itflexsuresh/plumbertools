@@ -177,10 +177,18 @@ $writepermission  = explode(',', $userdetails['write_permission']);
                         </a>
                      </li>
                   <?php } ?>
-                  <?php if ($usertype =='1' || (in_array('6', $readpermission)) || in_array('6', $writepermission)) { ?>
-                     <li <?php if($leftsidebar_value == 7 ) { ?> class="active" <?php } ?>>
-                        <a href="<?php echo base_url();?>admincontrol/toolboxtalkslist">
+                  <!-- <?php// if ($usertype =='1' || (in_array('6', $readpermission)) || in_array('6', $writepermission)) { ?>
+                     <li <?php// if($leftsidebar_value == 7 ) { ?> class="active" <?php// } ?>>
+                        <a href="<?php// echo base_url();?>admincontrol/toolboxtalkslist">
                            <i class="pe-7s-tools"></i>                  
+                           <p>Toolbox Talks</p>
+                        </a>
+                     </li>
+                  <?php// } ?> -->
+                  <?php if ($usertype =='1' || (in_array('36', $readpermission)) || in_array('36', $writepermission)) { ?>
+                     <li id="treeview-productguides" <?php if($leftsidebar_value == 70) { ?> class="active" <?php } ?>>
+                        <a href="<?php echo base_url();?>admincontrol/newtoolboxtalkslist">
+                           <i class="pe-7s-tools"></i>                
                            <p>Toolbox Talks</p>
                         </a>
                      </li>

@@ -31,6 +31,9 @@ class Admincontrol extends CI_Controller {
 		$this->productguidessection_title 	=	"Plumber";	$this->productguidessection_title2 	=	"";
 		$this->productguidessection_value 	=	6;
 
+		$this->new_toolboxtalks_title 			=	"Plumber";	$this->new_toolboxtalks_title2 	=	"";
+		$this->new_toolboxtalks_value 			=	70;
+
 		$this->toolboxtalks_title 			=	"Plumber";	$this->toolboxtalks_title2 			=	"";
 		$this->toolboxtalks_value 			=	7;
 
@@ -8061,6 +8064,545 @@ class Admincontrol extends CI_Controller {
 		}
 		else{			
 			$this->advancedcontactus();
+		}
+	}
+
+	function newtoolboxtalkslist()
+	{
+	    $this->checksessionout();
+	    $this->checkUserPermission('39', '1', '1');
+	    $data["header_title"]      = $this->new_toolboxtalks_title;
+	    $data["header_title2"]     = $this->new_toolboxtalks_title2;
+	    $data["leftsidebar_value"] = $this->new_toolboxtalks_value;
+	    if (!$this->input->post("activeval")) {$condition = "1";} else {
+	        if ($this->input->post("activeval") == 1) {$condition = "1";} else { $condition = "0";}
+	    }
+
+	    $checkpermission    = $this->checkUserPermission('39', '2');
+	    $data["permission"] = $checkpermission;
+	    $data["getdata"] = $this->adminmodel->getdata_newToolBox($condition);
+	    $this->allpage('newtoolboxtalkslist', $data);
+	}
+	function addnewtoolboxtalks(){
+		$this->checksessionout();
+		$this->checkUserPermission('5', '1', '1');
+		$data["header_title"]=$this->new_toolboxtalks_title;
+		$data["header_title2"]=$this->new_toolboxtalks_title2;
+		$data["leftsidebar_value"]=$this->new_toolboxtalks_value;
+		$data["action"]="new";		
+		$checkpermission    = $this->checkUserPermission('5', '2');
+	    $data["permission"] = $checkpermission;
+		$this->allpage('newtoolboxtalksaction',$data);
+	}
+	function editnewtoolboxtalks($id =''){
+		$uid= $id; //$this->uri->segment(3);
+		$this->checksessionout();
+		$this->checkUserPermission('39', '1', '1');
+		$data["header_title"]=$this->new_toolboxtalks_title;
+		$data["header_title2"]=$this->new_toolboxtalks_title2;
+		$data["leftsidebar_value"]=$this->new_toolboxtalks_value;
+		$data["getdata"]=$this->adminmodel->getsingledata("newtoolboxtalks",$uid);
+		$data["action"]="edit";
+		$checkpermission    = $this->checkUserPermission('39', '2');
+	    $data["permission"] = $checkpermission;
+		$this->allpage('newtoolboxtalksaction',$data);
+	}
+	function deletenewtoolboxtalks(){
+		$deleteid=$this->input->post("deleteid");  //$this->uri->segment(3);
+		$this->checksessionout();		
+		$this->adminmodel->deletedata("newtoolboxtalks",$deleteid);		
+		// $this->newtoolboxtalkslist();
+		redirect(base_url().'admincontrol/newtoolboxtalkslist');
+	}
+	function newtoolboxtalksaction(){
+		if($this->input->post("insert") || $this->input->post("update")){
+			$this->form_validation->set_rules("content","Content",'trim|required');
+			$this->form_validation->set_rules("position","Position",'trim|required|numeric');
+			if($this->form_validation->run()==FALSE){
+				if($this->input->post("insert")){					
+					$this->addnewtoolboxtalks();
+				}
+				if($this->input->post("update")){
+					$this->editnewtoolboxtalks($this->input->post("updateid"));
+				}
+			}		
+			else{			
+				
+				$config_image=array();
+				$config_image['upload_path']='./images';
+				$config_image['allowed_types']='jpg|jpeg|png|pdf';
+				$config_image['encrypt_name']=TRUE;
+				$this->load->library('upload',$config_image);			
+				if ( ! $this->upload->do_upload('imagefile'))
+				{
+					//print_r($this->upload->display_errors()); print_r($this->input->post("imagefile")); die;
+				}
+				else
+				{
+					$imagedata=$this->upload->data();
+					if ($this->upload->data('file_ext') == '.pdf') {
+						$pdfflag = '1';
+					}else{
+						$pdfflag = '0';
+					}
+					$imagefile=$imagedata['file_name'];
+				} 
+
+				if ($this->input->post('display') =='1') {
+					$display = '1';
+				}else{
+					$display = '0';
+				}
+
+				if ($this->input->post('display_content') =='1') {
+					$display_content = '1';
+				}else{
+					$display_content = '0';
+				}
+							
+				$data=array(
+				"content" => $this->input->post("content"),
+				"position" => $this->input->post("position"),
+				"published" => $this->input->post("publishid"),
+				"display" => $display,
+				"display_content" => $display_content,
+				"pdf" => isset($pdfflag) ? $pdfflag : '0',
+				);					
+				
+				if(isset($imagefile)){
+					$data['image']=$imagefile;
+				}			
+							
+				if($this->input->post("insert")){				
+					$this->adminmodel->insertdata("newtoolboxtalks",$data);
+					$this->newtoolboxtalkslist();
+				}			
+				if($this->input->post("update")){
+					$this->adminmodel->updatedata("newtoolboxtalks",$data,$this->input->post("updateid"));
+					$this->newtoolboxtalkslist();
+				}		
+			}
+		}
+		else{			
+			// $this->newtoolboxtalkslist();
+			redirect(base_url().'admincontrol/dashboard');
+		}
+	}
+	
+	function newtoolboxtalks1list(){
+		$this->checksessionout();
+		$this->checkUserPermission('39', '1', '1');
+		$toolboxid=$this->uri->segment(3);
+		$data["header_title"]=$this->new_toolboxtalks_title;
+		$data["header_title2"]=$this->new_toolboxtalks_title2;
+		$data["leftsidebar_value"]=$this->new_toolboxtalks_value;		
+				
+		if(! $this->input->post("activeval")){ $condition="1"; } 
+		else{ 
+			if($this->input->post("activeval") == 1){ $condition="1"; }
+			else{ $condition="0"; }
+		}
+		$checkpermission    = $this->checkUserPermission('39', '2');
+		$data["permission"] = $checkpermission;
+		$data["toolboxid"]=$toolboxid;
+		$data["toolboxname"]=$this->adminmodel->getsingledata("newtoolboxtalks",$toolboxid);
+		$condition2=$toolboxid;		
+		$data["getdata"]=$this->adminmodel->getdata_newToolBox1($condition,$condition2);		
+		$this->allpage('newtoolboxtalks1list',$data);
+	}
+	function addnewtoolboxtalks1(){
+		$this->checksessionout();
+		$this->checkUserPermission('39', '1', '1');
+		$toolboxid=$this->uri->segment(3);
+		$data["header_title"]=$this->new_toolboxtalks_title;
+		$data["header_title2"]=$this->new_toolboxtalks_title2;
+		$data["leftsidebar_value"]=$this->new_toolboxtalks_value;
+		$data["action"]="new";
+		$checkpermission    = $this->checkUserPermission('39', '2');
+		$data["permission"] = $checkpermission;
+		$data["toolboxid"]=$toolboxid;
+		$data["toolboxname"]=$this->adminmodel->getsingledata("newtoolboxtalks",$toolboxid);
+		$this->allpage('newtoolboxtalks1action',$data);
+	}
+	function editnewtoolboxtalks1($pid = '', $id =''){
+		$toolboxid= $pid; //$this->uri->segment(3);
+		$uid= $id; //$this->uri->segment(4);
+		$this->checksessionout();
+		$this->checkUserPermission('39', '1', '1');
+		$data["header_title"]=$this->new_toolboxtalks_title;
+		$data["header_title2"]=$this->new_toolboxtalks_title2;
+		$data["leftsidebar_value"]=$this->new_toolboxtalks_value;
+		$data["getdata"]=$this->adminmodel->getsingledata("newtoolboxtalks1",$uid);
+		$data["action"]="edit";		
+		$data["toolboxid"]=$toolboxid;
+		$data["productguidesname"]=$this->adminmodel->getsingledata("newtoolboxtalks",$toolboxid);
+		$checkpermission    = $this->checkUserPermission('39', '2');
+		$data["permission"] = $checkpermission;
+		$data["toolboxname"]=$this->adminmodel->getsingledata("newtoolboxtalks",$toolboxid);
+		$this->allpage('newtoolboxtalks1action',$data);
+	}
+	function deletenewtoolboxtalks1(){
+		$deleteid=$this->input->post("deleteid");
+		$toolboxid=$this->input->post("toolboxid");
+		$this->checksessionout();		
+		$this->adminmodel->deletedata("newtoolboxtalks1",$deleteid);		
+		// $this->newtoolboxtalks1list();
+		redirect(base_url().'admincontrol/newtoolboxtalks1list/'.$toolboxid.'');
+	}
+	function newtoolboxtalks1action(){
+		if($this->input->post("insert") || $this->input->post("update")){			
+			$this->form_validation->set_rules("content","Content",'trim|required');
+			$this->form_validation->set_rules("position","Position",'trim|required|numeric');
+			if($this->form_validation->run()==FALSE){
+				if($this->input->post("insert")){					
+					$this->addnewtoolboxtalks1();
+				}
+				if($this->input->post("update")){
+					$this->editnewtoolboxtalks1($this->input->post("toolboxid"), $this->input->post("updateid"));
+				}
+			}		
+			else{			
+				if ($_FILES['imagefile']['name'] !='') {
+					$config_image=array();
+					$config_image['upload_path']='./images';
+					$config_image['allowed_types']='jpg|jpeg|png|pdf';
+					$config_image['encrypt_name']=TRUE;
+					$this->load->library('upload',$config_image);			
+					if ( ! $this->upload->do_upload('imagefile'))
+					{
+						//print_r($this->upload->display_errors()); print_r($this->input->post("imagefile")); die;
+					}
+					else
+					{
+						$imagedata=$this->upload->data();
+						if ($this->upload->data('file_ext') == '.pdf') {
+							$pdfflag = '1';
+						}else{
+							$pdfflag = '0';
+						}
+						$imagefile=$imagedata['file_name'];
+					} 
+				}
+
+				if ($this->input->post('display') =='1') {
+					$display = '1';
+				}else{
+					$display = '0';
+				}
+
+				if ($this->input->post('display_content') =='1') {
+					$display_content = '1';
+				}else{
+					$display_content = '0';
+				}
+
+				if($this->input->post("pdf") =='' || $this->input->post("pdf") =='0') $contentPDF = '0';
+				else $contentPDF = '1';
+				
+				
+				$toolboxid=$this->input->post("toolboxid");				
+				$data=array(
+				"toolboxid" => $toolboxid,
+				"content" => $this->input->post("content"),
+				"position" => $this->input->post("position"),
+				"published" => $this->input->post("publishid"),
+				"display" => $display,
+				"display_content" => $display_content,
+				"pdf" => isset($pdfflag) ? $pdfflag : $contentPDF,
+				);					
+				
+				if(isset($imagefile)){
+					$data['image']=$imagefile;
+				}			
+							
+				if($this->input->post("insert")){				
+					$this->adminmodel->insertdata("newtoolboxtalks1",$data);
+					$this->newtoolboxtalks1list();
+				}			
+				if($this->input->post("update")){
+					$this->adminmodel->updatedata("newtoolboxtalks1",$data,$this->input->post("updateid"));
+					$this->newtoolboxtalks1list();
+				}		
+			}
+		}
+		else{			
+			// $this->newtoolboxtalks1list();
+			redirect(base_url().'admincontrol/dashboard');
+		}
+	}
+	
+	function newtoolboxtalks2list( $id ='', $subid =''){
+		$this->checksessionout();
+		$this->checkUserPermission('39', '1', '1');
+
+		if($id =='') $toolboxid = $this->uri->segment(3);
+		else $toolboxid = $id;
+
+		if($subid =='') $toolbox1id = $this->uri->segment(3);
+		else $toolbox1id = $subid;
+
+		// $toolboxid=$this->uri->segment(3);
+		// $toolbox1id=$this->uri->segment(4);
+		$data["header_title"]=$this->new_toolboxtalks_title;
+		$data["header_title2"]=$this->new_toolboxtalks_title2;
+		$data["leftsidebar_value"]=$this->new_toolboxtalks_value;		
+				
+		if(! $this->input->post("activeval")){ $condition="1"; } 
+		else{ 
+			if($this->input->post("activeval") == 1){ $condition="1"; }
+			else{ $condition="0"; }
+		}
+		$data["toolboxid"]=$toolboxid;
+		$data["toolbox1id"]=$toolbox1id;
+		$data["toolboxname"]=$this->adminmodel->getsingledata("newtoolboxtalks",$toolboxid);
+		$data["toolbox1name"]=$this->adminmodel->getsingledata("newtoolboxtalks1",$toolbox1id);
+
+		$condition2=$toolbox1id;	
+		$data["getdata"]=$this->adminmodel->getdata_newToolBox2($condition,$condition2);		
+		$checkpermission    = $this->checkUserPermission('39', '2');
+		$data["permission"] = $checkpermission;
+		$this->allpage('newtoolboxtalks2list',$data);
+	}
+	function addnewtoolboxtalks2($id ='', $subid =''){
+		$this->checksessionout();
+		$this->checkUserPermission('39', '1', '1');
+		if($id =='') $toolboxid =  $this->uri->segment(3);
+		else $toolboxid =  $id;
+
+		// $toolbox1id=$this->uri->segment(4);
+		if($subid =='') $toolbox1id =  $this->uri->segment(4);
+		else $toolbox1id =  $subid;
+		// echo $toolbox1id, $toolbox1id;die;
+		$data["header_title"]=$this->new_toolboxtalks_title;
+		$data["header_title2"]=$this->new_toolboxtalks_title2;
+		$data["leftsidebar_value"]=$this->new_toolboxtalks_value;
+		$data["action"]="new";
+		$checkpermission    = $this->checkUserPermission('39', '2');
+		$data["permission"] = $checkpermission;
+		$data["toolboxid"]=$toolboxid;
+		$data["toolbox1id"]=$toolbox1id;
+		$data["toolboxname"]=$this->adminmodel->getsingledata("newtoolboxtalks",$toolboxid);
+		$data["toolbox1name"]=$this->adminmodel->getsingledata("newtoolboxtalks1",$toolbox1id);
+		$this->allpage('newtoolboxtalks2action',$data);
+	}
+	function editnewtoolboxtalks2(){
+		$toolboxid=$this->uri->segment(3);
+		$toolbox1id=$this->uri->segment(4);
+		$uid=$this->uri->segment(5);
+		$this->checksessionout();
+		$this->checkUserPermission('39', '1', '1');
+		$data["header_title"]=$this->new_toolboxtalks_title;
+		$data["header_title2"]=$this->new_toolboxtalks_title2;
+		$data["leftsidebar_value"]=$this->new_toolboxtalks_value;
+		$data["getdata"]=$this->adminmodel->getsingledata("newtoolboxtalks2",$uid);
+		$data["action"]="edit";		
+		$data["toolboxid"]=$toolboxid;
+		$data["toolbox1id"]=$toolbox1id;
+		$data["toolboxname"]=$this->adminmodel->getsingledata("newtoolboxtalks",$toolboxid);
+		$data["toolbox1name"]=$this->adminmodel->getsingledata("newtoolboxtalks1",$toolbox1id);
+		$checkpermission    = $this->checkUserPermission('39', '2');
+		$data["permission"] = $checkpermission;
+		$this->allpage('newtoolboxtalks2action',$data);
+	}
+	function deletenewtoolboxtalks2(){
+		$deleteid 	= $this->input->post("deleteid");
+		$toolboxid 	= $this->input->post("toolboxid");
+		$toolbox1id = $this->input->post("toolbox1id");
+
+		$this->checksessionout();		
+		$this->adminmodel->deletedata("newtoolboxtalks2",$deleteid);		
+		// $this->newtoolboxtalks2list();
+		redirect(base_url().'admincontrol/newtoolboxtalks2list/'.$toolboxid.'/'.$toolbox1id.'');
+	}
+	function newtoolboxtalks2action(){
+		if($this->input->post("insert") || $this->input->post("update")){
+
+			$toolboxid = $this->input->post('toolboxid');
+			$toolbox1id = $this->input->post('toolbox1id');
+
+			if ($this->input->post("selecttype") =='2') {
+				$this->form_validation->set_rules("pdfcontent","Content",'trim|required');
+				$this->form_validation->set_rules("pdfposition","Position",'trim|required');
+				$this->form_validation->set_rules("pdfdescription","Description",'trim|required');
+					if (empty($_FILES['pdffile']['name']) && $this->input->post("insert") =='1'){
+					    $this->form_validation->set_rules('pdffile', 'PDF File', 'required');
+					}
+					if($this->form_validation->run()==FALSE){
+						if($this->input->post("insert")){					
+							$this->addnewtoolboxtalks2($toolboxid, $toolbox1id);
+						}
+						if($this->input->post("update")){
+							redirect('admincontrol/editnewtoolboxtalks2/'.$toolboxid.'/'.$toolbox1id.'/'.$this->input->post("updateid").'');
+							// $this->editproductguidessection2();
+						}
+					}else{
+
+					$toolboxid = $this->input->post('toolboxid');
+					$toolbox1id = $this->input->post('toolbox1id');
+
+					if ($_FILES['pdffile']['name'] !='') {
+						$config_image=array();
+						$config_image['upload_path']='./images';
+						$config_image['allowed_types']='jpg|jpeg|png|pdf';
+						$config_image['encrypt_name']=TRUE;
+						$this->load->library('upload',$config_image);			
+						if ( ! $this->upload->do_upload('pdffile')){
+							//print_r($this->upload->display_errors()); print_r($this->input->post("imagefile")); die;
+						}
+						else{
+							$imagedata=$this->upload->data();
+							if ($this->upload->data('file_ext') == '.pdf') {
+								$type = '2';
+							}else{
+								$type = '1';
+							}
+							$imagefile=$imagedata['file_name'];
+						}
+					}
+
+					if ($_FILES['featfile']['name'] !='') {
+						$config_image=array();
+						$config_image['upload_path']='./images';
+						$config_image['allowed_types']='jpg|jpeg|png|pdf';
+						$config_image['encrypt_name']=TRUE;
+						$this->load->library('upload',$config_image);			
+						if ( ! $this->upload->do_upload('featfile'))
+						{
+							// print_r($this->upload->display_errors()); print_r($this->input->post("featfile")); die;
+						}
+						else
+						{
+							$imagedata=$this->upload->data();
+							$featfile=$imagedata['file_name'];
+						}
+					}
+
+					if ($this->input->post('display') =='1') {
+						$display = '1';
+					}else{
+						$display = '0';
+					}
+
+					if ($this->input->post('display_content') =='1') {
+						$display_content = '1';
+					}else{
+						$display_content = '0';
+					}
+
+					$data=array(
+						"toolbox1id" => $toolbox1id,
+						"toolbox1id" => $toolbox1id,
+						"content" => $this->input->post("pdfcontent"),
+						"position" => $this->input->post("pdfposition"),
+						"published" => $this->input->post("pdfpublishid"),
+						"display" => $display,
+						"display_content" => $display_content,
+						"description" => $this->input->post("pdfdescription"),
+						"type" => isset($type) ? $type : '2',
+						"image" => NULL
+
+					);
+
+					if(isset($imagefile)){
+						$data['file']=$imagefile;
+					}
+					if(isset($featfile)){
+						$data['feat_file']=$featfile;
+					}
+
+					if($this->input->post("insert")){				
+						$this->adminmodel->insertdata("newtoolboxtalks2",$data);
+						redirect('admincontrol/newtoolboxtalks2list/'.$toolboxid.'/'.$toolbox1id.'');
+						// $this->productguidessection2list();
+					}			
+					if($this->input->post("update")){
+						$this->adminmodel->updatedata("newtoolboxtalks2",$data,$this->input->post("updateid"));
+						redirect('admincontrol/newtoolboxtalks2list/'.$toolboxid.'/'.$toolbox1id.'');
+						// $this->productguidessection2list();
+					}
+				}
+
+			}elseif($this->input->post("selecttype") =='1'){
+
+				$this->form_validation->set_rules("content","Content",'trim|required');
+				$this->form_validation->set_rules("description","Description",'trim|required');
+				$this->form_validation->set_rules("position","Position",'trim|required|numeric');
+				if($this->form_validation->run()==FALSE){
+					if($this->input->post("insert")){
+						// $this->addnewtoolboxtalks2();
+						$this->addnewtoolboxtalks2($toolboxid, $toolbox1id);
+					}
+					if($this->input->post("update")){
+						// redirect('admincontrol/newtoolboxtalks2list/'.$this->uri->segment(3).'/'.$this->uri->segment(4).'/'.$this->input->post("updateid").'');
+						redirect('admincontrol/editnewtoolboxtalks2/'.$toolboxid.'/'.$toolbox1id.'/'.$this->input->post("updateid").'');
+					}
+				}else{
+					
+					$toolboxid = $this->input->post('toolboxid');
+					$toolbox1id = $this->input->post('toolbox1id');
+
+					if ($_FILES['imagefile']['name'] !='') {
+						$config_image=array();
+						$config_image['upload_path']='./images';
+						$config_image['allowed_types']='jpg|jpeg|png|pdf';
+						$config_image['encrypt_name']=TRUE;
+						$this->load->library('upload',$config_image);			
+						if ( ! $this->upload->do_upload('imagefile')){
+							//print_r($this->upload->display_errors()); print_r($this->input->post("imagefile")); die;
+						}
+						else{
+							$imagedata=$this->upload->data();
+							
+							$imagefile=$imagedata['file_name'];
+						}
+					}
+
+					if ($this->input->post('display') =='1') {
+						$display = '1';
+					}else{
+						$display = '0';
+					}
+
+					if ($this->input->post('display_content') =='1') {
+						$display_content = '1';
+					}else{
+						$display_content = '0';
+					}
+
+					$data=array(
+						"toolbox1id" => $toolbox1id,
+						"toolbox1id" => $toolbox1id,
+						"content" => $this->input->post("content"),
+						"position" => $this->input->post("position"),
+						"published" => $this->input->post("publishid"),
+						"display" => $display,
+						"display_content" => $display_content,
+						"description" => $this->input->post("description"),
+						"type" => isset($type) ? $type : '1',
+						"feat_file" => NULL,
+						"file" => NULL,
+
+					);
+					if(isset($imagefile)){
+						$data['image']=$imagefile;
+					}			
+						// echo "<pre>";		print_r($data);die;
+					if($this->input->post("insert")){				
+						$this->adminmodel->insertdata("newtoolboxtalks2",$data);
+						redirect('admincontrol/newtoolboxtalks2list/'.$toolboxid.'/'.$toolbox1id.'');
+						// $this->productguidessection2list();
+					}			
+					if($this->input->post("update")){
+						$this->adminmodel->updatedata("newtoolboxtalks2",$data,$this->input->post("updateid"));
+						redirect('admincontrol/newtoolboxtalks2list/'.$toolboxid.'/'.$toolbox1id.'');
+						// $this->productguidessection2list();
+					}		
+				}
+
+			}
+		}else{
+			// $this->newtoolboxtalks2list();
+			redirect(base_url().'admincontrol/dashboard');
 		}
 	}
 
