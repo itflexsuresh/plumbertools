@@ -8490,7 +8490,7 @@ class Admincontrol extends CI_Controller {
 					}
 
 					$data=array(
-						"toolbox1id" => $toolbox1id,
+						"toolboxid" => $toolbox1id,
 						"toolbox1id" => $toolbox1id,
 						"content" => $this->input->post("pdfcontent"),
 						"position" => $this->input->post("pdfposition"),
