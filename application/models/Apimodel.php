@@ -1269,4 +1269,52 @@ class Apimodel extends CI_Model {
 
         return $result;
     }
+
+    public function appsessionscountgetList($type, $requestdata=[]){
+		$this->db->select('*');
+		$this->db->from('appsessionscount');
+
+		if(isset($requestdata['id'])) 			$this->db->where('id', $requestdata['id']);
+		if(isset($requestdata['date']))			$this->db->where_in('created_at', $requestdata['date']);
+		if(isset($requestdata['user_id']))		$this->db->where_in('user_id', $requestdata['user_id']);	
+
+		if($type=='count'){
+			$result = $this->db->count_all_results();
+		}
+		else
+		{
+			$query = $this->db->get();
+		
+			if($type=='all') 		$result = $query->result_array();
+			elseif($type=='row') 	$result = $query->row_array();
+		}
+		
+		return $result;
+	}
+
+	function appsessionscountAction($data)
+	{
+	    $date      = date('Y-m-d');
+	    $user_id   = $data['user_id'];
+	    $countdata = $data['countdata'];
+	    $isdata    = $data['isdata'];
+	    $idarray   = [];
+
+	    if ($isdata == '0') {
+	        $request1['count']      = '1';
+	        $request1['user_id']    = $user_id;
+	        $request1['created_at'] = $date;
+
+	        $this->db->insert('appsessionscount', $request1);
+	        $idarray['sessions_id'] = $this->db->insert_id();
+	    } elseif ($isdata == '1') {
+	        $request1['count']   = $countdata['count'] + 1;
+	        $request1['user_id'] = $countdata['user_id'];
+
+	        $this->db->update('appsessionscount', $request1, ['id' => $countdata['id']]);
+	        $idarray['sessions_id'] = $countdata['id'];
+	    }
+
+	    return $idarray;
+	}
 }
