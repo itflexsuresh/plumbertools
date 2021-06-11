@@ -4,13 +4,19 @@ $usertype         = $userdetails['type'];
 $staff            = $userdetails['warehouse_staff'];
 $readpermission   = explode(',', $userdetails['read_permission']);
 $writepermission  = explode(',', $userdetails['write_permission']);
+
+if ($userdetails['warehouse_staff'] =='1') { 
+   $title = 'Builders Warehouse';               
+}else{
+   $title = "PLUMBER";                        
+}
 ?>
 <html lang="en">
    <head>
       <meta charset="utf-8" />
       <link rel="icon" type="image/png" href="<?php echo base_url(); ?>assets/img/favicon.ico">
       <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
-      <title>PLUMBER</title>
+      <title><?php echo $title; ?></title>
       <meta content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0' name='viewport' />
       <meta name="viewport" content="width=device-width" />
       <link href="<?php echo base_url(); ?>assets/css/bootstrap.min.css" rel="stylesheet" />
@@ -34,7 +40,11 @@ $writepermission  = explode(',', $userdetails['write_permission']);
 
       <div class="sidebar" data-color="azure" data-image="<?php echo base_url(); ?>assets/img/empty.png">
          <div class="sidebar-wrapper">
-            <div class="logo">                <a href="#" class="simple-text">                    PLUMBER                 </a>            </div>
+            <div class="logo">                
+               <a href="#" class="simple-text">
+                  <?php echo $title; ?>
+               </a>               
+            </div>
             <?php if ($staff =='1') { ?>
                <ul class="nav">
                     <li <?php if($leftsidebar_value == 1 ) { ?> class="active" <?php } ?> >

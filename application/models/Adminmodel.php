@@ -816,9 +816,16 @@ class Adminmodel extends CI_Model {
 		$this->db->where('pagescount.date <=',$todate);
 
 		if (isset($extras['warehouse_staff']) && $extras['warehouse_staff'] == '1') {
-        	$pageid = $this->config->item('pagesid')[21]; // Builder Page ID
+        	$pageid =[];
+        	$pageid[] = $this->config->item('pagesid')[21]; // Builder Page ID
+        	$pageid[] = $this->config->item('pagesid')[61]; 
+        	$pageid[] = $this->config->item('pagesid')[62]; 
+        	$pageid[] = $this->config->item('pagesid')[63]; 
+        	$pageid[] = $this->config->item('pagesid')[64]; 
+        	$pageid[] = $this->config->item('pagesid')[65]; 
+        	$pageid[] = $this->config->item('pagesid')[0];
         	$this->db->group_start();
-        		$this->db->where('pages.id', $pageid);
+        		$this->db->where_in('pages.id', $pageid);
         	$this->db->group_end();
         }
 
@@ -2178,6 +2185,31 @@ class Adminmodel extends CI_Model {
         return $action;
     }
 
+    public function getdata_clients1($type, $requestData = [])
+	{							
+		$this->db->select('*');
+		$this->db->from('advertising_clients');	
+		$this->db->where('status', '1');
+
+		if(isset($requestData['id'])) 	$this->db->where('id', $requestData['id']);
+		
+		if (isset($requestData['warehouse_staff']) && $requestData['warehouse_staff'] == '1') {        	
+        	$this->db->where('id', 10);
+        }
+		
+		$this->db->order_by('client_name');	
+		
+		if($type=='count'){
+			$result = $this->db->count_all_results();
+		}else{
+			$query = $this->db->get();			
+			if($type=='all') 		$result = $query->result_array();
+			elseif($type=='row') 	$result = $query->row_array();
+		}
+		
+		return $result;			
+	}
+
     public function getdata_clients($id = '')
     {
         if ($id == '') {
@@ -2203,7 +2235,8 @@ class Adminmodel extends CI_Model {
 
 		if (isset($requestData['warehouse_staff']) && $requestData['warehouse_staff'] == '1') {
         	$pageid = $this->config->item('pagesid')[21]; // Builder Page ID
-        	$this->db->where('ad.page_id', $pageid);        	
+        	$this->db->where('ad.page_id', $pageid);  
+        	$this->db->where('cl.id', 10);	// Builder clients ID      	
         }
 
 		$this->db->group_by('ad.id');
@@ -2411,6 +2444,37 @@ class Adminmodel extends CI_Model {
 		$this->db->where("campaign_status","1");
 		$query=$this->db->get($table);		
 		return $query->result_array();
+	}
+
+	function getsessioncountbarchart($value)
+	{
+	    $this->db->select('SUM(count) as count');
+	    $this->db->from('appsessionscount');
+
+	    $monthArray = explode('-', $value);
+	    $this->db->where('YEAR(created_at) = ' . $monthArray[0] . ' AND ' . 'MONTH(created_at) = ' . $monthArray[1]);	   
+
+	    $query=$this->db->get();		
+		$monthdata = $query->row_array();
+		$output = str_replace("'","'",$monthdata['count']);
+		return $output;
+	}
+
+	function getsessioncountpiechart($from, $to)
+	{
+	    $this->db->select('WEEK(created_at) AS weeks, SUM(count) as count');
+	    $this->db->from('appsessionscount');
+
+	    // $this->db->where('created_at >=', $from);
+	    // $this->db->where('created_at <=', $to);
+	    $this->db->where('created_at BETWEEN "'. date('Y-m-d', strtotime($from)). '" and "'. date('Y-m-d', strtotime($to)).'"');
+	    $this->db->group_by('weeks');
+	    $this->db->order_by('created_at');
+
+	    $query     = $this->db->get();
+	    $monthdata = $query->result_array();
+	    // $output = str_replace("'","'",$monthdata['count']);
+	    return $monthdata;
 	}
 
     //end bala changes

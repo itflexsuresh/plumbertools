@@ -407,6 +407,11 @@ class Admincontrol extends CI_Controller {
 
 	function dashboard(){
 		$this->checksessionout();
+		$userdetails 				= $this->getUserDetails();
+		if ($userdetails['warehouse_staff'] == '1') { 
+			redirect(base_url().'admincontrol/newdashboard');
+		}
+
 		$data["header_title"]=$this->dashboard_title;
 		$data["header_title2"]="";
 		$data["leftsidebar_value"]=$this->dashboard_value;
@@ -422,15 +427,16 @@ class Admincontrol extends CI_Controller {
 			$todateA 		= date('Y-m-t', strtotime($currentdateA));
 		}
 		else{
+
 			$fromdateA 		= $this->input->post("fromdateA");  
 			$todateA 		= $this->input->post("todateA");
 			$searchtype 	= $this->input->post("searchtype");
 		}
-		
-		$userdetails 				= $this->getUserDetails();
+				
 		$fromdateA1 				= date("Y-m-d", strtotime($fromdateA));
 		$todateA1 					= date("Y-m-d", strtotime($todateA));
 		$data["fromdateA"] 			= $fromdateA1;
+
 		$data["warehouse_staff"] 	= $userdetails['warehouse_staff'];
 		$data["todateA"] 			= $todateA1;
 		$data["userdetails"] 		= $userdetails;
@@ -446,6 +452,7 @@ class Admincontrol extends CI_Controller {
 			$todate1 		= date('Y-m-t', strtotime($currentdate));
 		}
 		else{
+
 			$fromdate1 		= $this->input->post("fromdate");  
 			$todate1 		= $this->input->post("todate");
 			$searchtype 	= $this->input->post("searchtype");
@@ -2845,8 +2852,11 @@ class Admincontrol extends CI_Controller {
 	
 	function bannerlist(){
 		$this->checksessionout();
-		$this->checkUserPermission('3', '1', '1');
 		$userdetails 		= 	$this->getUserDetails();
+		if ($userdetails['warehouse_staff'] =='0') {
+			$this->checkUserPermission('3', '1', '1');
+		}
+		
 		$data["header_title"]=$this->banner_title;
 		$data["header_title2"]=$this->banner_title2;
 		$data["leftsidebar_value"]=$this->banner_value;	
@@ -2876,8 +2886,11 @@ class Admincontrol extends CI_Controller {
 			else{ $condition3="0"; }
 		}
 
-		$checkpermission		=	$this->checkUserPermission('3', '2');
-		$data["permission"] 	= 	$checkpermission;
+		if ($userdetails['warehouse_staff'] =='0') {
+			$checkpermission		=	$this->checkUserPermission('3', '2');
+			$data["permission"] 	= 	$checkpermission;
+		}
+		
 		$data["userdetails"] 	= 	$userdetails;
 		$data["getdata"] 		=	$this->adminmodel->getdata_bannertop_1($condition,$condition2);
 		$data["getdata1"] 		=	$this->adminmodel->getdata_bannerbottom($condition,$condition3);
@@ -7448,17 +7461,18 @@ class Admincontrol extends CI_Controller {
 	    if ($userdetails['warehouse_staff'] =='0') {
 			$this->checkUserPermission('3', '1', '1');
 		}
-
-	    $data["header_title"]      = $this->advertising_adbanners_title;
+	    
 	    $data["header_title2"]     = $this->advertising_adbanners_title2;
 	    $data["leftsidebar_value"] = $this->advertising_adbanners_value;
 
 	    if ($userdetails['warehouse_staff'] == '0') {	
 	    	$checkpermission		=	$this->checkUserPermission('3', '2');
 			$data["permission"] 	= 	$checkpermission;		
-			$data["getdata"]    = $this->adminmodel->getdata_adbanners('all');	
+			$data["getdata"]    = $this->adminmodel->getdata_adbanners('all');
+			$data["header_title"]      = $this->advertising_adbanners_title;	
 		}else{			
-			$data["getdata"]    = $this->adminmodel->getdata_adbanners('all', ['advert_type' => '2', 'warehouse_staff' => '1']);				
+			$data["getdata"]    = $this->adminmodel->getdata_adbanners('all', ['advert_type' => '2', 'warehouse_staff' => '1']);
+			$data["header_title"]      = 'Builders Warehouse';				
 		}	
 	    $this->allpage('adbanners', $data);
 	}
@@ -7484,8 +7498,11 @@ class Admincontrol extends CI_Controller {
 
 	    if ($userdetails['warehouse_staff'] == '0') {
 			$data["pagesdata"]=$this->adminmodel->getfulldata("pages", ['pagetype' => 'bannerlist', 'warehouse_staff' => '0']);
+			$data["pagesdata1"]=$this->adminmodel->getfulldata("pages", ['pagetype' => 'bannerlist', 'warehouse_staff' => '1']);
+			$data["header_title"]      = $this->advertising_adbanners_title;
 		}else{
 			$data["pagesdata"]=$this->adminmodel->getfulldata("pages", ['pagetype' => 'bannerlist', 'warehouse_staff' => '1']);
+			$data["header_title"]      = 'Builders Warehouse';
 		}
 
 	    if ($userdetails['warehouse_staff'] =='0') {
@@ -7496,8 +7513,8 @@ class Admincontrol extends CI_Controller {
 	    $currentdate               = date("Y-m-d");
 	    $data["fromdate"]          = $currentdate;
 	    $data["todate"]            = $currentdate;
-	    $data["client_name_list"]  = $this->adminmodel->getdata_clients();
-	    $data["header_title"]      = $this->advertising_adbanners_title;
+	    $data["client_name_list"]  = $this->adminmodel->getdata_clients1('all', ['warehouse_staff' => $userdetails['warehouse_staff']]);
+
 	    $data["header_title2"]     = $this->advertising_adbanners_title2;
 	    $data["leftsidebar_value"] = $this->advertising_adbanners_value;
 	    $data["getdata"]           = '';	    
@@ -7527,8 +7544,10 @@ class Admincontrol extends CI_Controller {
 		
 	    if ($userdetails['warehouse_staff'] == '0') {
 			$data["pagesdata"]=$this->adminmodel->getfulldata("pages", ['pagetype' => 'bannerlist', 'warehouse_staff' => '0']);
+			$data["header_title"]      = $this->advertising_adbanners_title;
 		}else{
 			$data["pagesdata"]=$this->adminmodel->getfulldata("pages", ['pagetype' => 'bannerlist', 'warehouse_staff' => '1']);
+			$data["header_title"]      = 'Builders Warehouse';
 		}
 
 	    if ($userdetails['warehouse_staff'] =='0') {
@@ -7541,8 +7560,8 @@ class Admincontrol extends CI_Controller {
 	    $currentdate               = date("Y-m-d");
 	    $data["fromdate"]          = $currentdate;
 	    $data["todate"]            = $currentdate;
-	    $data["client_name_list"]  = $this->adminmodel->getdata_clients();
-	    $data["header_title"]      = $this->advertising_adbanners_title;
+	    $data["client_name_list"]  = $this->adminmodel->getdata_clients1('all', ['warehouse_staff' => $userdetails['warehouse_staff']]);
+	    
 	    $data["header_title2"]     = $this->advertising_adbanners_title2;
 	    $data["leftsidebar_value"] = $this->advertising_adbanners_value;
 
@@ -7699,7 +7718,7 @@ class Admincontrol extends CI_Controller {
 
     function newdashboard(){
 		$this->checksessionout();
-		$data["header_title"]=$this->newdashboard_title;
+
 		$data["header_title2"]="";
 		$data["leftsidebar_value"]=$this->newdashboard_value;
 
@@ -7751,7 +7770,28 @@ class Admincontrol extends CI_Controller {
 		$data["activestatus"]   = $condition;
 		$data["searchtype"] 	= isset($searchtype) ? $searchtype : '';
 		
-		$data["getdata2"] 		=$this->adminmodel->getdata_dashboardpages($fromdate,$todate, ['warehouse_staff' => $userdetails['warehouse_staff']]);			
+		$data["getdata2"] 		=$this->adminmodel->getdata_dashboardpages($fromdate,$todate, ['warehouse_staff' => $userdetails['warehouse_staff']]);	
+
+		if ($userdetails['warehouse_staff'] == '0') {			
+			$data["header_title"]	=$this->newdashboard_title;
+		}else{			
+			$data["header_title"]      = 'Builders Warehouse';
+		}
+
+		$sixmonthgraph = [];
+
+		for($i = 0; $i <= 5; $i++){			
+			$sixmonthgraph[] = [
+				'month' => date('F', strtotime('-'.$i.' months')), 
+				'Engagements' => $this->adminmodel->getsessioncountbarchart(date('Y-m', strtotime('-'.$i.' months')))
+			];
+		}
+
+		$data['sixmonthgraph']	= array_reverse($sixmonthgraph);
+
+		$from               = date("Y-m-d", strtotime("first day of this month"));
+		$to                 = date("Y-m-d", strtotime("last day of this month"));
+		$data['weeksgraph'] = $this->adminmodel->getsessioncountpiechart($from, $to);		
 			
 		$this->allpage('newdashboard',$data);
 	}

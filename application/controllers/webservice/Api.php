@@ -6719,6 +6719,30 @@ echo '<div class="col-md-6">Select Category
         echo json_encode($jsonArray);
 	}
 
+	function appsessionscount()
+	{
+	    if ($this->input->post() && $this->input->post('user_id')) {
+	        $post = $this->input->post();
+
+	        $date = date('Y-m-d');
+	        $data = $this->Apimodel->appsessionscountgetList('row', ['date' => $date, 'user_id' => $post['user_id']]);
+
+	        if ($data) {
+	            $isdata = '1';
+	        } else {
+	            $isdata = '0';
+	        }
+
+	        $clicksdata = $this->Apimodel->appsessionscountAction(['date' => $date, 'isdata' => $isdata, 'user_id' => $post['user_id'], 'countdata' => isset($data) ? $data : '']);
+	        $result     = $clicksdata;
+
+	        $jsonArray = array("status" => '1', "message" => 'New App Session Added', 'result' => $result);
+	    } else {
+	        $jsonArray = array("status" => '0', "message" => 'Invalid request', 'result' => []);
+	    }
+	    echo json_encode($jsonArray);
+	}
+
 	// Advance Valves :
 
 	public function aadvanced_valves_contactus()

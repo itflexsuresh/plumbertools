@@ -1,7 +1,20 @@
 <?php
 $searchtype = isset($searchtype) ? $searchtype : '';
+
+$week1 = isset($weeksgraph[0]) ? $weeksgraph[0]['count'] : 0;
+$week2 = isset($weeksgraph[1]) ? $weeksgraph[1]['count'] : 0;
+$week3 = isset($weeksgraph[2]) ? $weeksgraph[2]['count'] : 0;
+$week4 = isset($weeksgraph[3]) ? $weeksgraph[3]['count'] : 0;
+
 // echo $searchtype;die;
 ?>
+<style type="text/css">
+	.a_sale_graph{		
+	    position: absolute;
+	    left: 50%;
+	    top: 200px;
+	}
+</style>
 <div class="content">
 	<div class="container-fluid">
 		<div class="row">
@@ -9,9 +22,12 @@ $searchtype = isset($searchtype) ? $searchtype : '';
 				<div class="card">
 					<div class="header">
 						<h4 class="title">Advert Summary</h4>
+						<?php 
+						if ($userdetails['warehouse_staff'] =='0') { ?>
 						<a href="<?php echo base_url().'admincontrol/dashboard'; ?>">
 							<button type="button" class="btn btn-success btn-fill pull-right">Old Dashboard</button>
 						</a>
+						<?php }?>
 						<p class="category"></p>
 						</br></br>
 						Selected Date: <?php echo date("m/d/Y", strtotime($fromdateA)); ?> to <?php echo date("m/d/Y", strtotime($todateA)); ?>
@@ -79,6 +95,35 @@ $searchtype = isset($searchtype) ? $searchtype : '';
 			<div class="col-md-12 dash-summ">
 				<div class="card">				
 					<div class="header">						
+						<h4 class="title">Engagements Graph last 6 months</h4>
+					</div>
+					<div class="row">
+						<div class="col-md-2">
+							<p class="a_sale_graph"><span style="background:#4472C4;padding:0 7px;margin-right: 4px;"></span><span>Engagements</span></p>
+						</div>
+						<div class="col-md-10">
+							<div id="sixmonthchart" style="width:100%; height:400px;"></div>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<div class="col-md-12 dash-summ">
+				<div class="card">				
+					<div class="header">						
+						<h4 class="title">Current Month Engagements</h4>
+					</div>
+					<div class="row">						
+						<div class="col-md-12">
+							<div id="weekschart" style="width:100%; height:400px;"></div>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<div class="col-md-12 dash-summ">
+				<div class="card">				
+					<div class="header">						
 						<h4 class="title">Usage Summary</h4>
 						<p class="category"></p>
 						</br></br>
@@ -130,6 +175,11 @@ $searchtype = isset($searchtype) ? $searchtype : '';
 		</div>				
 	</div>
 </div>
+
+<!--  Charts Plugin -->
+<script src="<?php echo base_url(); ?>assets/plugins/knob/jquery.knob.js"></script>
+<script src="<?php echo base_url(); ?>assets/plugins/echarts/echarts-all.js"></script>
+
 <script type="text/javascript">
     	$(document).ready(function(){
     		var searchtype = '<?php echo $searchtype; ?>';
@@ -201,7 +251,7 @@ $searchtype = isset($searchtype) ? $searchtype : '';
 				var daterangevalue=$('#daterange').val();
 				var fromdate = $('#fromdate').val();
 				var todate = $('#todate').val();
-				var url = '<?php echo base_url().'admincontrol/dashboard'; ?>';
+				var url = '<?php echo base_url().'admincontrol/newdashboard'; ?>';
 				$('<form method="post" action="'+url+'"><input type="hidden" name="daterangevalue" value="'+daterangevalue+'"><input type="hidden" name="fromdate" value="'+fromdate+'"><input type="hidden" name="todate" value="'+todate+'"><input type="hidden" name="searchtype" value="pagesearch"></form>').appendTo('body').submit();
 			});
 
@@ -309,7 +359,63 @@ $searchtype = isset($searchtype) ? $searchtype : '';
 			        }
 				});	
 			});
-			
-    	});
+
+		});
+
+
+			var sixmonthgraph = $.parseJSON('<?php echo json_encode($sixmonthgraph); ?>');
+			console.log(sixmonthgraph);			
+		
+			$(function(){
+				knobchart();
+				
+				var xaxis = [], yaxis1 = [], yaxis2 = [];
+				$(sixmonthgraph).each(function(i,v){
+					$(v).each(function(ii,vv){
+						xaxis.push(vv.month);
+						yaxis1.push(vv.Engagements);					
+					})
+				})
+				
+				barchart(
+					'sixmonthchart',
+					{
+						xaxis : xaxis,
+						series : [
+							{
+								name : 'Engagements',
+								yaxis : yaxis1,
+								color : '#4472C4'
+							}
+						]
+					}
+				);
+
+				var week1   = '<?php echo $week1; ?>';
+			    var week2   = '<?php echo $week2; ?>';
+			    var week3   = '<?php echo $week3; ?>';
+			    var week4   = '<?php echo $week4; ?>';
+			    console.log(week1+' '+week2+' '+week3+' '+week4);
+
+				piechart(
+					'weekschart',
+					{
+						name : 'weekschart',
+						xaxis : [
+							'Week 1',
+							'Week 2',
+							'Week 3',
+							'Week 4'
+						],
+						yaxis : [
+							{value : week1, name : 'Week 1'},
+							{value : week2, name : 'Week 2'},
+							{value : week3, name : 'Week 3'},
+							{value : week4, name : 'Week 4'}
+						],
+						colors : ['#ff7f27','#b97a57','#3f48cc','#22b14c']				
+					}
+				);					
+	    	});
 		
 </script>
