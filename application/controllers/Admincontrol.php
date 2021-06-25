@@ -3616,9 +3616,10 @@ class Admincontrol extends CI_Controller {
 	}
 	function deleteuser(){
 		$deleteid = $this->input->post("id");  //$this->uri->segment(3);
+		$userdetailid = $this->input->post("userdetailid");  //$this->uri->segment(3);
 		$this->checksessionout();		
 		// $this->adminmodel->deletedata("users",$deleteid);		
-		$this->adminmodel->changestatus("users",$deleteid);
+		$this->adminmodel->changestatus("users",$deleteid, $userdetailid);
 		// $this->userlist();
 		redirect('admincontrol/userlist');
 	}

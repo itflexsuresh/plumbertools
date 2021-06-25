@@ -44,8 +44,11 @@
 									<td><?php if($row['otpcode'] !=''){ echo $row['otpcode']; }else{ echo "OTP not generated"; } ?></td>
 									<td><?php if($row['created_at'] !=''){ echo date("d-m-Y h:i:s", strtotime($row['created_at'])); }else{ echo "OTP not generated"; } ?></td>									
 									<td>
-										<a href="<?php echo base_url();?>admincontrol/edituser/<?php echo $row['id'] ; ?>">Edit</a> <?php if (isset($permission) && ($permission =='1')) { ?>/ <a href="javascript:void(0)" deleteid="<?php echo $row['id']; ?>" class="delete">Delete</a>
+										<?php if ($condition == 1) { ?>
+												<a href="<?php echo base_url();?>admincontrol/edituser/<?php echo $row['id'] ; ?>">Edit</a> <?php if (isset($permission) && ($permission =='1')) { ?>/ <a href="javascript:void(0)" deleteid="<?php echo $row['id']; ?>" uddeleteid="<?php echo $row['userdetailid']; ?>" class="delete">Delete</a>
+											<?php } ?>
 										<?php } ?>
+										
 									</td>									
 								</tr>
 						<?php 
@@ -74,6 +77,7 @@
 				var action 	= 	'<?php echo base_url().'admincontrol/deleteuser'; ?>';
 				var data	= 	'\
 				<input type="hidden" value="'+$(this).attr('deleteid')+'" name="id">\
+				<input type="hidden" value="'+$(this).attr('uddeleteid')+'" name="userdetailid">\
 				<input type="hidden" value="2" name="status">\
 				';
 
