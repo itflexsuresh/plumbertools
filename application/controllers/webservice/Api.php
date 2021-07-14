@@ -90,10 +90,10 @@ class Api extends CI_Controller {
 				
 		$topbanner=$this->adminmodel->getfulldata_api("banner",'top',$pageid);
 		for($i=0; $i < count($topbanner); $i++){			
-			$data['topbanner'][$i]['image']=base_url().'./images/'.$topbanner[$i]['image'];
-			$data['topbanner'][$i]['link']=$topbanner[$i]['link'];
-			$data['topbanner'][$i]['imageid']=$topbanner[$i]['id'];
-			$data['topbanner'][$i]['pageid']=$pageid;
+			$data['topbanner'][$i]['image'] 	= base_url().'./images/'.$topbanner[$i]['image'];
+			$data['topbanner'][$i]['link'] 		= $topbanner[$i]['link'];
+			$data['topbanner'][$i]['imageid'] 	= $topbanner[$i]['id'];
+			$data['topbanner'][$i]['pageid'] 	= $pageid;
 		}
 		
 		// $bottombanner=$this->adminmodel->getfulldata_api("banner",'bottom',$pageid);
@@ -111,7 +111,7 @@ class Api extends CI_Controller {
 		
 		$scrollingtickerline=$this->adminmodel->getfulldata_scrolling_api("scrollingticker",$pageid);		
 		for($i=0; $i < count($scrollingtickerline); $i++){			
-			$data["scrollingticker"][$i]['content']=$scrollingtickerline[$i]['scrollingticker'];
+			$data["scrollingticker"][$i]['content'] 	= $scrollingtickerline[$i]['scrollingticker'];
 		}
 				
 		// $plumbingimage=$this->adminmodel->getfulldata("plumbingafrica");	
@@ -129,62 +129,63 @@ class Api extends CI_Controller {
 		// 	$data["news"][$i]['image']=base_url().'./images/'.$news[$i]['file'];
 		// }				
 			
-		$data["centericon"][0]['image']=base_url().'./appicons/iops_new1.png';	
-		$data["centericon"][0]['title']="IOPSA";
-		$data["centericon"][0]['pagelink']="IOPSAHomePage.html";
-		$data["centericon"][1]['image']=base_url().'./appicons/auditit1.png';	
-		$data["centericon"][1]['title']="Audit IT";
-		$data["centericon"][1]['pagelink']="ComingSoon.html";
-		$data["centericon"][2]['image']=base_url().'./appicons/pirb1.png';	
-		$data["centericon"][2]['title']="PIRB";
-		$data["centericon"][2]['pagelink']="PIRBHome.html";
-	    $data["centericon"][3]['image']=base_url().'./appicons/magzinenew1.png';	
-		$data["centericon"][3]['title']="Magazine";
-		$data["centericon"][3]['pagelink']="Magazine_Main.html";
-		$data["centericon"][4]['image']=base_url().'./appicons/podcast1.png';	
-		$data["centericon"][4]['title']="Podcast";
-		$data["centericon"][4]['pagelink']="podcast.html";
-		$data["centericon"][5]['image']=base_url().'./appicons/installionguide1.png';	
-		// $data["centericon"][5]['title']="Installation Guides";
-		$data["centericon"][5]['title']="Reference Guides";
-		$data["centericon"][5]['pagelink']="ProductGuide.html";
-		// $data["centericon"][6]['image']=base_url().'./appicons/cpd1.png';	
-		// $data["centericon"][6]['title']="CPD Activities";
-		// $data["centericon"][6]['pagelink']="Homecpd.html";
-		$data["centericon"][6]['image']=base_url().'./appicons/builder_werehouse.png';	
-		$data["centericon"][6]['title']="Builders";
-		$data["centericon"][6]['pagelink']="bwarehouse.html";
-		$data["centericon"][7]['image']=base_url().'./appicons/finder_new1.png';	
-		$data["centericon"][7]['title']="Findar";
-		$data["centericon"][7]['pagelink']="ComingSoon.html";
+		$data["centericon"][0]['image'] 				= base_url().'./appicons/iops_new1.png';	
+		$data["centericon"][0]['title'] 				= "IOPSA";
+		$data["centericon"][0]['pagelink'] 				= "IOPSAHomePage.html";
+		$data["centericon"][1]['image'] 				= base_url().'./appicons/auditit1.png';	
+		$data["centericon"][1]['title'] 				= "Audit IT";
+		$data["centericon"][1]['pagelink'] 				= "ComingSoon.html";
+		$data["centericon"][2]['image'] 				= base_url().'./appicons/pirb1.png';	
+		$data["centericon"][2]['title'] 				= "PIRB";
+		$data["centericon"][2]['pagelink'] 				= "PIRBHome.html";
+	    $data["centericon"][3]['image'] 				= base_url().'./appicons/Group_564.jpg';	
+		$data["centericon"][3]['title'] 				= "Magazine";
+		$data["centericon"][3]['pagelink'] 				= "Magazine_Main.html";
+		$data["centericon"][4]['image'] 				= base_url().'./appicons/podcast1.png';	
+		$data["centericon"][4]['title'] 				= "Podcast";
+		$data["centericon"][4]['pagelink'] 				= "podcast.html";
+		$data["centericon"][5]['image'] 				= base_url().'./appicons/installionguide1.png';	
+		// $data["centericon"][5]['title'] 				= "Installation Guides";
+		$data["centericon"][5]['title'] 				= "Reference Guides";
+		$data["centericon"][5]['pagelink'] 				= "ProductGuide.html";
+		// $data["centericon"][6]['image'] 				= base_url().'./appicons/cpd1.png';	
+		// $data["centericon"][6]['title'] 				= "CPD Activities";
+		// $data["centericon"][6]['pagelink'] 			= "Homecpd.html";
+		$data["centericon"][6]['image'] 				= base_url().'./appicons/builder_werehouse.png';	
+		$data["centericon"][6]['title'] 				= "Builders";
+		$data["centericon"][6]['pagelink'] 				= "bwarehouse.html";
+
+		$data["centericon"][7]['image'] 				= base_url().'./appicons/finder_new1.png';	
+		$data["centericon"][7]['title'] 				= "Findar";
+		$data["centericon"][7]['pagelink'] 				= "ComingSoon.html";		
+
+		$data["centericon"][8]['image'] 				= base_url().'./appicons/advancedvalve_logo_new.png';	
+		$data["centericon"][8]['title'] 				= "Advanced Valves";
+		$data["centericon"][8]['pagelink'] 				= "AdvancedValves.html";
+
+		$data["centericon"][9]['image'] 				= base_url().'./appicons/tools1.png';	
+		$data["centericon"][9]['title'] 				= "Tools";
+		$data["centericon"][9]['pagelink'] 				= "ToolsPage.html";
+		$data["centericon"][10]['image'] 				= base_url().'./appicons/heathsafety1.png';	
+		$data["centericon"][10]['title'] 				= "Health & Safety";
+		$data["centericon"][10]['pagelink'] 			= "HealthSafety.html";
+		$data["centericon"][11]['image'] 				= base_url().'./appicons/buysell1.png';	
+		$data["centericon"][11]['title'] 				= "Buy & Sell";
+		$data["centericon"][11]['pagelink'] 			= "BuyAndSellHome.html";
+		$data["centericon"][12]['image'] 				= base_url().'./appicons/contact1.png';	
+		$data["centericon"][12]['title'] 				= "Contact Us";
+		$data["centericon"][12]['pagelink'] 			= "HomeContactus.html";
+		// $data["centericon"][13]['image'] 				= base_url().'./appicons/blue.jpg';	
+		// $data["centericon"][13]['title'] 				= "My Profile";
+		// $data["centericon"][13]['pagelink'] 				= "Profile.html";
+		$data["centericon"][13]['image'] 				= base_url().'./appicons/ratemywork.png';	
+		// $data["centericon"][13]['title'] 				="Rate My Work";
+		$data["centericon"][13]['title'] 				= "Community Board";		
+		$data["centericon"][13]['pagelink'] 			= "rate_my_work.html";		
 		
-		$data["centericon"][8]['image']=base_url().'./appicons/advancedvalve_logo_new.png';	
-		$data["centericon"][8]['title']="Advanced Valves";
-		$data["centericon"][8]['pagelink']="AdvancedValves.html";
-				
-		$data["centericon"][9]['image']=base_url().'./appicons/tools1.png';	
-		$data["centericon"][9]['title']="Tools";
-		$data["centericon"][9]['pagelink']="ToolsPage.html";
-		$data["centericon"][10]['image']=base_url().'./appicons/heathsafety1.png';	
-		$data["centericon"][10]['title']="Health & Safety";
-		$data["centericon"][10]['pagelink']="HealthSafety.html";
-		$data["centericon"][11]['image']=base_url().'./appicons/buysell1.png';	
-		$data["centericon"][11]['title']="Buy & Sell";
-		$data["centericon"][11]['pagelink']="BuyAndSellHome.html";
-		$data["centericon"][12]['image']=base_url().'./appicons/contact1.png';	
-		$data["centericon"][12]['title']="Contact Us";
-		$data["centericon"][12]['pagelink']="HomeContactus.html";
-		// $data["centericon"][13]['image']=base_url().'./appicons/blue.jpg';	
-		// $data["centericon"][13]['title']="My Profile";
-		// $data["centericon"][13]['pagelink']="Profile.html";
-		$data["centericon"][13]['image']=base_url().'./appicons/ratemywork.png';	
-		// $data["centericon"][13]['title']="Rate My Work";
-		$data["centericon"][13]['title']="Community Board";		
-		$data["centericon"][13]['pagelink']="rate_my_work.html";		
-		
-		$data["centericon"][15]['image']=base_url().'./appicons/saw_new1.png';	
-		$data["centericon"][15]['title']="SAW";
-		$data["centericon"][15]['pagelink']="Saw.html";
+		$data["centericon"][14]['image'] 				= base_url().'./appicons/saw_new1.png';	
+		$data["centericon"][14]['title'] 				= "SAW";
+		$data["centericon"][14]['pagelink'] 			= "Saw.html";
 		
 		// $data["bottomicon"][0]['image']=base_url().'./appicons/ico13.png';	
 		// $data["bottomicon"][0]['title']="MANAGE IT";
@@ -4360,7 +4361,7 @@ echo '<div class="col-md-6">Select Category
 		$data = array();
 		$post = $this->input->post();
 
-		if ($post['appversion'] < '1.28') {
+		if ($post['appversion'] < '1.29') {
 			$data["status"]  	= "1";
 			$data["message"] 	= "Please Update your app";
 			$data["link"]	 	= "https://play.google.com/store/apps/details?id=com.app.plumber";
@@ -7259,6 +7260,99 @@ echo '<div class="col-md-6">Select Category
 				
 				for($j=0; $j < count($getfulldata_pg); $j++){
 					$data["toolboxtalks"][$i]["category"]	=	$getfulldata_pg[$j]['pgcontent'];
+				}
+			}
+		}else{
+			$data = [
+				'status' => '0',
+				'message' => 'Invalid Request',
+			];
+		}
+		
+		echo json_encode($data);
+	}
+
+	public function helpvideo_category()
+	{
+		$data 								=	array();
+		$requestdata 						=	array();
+		$data["title"] 						= 	'Help Video Section';	
+		$requestdata['orderby_position'] 	= 	'1';			
+		$getfulldata 						=	$this->adminmodel->getfulldata("help_video_section",['orderby_position' => '1', 'extras' => 'pagetrue']);	
+		
+		for($i=0; $i < count($getfulldata); $i++){
+			$data["helpvideosection"][$i]["id"]					=	$getfulldata[$i]['id'];	
+
+			$data["helpvideosection"][$i]["content"]			=	$getfulldata[$i]['content'];
+			$data["helpvideosection"][$i]["display"]			=	$getfulldata[$i]['display'];
+			$data["helpvideosection"][$i]["display_content"]	=	$getfulldata[$i]['display_content'];
+
+			$data["helpvideosection"][$i]["image"]				=	base_url().'./images/'.$getfulldata[$i]['image'];	
+		}
+		echo json_encode($data);
+	}
+
+	public function helpvideo_subcategory()
+	{
+		$data 								=	array();
+		$requestdata 						=	array();
+		$data["title"] 						= 	'Help Video Section';
+		$requestdata 						= 	$this->input->post();	
+		$requestdata['orderby_position'] 	= 	'1';
+		$requestdata['pagename'] 			= 	'helpvideo_subcategory';
+		$requestdata['extras'] 				= 	'pagetrue';	
+		$getfulldata 						=	$this->adminmodel->getfulldata("help_video_section1",$requestdata);
+
+		for($i=0; $i < count($getfulldata); $i++){			
+			$data["helpvideosection"][$i]["id"]					=	$getfulldata[$i]['id'];	
+
+			$data["helpvideosection"][$i]["content"]			=	$getfulldata[$i]['content'];
+			$data["helpvideosection"][$i]["display"]			=	$getfulldata[$i]['display'];
+			$data["helpvideosection"][$i]["display_content"]	=	$getfulldata[$i]['display_content'];
+
+			$data["helpvideosection"][$i]["image"]				=	base_url().'./images/'.$getfulldata[$i]['image'];	
+			$videosectionid										=	$getfulldata[$i]['videosectionid'];
+			$getfulldata_pg 									=	$this->adminmodel->getdata_video_section1('',$videosectionid);
+			for($j=0; $j < count($getfulldata_pg); $j++){
+				$data["helpvideosection"][$i]["category"]		=	$getfulldata_pg[$j]['pgcontent'];
+			}
+		}
+		echo json_encode($data);
+	}
+
+	public function helpvideo_innersubcategory()
+	{
+		$data 								=	array();
+		$requestdata 						=	array();
+		if ($this->input->post()) {
+			$data["title"] 						= 	'Help Video Section';
+			$requestdata 						= 	$this->input->post();	
+			$getfulldata 						=	$this->adminmodel->getdata_help_video_section2("",$requestdata['innersubid'], ['pagetype' => 'helpvideo_innersubcategory']);
+
+			for($i=0; $i < count($getfulldata); $i++){
+
+				$data["helpvideosection"][$i]["id"]					=	$getfulldata[$i]['id'];
+
+				$data["helpvideosection"][$i]["content"]			=	$getfulldata[$i]['content'];
+
+				if ($getfulldata[$i]['details'] !='') {
+					$data["helpvideosection"][$i]["details"]		=	$getfulldata[$i]['details'];
+				}else{
+					$data["helpvideosection"][$i]["details"]		=	'';
+				}
+				
+				$videosection1id									=	$getfulldata[$i]['videosection1id'];
+
+				if ($getfulldata[$i]['file'] !='') {
+					$data["helpvideosection"][$i]["file"]		=	base_url().'./images/'.$getfulldata[$i]['file'];
+				}else{
+					$data["helpvideosection"][$i]["file"]		=	'';
+				}
+
+				$getfulldata_pg 						=	$this->adminmodel->getdata_videosection3_api('',$videosection1id);
+				
+				for($j=0; $j < count($getfulldata_pg); $j++){
+					$data["helpvideosection"][$i]["category"]	=	$getfulldata_pg[$j]['pgcontent'];
 				}
 			}
 		}else{
