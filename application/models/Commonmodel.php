@@ -235,4 +235,22 @@ class Commonmodel extends CI_Model {
 		return $result;			
 	}
 
+	public function positionvalidator($data = []){
+		
+		$id 			= isset($data['id']) ? $data['id'] : '';		
+		$position 		= $data['position'];
+		$tablename 		= $data['tablename'];
+
+		$this->db->where('position', $position);
+		if($id!='') $this->db->where('id !=', $id);
+		
+		$query = $this->db->get(''.$tablename.'');
+		
+		if($query->num_rows() > 0){
+			return 'false';
+		}else{
+			return 'true';
+		}
+	}
+
 }

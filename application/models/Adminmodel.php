@@ -2540,4 +2540,63 @@ class Adminmodel extends CI_Model {
 		return $query->result_array();
 	}
 
+	function getdata_video_section($condition)
+	{			
+		$query = $this->db->query("Select * From help_video_section order by content asc");
+		return $query->result_array();
+	}
+
+
+	function getdata_video_section1($condition,$condition2, $requestdata = [])
+	{	
+		if (isset($requestdata['pagetype']) && $requestdata['pagetype'] =='helpvideo_subcategory') {
+			$published = '1';
+			$query = $this->db->query("Select help_video_section1.*,help_video_section.content as pgcontent from help_video_section1 LEFT JOIN help_video_section on help_video_section.id=help_video_section1.videosectionid WHERE  help_video_section1.videosectionid=".$condition2." AND help_video_section1.published = '".$published."' order by help_video_section1.published asc");
+		}else{
+			$query = $this->db->query("Select help_video_section1.*,help_video_section.content as pgcontent from help_video_section1 INNER JOIN help_video_section on help_video_section.id=help_video_section1.videosectionid WHERE  help_video_section1.videosectionid=".$condition2." order by help_video_section1.content asc");
+		}		
+				
+		return $query->result_array();
+	}
+
+	function getdata_help_video_section2($condition,$condition2, $requestdata = [])
+	{
+		if (isset($requestdata['pagetype']) && $requestdata['pagetype'] =='helpvideo_innersubcategory') {
+			$published = '1';
+			$query = $this->db->query("Select help_video_section2.*,help_video_section1.content as pgcontent from help_video_section2 INNER JOIN help_video_section1 on help_video_section1.id=help_video_section2.videosection1id WHERE help_video_section2.videosection1id='".$condition2."' AND help_video_section2.published='".$published."' order by help_video_section2.position asc");	
+		}else{
+			$query = $this->db->query("Select help_video_section2.*,help_video_section1.content as pgcontent from help_video_section2 INNER JOIN help_video_section1 on help_video_section1.id=help_video_section2.videosection1id WHERE help_video_section2.videosection1id=".$condition2." order by help_video_section2.id DESC");
+		}
+		
+		return $query->result_array();
+	}
+
+	function getdata_videosection3_api($condition,$condition2)
+	{			
+		$query = $this->db->query("Select help_video_section2.*,help_video_section1.content as pgcontent from help_video_section2 INNER JOIN help_video_section1 on help_video_section1.id=help_video_section2.videosection1id WHERE help_video_section2.videosection1id=".$condition2." order by help_video_section2.content asc, help_video_section2.position asc");
+		return $query->result_array();
+	}
+
+	function videosection2action($data =[]){
+
+		$request = [
+			'videosectionid' 	=> $data['videosectionid'],
+			'videosection1id' 	=> $data['videosection1id'],
+			'content' 			=> $data['title'],
+			'file' 				=> $data['image3'],
+			'position' 			=> $data['position'],
+			'details' 			=> $data['level1'],
+			'published' 		=> $data['publishid'],
+		];
+
+		if ($data['id']=='') {
+			$this->db->insert('help_video_section2', $request);
+			$id = $this->db->insert_id();
+		}else{
+			$this->db->update('help_video_section2', $request, ['id' => $data['id']]);
+			$id = $data['id'];
+		}
+		return $id;
+	}
+
 }

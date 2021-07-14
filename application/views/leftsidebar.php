@@ -522,6 +522,15 @@ if ($userdetails['warehouse_staff'] =='1') {
                         </ul>
                      </li>
                   <?php }?>
+                  
+                  <?php if ($usertype =='1' || (in_array('40', $readpermission)) || in_array('40', $writepermission)) { ?>
+                     <li <?php if($leftsidebar_value == 71 ) { ?> class="active" <?php } ?>>
+                        <a href="<?php echo base_url();?>admincontrol/helpvideolist">
+                           <i class="pe-7s-users"></i>                        
+                           <p>Help Videos</p>
+                        </a>
+                     </li>
+                  <?php } ?>
                </ul>
             <?php } ?>
             

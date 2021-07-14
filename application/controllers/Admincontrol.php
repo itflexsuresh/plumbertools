@@ -219,6 +219,9 @@ class Admincontrol extends CI_Controller {
 		$this->advanced_valves_contactus_title 		=	"Advanced Valves Contact us";		$this->advanced_valves_contactus_title2 	=	"";
 		$this->advanced_valves_contactus_value 		=	69;
 
+		$this->help_video_section 				=	"Help Video";		$this->help_video_section2 	=	"";
+		$this->help_video_section_value 		=	71;
+
 		$this->load->library('session');
 		$this->load->library('ckeditor');
 		$this->ckeditor->basePath 			= base_url().'assets/ckeditor/';
@@ -8645,6 +8648,362 @@ class Admincontrol extends CI_Controller {
 			// $this->newtoolboxtalks2list();
 			redirect(base_url().'admincontrol/dashboard');
 		}
+	}
+
+	/* 	Help video section */
+
+	function helpvideolist()
+	{
+	    $this->checksessionout();
+	    $this->checkUserPermission('40', '1', '1');
+	    $data["header_title"]      = $this->help_video_section;
+	    $data["header_title2"]     = $this->help_video_section2;
+	    $data["leftsidebar_value"] = $this->help_video_section_value;
+	    if (!$this->input->post("activeval")) {$condition = "1";} else {
+	        if ($this->input->post("activeval") == 1) {$condition = "1";} else { $condition = "0";}
+	    }
+
+	    $checkpermission    = $this->checkUserPermission('39', '2');
+	    $data["permission"] = $checkpermission;
+	    $data["getdata"] 	= $this->adminmodel->getdata_video_section($condition);
+	    $this->allpage('helpvideolist', $data);
+	}
+	function addhelpvideo(){
+		$this->checksessionout();
+		$this->checkUserPermission('40', '1', '1');
+		$data["header_title"]      	= $this->help_video_section;
+	    $data["header_title2"]     	= $this->help_video_section2;
+	    $data["leftsidebar_value"] 	= $this->help_video_section_value;
+		$data["action"] 			="new";		
+		$checkpermission    		= $this->checkUserPermission('5', '2');
+	    $data["permission"] 		= $checkpermission;
+		$this->allpage('helpvideoaction',$data);
+	}
+	function edithelpvideo($id =''){
+		$uid= $id; //$this->uri->segment(3);
+		$this->checksessionout();
+		$this->checkUserPermission('40', '1', '1');
+		$data["header_title"]      	= $this->help_video_section;
+	    $data["header_title2"]     	= $this->help_video_section2;
+	    $data["leftsidebar_value"] 	= $this->help_video_section_value;
+		$data["getdata"] 			=$this->adminmodel->getsingledata("help_video_section",$uid);
+		$data["action"] 			="edit";
+		$checkpermission    		= $this->checkUserPermission('39', '2');
+	    $data["permission"] 		= $checkpermission;
+		$this->allpage('helpvideoaction',$data);
+	}
+	function deletehelpvideo(){
+		$deleteid=$this->input->post("deleteid");  //$this->uri->segment(3);
+		$this->checksessionout();		
+		$this->adminmodel->deletedata("help_video_section",$deleteid);	
+		redirect(base_url().'admincontrol/helpvideolist');
+	}
+	function helpvideoaction(){
+		if($this->input->post("insert") || $this->input->post("update")){
+			$this->form_validation->set_rules("content","Content",'trim|required');
+			$this->form_validation->set_rules("position","Position",'trim|required|numeric');
+			if($this->form_validation->run()==FALSE){
+				if($this->input->post("insert")){					
+					$this->addhelpvideo();
+				}
+				if($this->input->post("update")){
+					$this->edithelpvideo($this->input->post("updateid"));
+				}
+			}		
+			else{			
+				
+				$config_image=array();
+				$config_image['upload_path']='./images';
+				$config_image['allowed_types']='jpg|jpeg|png|pdf';
+				$config_image['encrypt_name']=TRUE;
+				$this->load->library('upload',$config_image);			
+				if ( ! $this->upload->do_upload('imagefile'))
+				{
+					//print_r($this->upload->display_errors()); print_r($this->input->post("imagefile")); die;
+				}
+				else
+				{
+					$imagedata=$this->upload->data();
+					if ($this->upload->data('file_ext') == '.pdf') {
+						$pdfflag = '1';
+					}else{
+						$pdfflag = '0';
+					}
+					$imagefile=$imagedata['file_name'];
+				} 
+
+				if ($this->input->post('display') =='1') {
+					$display = '1';
+				}else{
+					$display = '0';
+				}
+
+				if ($this->input->post('display_content') =='1') {
+					$display_content = '1';
+				}else{
+					$display_content = '0';
+				}
+							
+				$data=array(
+				"content" => $this->input->post("content"),
+				"position" => $this->input->post("position"),
+				"published" => $this->input->post("publishid"),
+				"display" => $display,
+				"display_content" => $display_content,
+				"pdf" => isset($pdfflag) ? $pdfflag : '0',
+				);					
+				
+				if(isset($imagefile)){
+					$data['image']=$imagefile;
+				}			
+							
+				if($this->input->post("insert")){				
+					$this->adminmodel->insertdata("help_video_section",$data);
+					$this->helpvideolist();
+				}			
+				if($this->input->post("update")){
+					$this->adminmodel->updatedata("help_video_section",$data,$this->input->post("updateid"));
+					$this->helpvideolist();
+				}		
+			}
+		}
+		else{			
+			// $this->helpvideolist();
+			redirect(base_url().'admincontrol/dashboard');
+		}
+	}
+
+
+	function videosection1list(){
+		$this->checksessionout();
+		$this->checkUserPermission('39', '1', '1');
+		$videosectionid 			= $this->uri->segment(3);
+		$data["header_title"]      	= $this->help_video_section;
+	    $data["header_title2"]     	= $this->help_video_section2;
+	    $data["leftsidebar_value"] 	= $this->help_video_section_value;
+				
+		if(! $this->input->post("activeval")){ $condition="1"; } 
+		else{ 
+			if($this->input->post("activeval") == 1){ $condition="1"; }
+			else{ $condition="0"; }
+		}
+		$checkpermission    		= $this->checkUserPermission('40', '2');
+		$data["permission"] 		= $checkpermission;
+		$data["videosectionid"] 	= $videosectionid;
+		$data["videosectionname"] 	= $this->adminmodel->getsingledata("help_video_section",$videosectionid);
+		$condition2 				= $videosectionid;		
+		$data["getdata"] 			= $this->adminmodel->getdata_video_section1($condition,$condition2);		
+		$this->allpage('helpvideo1list',$data);
+	}
+	function addvideosection1(){
+		$this->checksessionout();
+		$this->checkUserPermission('39', '1', '1');
+		$videosectionid 			= $this->uri->segment(3);
+		$data["header_title"]      	= $this->help_video_section;
+	    $data["header_title2"]     	= $this->help_video_section2;
+	    $data["leftsidebar_value"] 	= $this->help_video_section_value;
+		$data["action"] 			= "new";
+		$checkpermission    		= $this->checkUserPermission('40', '2');
+		$data["permission"] 		= $checkpermission;
+		$data["videosectionid"] 	= $videosectionid;
+		$data["videosectionname"] 	= $this->adminmodel->getsingledata("help_video_section",$videosectionid);
+		$this->allpage('helpvideo1action',$data);
+	}
+	function editvideosection1($pid = '', $id =''){
+		$videosectionid 			= $pid; //$this->uri->segment(3);
+		$uid 						= $id; //$this->uri->segment(4);
+		$this->checksessionout();
+		$this->checkUserPermission('40', '1', '1');
+		$data["header_title"]      	= $this->help_video_section;
+	    $data["header_title2"]     	= $this->help_video_section2;
+	    $data["leftsidebar_value"] 	= $this->help_video_section_value;
+		$data["getdata"] 			= $this->adminmodel->getsingledata("help_video_section1",$uid);
+		$data["action"] 			= "edit";		
+		$data["videosectionid"] 			= $videosectionid;
+		
+		$checkpermission    		= $this->checkUserPermission('40', '2');
+		$data["permission"] 		= $checkpermission;
+		$data["videosectionname"] 	= $this->adminmodel->getsingledata("help_video_section",$videosectionid);
+		$this->allpage('helpvideo1action',$data);
+	}
+	function deletevideosection1(){
+		$deleteid 		= $this->input->post("deleteid");
+		$videosectionid 		= $this->input->post("videosectionid");
+		$this->checksessionout();		
+		$this->adminmodel->deletedata("help_video_section1",$deleteid);		
+		// $this->newtoolboxtalks1list();
+		redirect(base_url().'admincontrol/videosection1list/'.$videosectionid.'');
+	}
+	function videosection1action(){
+		if($this->input->post("insert") || $this->input->post("update")){			
+			$this->form_validation->set_rules("content","Content",'trim|required');
+			$this->form_validation->set_rules("position","Position",'trim|required|numeric');
+			if($this->form_validation->run()==FALSE){
+				if($this->input->post("insert")){					
+					$this->videosection1list();
+				}
+				if($this->input->post("update")){
+					$this->videosection1list($this->input->post("videosectionid"), $this->input->post("updateid"));
+				}
+			}		
+			else{			
+				if ($_FILES['imagefile']['name'] !='') {
+					$config_image=array();
+					$config_image['upload_path']='./images';
+					$config_image['allowed_types']='jpg|jpeg|png|pdf';
+					$config_image['encrypt_name']=TRUE;
+					$this->load->library('upload',$config_image);			
+					if ( ! $this->upload->do_upload('imagefile'))
+					{
+						//print_r($this->upload->display_errors()); print_r($this->input->post("imagefile")); die;
+					}
+					else
+					{
+						$imagedata=$this->upload->data();
+						if ($this->upload->data('file_ext') == '.pdf') {
+							$pdfflag = '1';
+						}else{
+							$pdfflag = '0';
+						}
+						$imagefile=$imagedata['file_name'];
+					} 
+				}
+
+				if ($this->input->post('display') =='1') {
+					$display = '1';
+				}else{
+					$display = '0';
+				}
+
+				if ($this->input->post('display_content') =='1') {
+					$display_content = '1';
+				}else{
+					$display_content = '0';
+				}
+
+				if($this->input->post("pdf") =='' || $this->input->post("pdf") =='0') $contentPDF = '0';
+				else $contentPDF = '1';
+				
+				
+				$videosectionid=$this->input->post("videosectionid");				
+				$data=array(
+				"videosectionid" => $videosectionid,
+				"content" => $this->input->post("content"),
+				"position" => $this->input->post("position"),
+				"published" => $this->input->post("publishid"),
+				"display" => $display,
+				"display_content" => $display_content,
+				"pdf" => isset($pdfflag) ? $pdfflag : $contentPDF,
+				);					
+				
+				if(isset($imagefile)){
+					$data['image']=$imagefile;
+				}			
+							
+				if($this->input->post("insert")){				
+					$this->adminmodel->insertdata("help_video_section1",$data);
+					$this->videosection1list();
+				}			
+				if($this->input->post("update")){
+					$this->adminmodel->updatedata("help_video_section1",$data,$this->input->post("updateid"));
+					$this->videosection1list();
+				}		
+			}
+		}
+		else{			
+			// $this->newtoolboxtalks1list();
+			redirect(base_url().'admincontrol/dashboard');
+		}
+	}
+
+	function videosection2list( $id ='', $subid =''){
+		$this->checksessionout();
+		$this->checkUserPermission('39', '1', '1');
+
+		if($id =='') $videosectionid = $this->uri->segment(3);
+		else $videosectionid = $id;
+
+		if($subid =='') $videosection1id = $this->uri->segment(4);
+		else $videosection1id = $subid;
+
+		
+		$data["header_title"]      	= $this->help_video_section;
+	    $data["header_title2"]     	= $this->help_video_section2;
+	    $data["leftsidebar_value"] 	= $this->help_video_section_value;		
+				
+		if(! $this->input->post("activeval")){ $condition="1"; } 
+		else{ 
+			if($this->input->post("activeval") == 1){ $condition="1"; }
+			else{ $condition="0"; }
+		}
+		$data["videosectionid"] 		= $videosectionid;
+		$data["videosection1id"] 		= $videosection1id;
+		$data["videosectionname"] 		= $this->adminmodel->getsingledata("help_video_section",$videosectionid);
+		$data["videosection1name"] 		= $this->adminmodel->getsingledata("help_video_section1",$videosection1id);
+
+		$condition2 					= $videosection1id;	
+		$data["getdata"]=$this->adminmodel->getdata_help_video_section2($condition,$condition2);		
+		$checkpermission    = $this->checkUserPermission('39', '2');
+		$data["permission"] = $checkpermission;
+		$this->allpage('helpvideo2list',$data);
+	}
+	function addvideosection2($id ='', $subid =''){
+		$this->checksessionout();
+		$this->checkUserPermission('39', '1', '1');
+		if($id =='') $videosectionid =  $this->uri->segment(3);
+		else $videosectionid =  $id;
+
+		// $toolbox1id=$this->uri->segment(4);
+		if($subid =='') $videosection1id =  $this->uri->segment(4);
+		else $videosection1id =  $subid;
+
+		$data["header_title"]      	= $this->help_video_section;
+	    $data["header_title2"]     	= $this->help_video_section2;
+	    $data["leftsidebar_value"] 	= $this->help_video_section_value;
+		$data["action"] 			= "new";
+		$checkpermission    		= $this->checkUserPermission('39', '2');
+		$data["permission"] 		= $checkpermission;
+		$data["videosectionid"] 	= $videosectionid;
+		$data["videosection1id"] 	= $videosection1id;
+		$data["videosectionname"] 	= $this->adminmodel->getsingledata("help_video_section",$videosectionid);
+		$data["videosection1name"] 	= $this->adminmodel->getsingledata("help_video_section1",$videosection1id);
+		$this->allpage('helpvideo2action',$data);
+	}
+	function editvideosection2(){
+		$videosectionid 	=$this->uri->segment(3);
+		$videosection1id 	=$this->uri->segment(4);
+		$uid 				=$this->uri->segment(5);
+		$this->checksessionout();
+		$this->checkUserPermission('39', '1', '1');
+		$data["header_title"]      	= $this->help_video_section;
+	    $data["header_title2"]     	= $this->help_video_section2;
+	    $data["leftsidebar_value"] 	= $this->help_video_section_value;
+
+		$data["getdata"]=$this->adminmodel->getsingledata("help_video_section2",$uid);
+		$data["action"]="edit";		
+		$data["videosectionid"] 	=$videosectionid;
+		$data["videosection1id"] 	=$videosection1id;
+		$data["videosectionname"] 	=$this->adminmodel->getsingledata("help_video_section",$videosectionid);
+		$data["videosection1name"] 	=$this->adminmodel->getsingledata("help_video_section1",$videosection1id);
+		$checkpermission    		= $this->checkUserPermission('39', '2');
+		$data["permission"] 		= $checkpermission;
+		$this->allpage('helpvideo2action',$data);
+	}
+	function deletevideosection2(){
+		$deleteid 			= $this->input->post("deleteid");
+		$videosectionid 	= $this->input->post("videosectionid");
+		$videosection1id 	= $this->input->post("videosection1id");
+
+		$this->checksessionout();		
+		$this->adminmodel->deletedata("help_video_section2",$deleteid);		
+		// $this->newtoolboxtalks2list();
+		redirect(base_url().'admincontrol/videosection2list/'.$videosectionid.'/'.$videosection1id.'');
+	}
+	function videosection2action(){
+		$post = $this->input->post();
+
+		$data = $this->adminmodel->videosection2action($post);
+		redirect(base_url().'admincontrol/videosection2list/'.$post['videosectionid'].'/'.$post['videosection1id'].'');
 	}
 
 }

@@ -153,5 +153,13 @@ class Index extends CI_Controller
 		}
 	}
 
+	public function positionValidator(){
+		$post = $this->input->post();
+		
+		$result = $this->Commonmodel->positionvalidator($post);
+
+		echo $result;
+	}
+
 
 }
