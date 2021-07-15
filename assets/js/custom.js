@@ -258,7 +258,7 @@ function rating(selector, field, values=0){
 function fileupload(data1=[], data2=[], multiple='', customfunction=''){
 	var ajaxurl 	= baseurl()+"ajax/index/ajaxfileupload";
 	var loader 		= baseurl()+"images/ajax-loader.gif";
-	
+	console.log(data1[2]);
 	var selector 	= data1[0];
 	var extension 	= data1[2] ? data1[2] : ['jpg','jpeg','png'];
 	
@@ -320,6 +320,10 @@ function fileupload(data1=[], data2=[], multiple='', customfunction=''){
 					if(ext=='jpg' || ext=='jpeg' || ext=='png' || ext=='tif' || ext=='tiff'){
 						var filesrc = data2[2]+'/'+file;
 					}else if(ext=='pdf'){
+						var filesrc = data2[3];
+					}else if(ext=='mp4'){
+						var filesrc = data2[3];
+					}else if(ext=='mp3'){
 						var filesrc = data2[3];
 					}
 				}
