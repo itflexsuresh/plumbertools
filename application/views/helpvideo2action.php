@@ -24,10 +24,10 @@ if (isset($getdata) && $getdata) {
 $file = isset($getdata['file']) ? $getdata['file'] : '';
 
 $filepath  = base_url() . 'images/';
-$filepath1 = (isset($getdata['file']) && $getdata['file'] != '') ? $filepath . $getdata['file'] : base_url() . 'icons/upload.png';
+$filepath1 = (isset($getdata['file']) && $getdata['file'] != '') ? $filepath . $getdata['file'] : base_url() . 'images/upload.png';
 
 $videoimg  = base_url() . 'images/video.png';
-$uploadimg = base_url() . 'icons/upload.png';
+$uploadimg = base_url() . 'images/upload.png';
 
 if ($file != '') {
     $explodefile2 = explode('.', $file);

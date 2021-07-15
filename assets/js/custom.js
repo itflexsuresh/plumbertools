@@ -257,7 +257,7 @@ function rating(selector, field, values=0){
 
 function fileupload(data1=[], data2=[], multiple='', customfunction=''){
 	var ajaxurl 	= baseurl()+"ajax/index/ajaxfileupload";
-	var loader 		= baseurl()+"icons/ajax-loader.gif";
+	var loader 		= baseurl()+"images/ajax-loader.gif";
 	
 	var selector 	= data1[0];
 	var extension 	= data1[2] ? data1[2] : ['jpg','jpeg','png'];
